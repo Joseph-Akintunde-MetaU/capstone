@@ -8,7 +8,7 @@ export function UserAuthPage(){
                     <label >Username: 
                         <input type="text" />
                     </label>
-                     <label >Password: 
+                     <label >Password:
                         <input type="password" />
                     </label>
                     <button>SIGN IN</button>
