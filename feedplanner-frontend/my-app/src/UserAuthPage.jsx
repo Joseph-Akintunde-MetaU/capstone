@@ -1,10 +1,8 @@
-import { useState } from "react"
 import "/UserAuthPage.css"
 export function UserAuthPage(){
-    const {username, setUsername} = useState('')
     return(
              <div className="UserAuthPage">
-                <img width = "400px" height= "400px" src="img/logo.png" alt="" />
+                <img width = "400px" height= "400px" src="img/logo.png" alt="2025 FeedPlanner &copy;" />
                 <div className="userInputs">
                     <p>WELCOME BACK!</p>
                     <label >Username: 
