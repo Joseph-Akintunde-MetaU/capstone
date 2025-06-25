@@ -1,21 +1,30 @@
-import { useState } from "react"
-import "/UserAuthPage.css"
+import {FcGoogle} from "react-icons/fc"
+import "./UserAuthPage.css"
+import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
+import { useCallback } from "react";
+import {auth} from "./config/firebase.config"
+
 export function UserAuthPage(){
-    const {username, setUsername} = useState('')
+    const googleProvider = new GoogleAuthProvider();
+    const handleLogin = useCallback(async function () {
+        try{
+            const userCred = await signInWithRedirect(auth, googleProvider)
+            if(userCred){
+                 console.log(userCred)
+            }
+        }catch(error){
+            console.log(error)
+        }
+    }, []);
     return(
              <div className="UserAuthPage">
                 <img width = "400px" height= "400px" src="img/logo.png" alt="" />
                 <div className="userInputs">
-                    <p>WELCOME BACK!</p>
-                    <label >Username: 
-                        <input type="text" />
-                    </label>
-                     <label >Password: 
-                        <input type="password" />
-                    </label>
-                    <button>SIGN IN</button>
+                    <p>WELCOME!</p>
                 </div>
-                <p>New here? <a href="">Sign Up</a></p>
-        </div>
+                <button onClick={handleLogin} className="googleSignIn">
+                    <p><FcGoogle/> Sign in with Gmail</p>
+                </button>
+             </div>
     )
 }

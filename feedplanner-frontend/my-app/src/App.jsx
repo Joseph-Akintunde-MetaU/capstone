@@ -1,18 +1,17 @@
-import { BrowserRouter,Router,Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route} from 'react-router-dom'
 import './App.css'
 import { UserAuthPage } from './UserAuthPage'
-
 function App() {
-
   return (
     <>
       <BrowserRouter>
-      <div>
-        <UserAuthPage/>
-      </div>
+        <Routes>
+          <Route path='/' element = {<UserAuthPage/>}>
+          </Route>
+        </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
 export default App
