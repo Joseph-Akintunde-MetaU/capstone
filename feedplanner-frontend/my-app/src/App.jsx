@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { BrowserRouter,Router,Route } from 'react-router-dom'
 import './App.css'
 import { UserAuthPage } from './UserAuthPage'
 
@@ -6,9 +6,11 @@ function App() {
 
   return (
     <>
-      <div>  
+      <BrowserRouter>
+      <div>
         <UserAuthPage/>
       </div>
+      </BrowserRouter>
     </>
   )
 }
