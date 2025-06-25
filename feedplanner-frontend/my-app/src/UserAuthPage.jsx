@@ -13,7 +13,6 @@ export function UserAuthPage(){
                     </label>
                     <button>SIGN IN</button>
                 </div>
-                <p>New here? <a href="">Sign Up</a></p>
         </div>
     )
 }
