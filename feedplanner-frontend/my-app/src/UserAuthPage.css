@@ -6,13 +6,24 @@
     border: 3px solid black;
     border-radius: 20px;
 }
-.userInputs{
+.signup{
     display: flex;
     flex-direction: column;
     align-items: center;
     line-height: 2em;
 }
-.userInputs form{
+.signup form{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+.login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 2em;
+}
+.login form{
     display: flex;
     flex-direction: column;
     margin: 10px;

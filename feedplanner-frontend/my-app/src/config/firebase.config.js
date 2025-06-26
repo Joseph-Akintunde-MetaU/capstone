@@ -1,4 +1,4 @@
-import {initializeApp, getApp, getApps} from 'firebase/app'
+import {initializeApp, getApp, getApps} from 'firebase/app' 
 import {getAuth} from 'firebase/auth'
 import {getFirestore} from "firebase/firestore"
 import {getStorage} from "firebase/storage"
@@ -11,8 +11,8 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
-const auth = getAuth(app)
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig) 
+const auth = getAuth(app) 
 const db = getFirestore(app)
 const storage = getStorage(app)
 
