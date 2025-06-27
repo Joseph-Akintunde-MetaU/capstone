@@ -4,11 +4,11 @@ import { UserAuthPage } from './UserAuthPage'
 import { auth } from './config/firebase.config'
 import { signOut } from 'firebase/auth'
 import { HomePage } from './HomePage'
+import { ErrorPage } from './ErrorPage'
 function App() {
   const nav = useNavigate()
    function isSignedOut(){
         signOut(auth).then(() => {
-            console.log("Signed out Successfully")
             nav("/")
         }).catch((error) => {
             console.error(error)
@@ -18,7 +18,8 @@ function App() {
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
         <Route path='/home' element={<HomePage isSignedOut={isSignedOut}/>} />
-      </Routes> //routes
+        <Route path='/errorpage' element={<ErrorPage/>} />
+      </Routes>
   );
 }
 

@@ -10,17 +10,14 @@ exports.validateUserJWTToken = functions.https.onRequest(async (req,res) => {
     cors(req,res, async () => {
         //authorization - bearer token to ensure authentication
         const authorizationHeader = req.get("Authorization")
-        if(!authorizationHeader || !authorizationHeader.startsWith('Bearer ')){
-            return res.status(401).json({error: "Unauthorized"})
-        }
         const token = authorizationHeader.split('Bearer ')[1]
         try{
             //verify the token
             const decodedToken = await admin.auth().verifyIdToken(token)
             //and after that, retrieves user data with unique uid. if the user doesnt exist, this adds the token and its details to a collection called users in my database.
             if(decodedToken){
-                const docRef = db.collection("users").doc(decodedToken.uid)
-                const doc = await docRef.get()
+                const docReference = db.collection("users").doc(decodedToken.uid)
+                const doc = await docReference.get()
                 if(!doc.exists){
                     const userRef = db.collection("users").doc(decodedToken.uid)
                     await userRef.set(decodedToken)

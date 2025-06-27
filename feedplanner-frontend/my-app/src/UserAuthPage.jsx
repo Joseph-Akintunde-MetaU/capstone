@@ -11,6 +11,7 @@ export function UserAuthPage(){
     const [loginEmail, setLoginEmail] = useState('')
     const [loginPassword, setLoginPassword] = useState('')
     const googleProvider = new GoogleAuthProvider();
+    const baseUrl = "http://127.0.0.1:5001/feedplanner/us-central1/validateUserJWTToken"
     async function handleGoogleLogin(){
         try{
             // For Google sign-in
@@ -21,7 +22,7 @@ export function UserAuthPage(){
             const googleUser = googleUserCred.user
             const token = await googleUser.getIdToken(true)
                 const response = await fetch(
-                    "http://127.0.0.1:5001/feedplanner/us-central1/validateUserJWTToken",
+                    baseUrl,
                     {
                         method: "GET",
                         headers: {
@@ -35,6 +36,7 @@ export function UserAuthPage(){
             console.log(error)
         }
     };
+
     const nav = useNavigate()
     function isLoggedIn(){
         onAuthStateChanged(auth, (user) => {
@@ -53,7 +55,7 @@ export function UserAuthPage(){
                 console.log(user)
                 const token = await user.getIdToken(true)
                 const response = await fetch(
-                    "http://127.0.0.1:5001/feedplanner/us-central1/validateUserJWTToken",
+                    baseUrl,
                     {
                         method: "GET",
                         headers: {
@@ -61,7 +63,7 @@ export function UserAuthPage(){
                         }
                     }
                 )
-                 isLoggedIn()
+                isLoggedIn()
                 localStorage.setItem("email", user.email)  
             }catch(error){
                 const errorMessage = error.message;
@@ -73,17 +75,6 @@ export function UserAuthPage(){
             try{
                 const user = userCredential.user;
                 console.log(user)
-                //getting the access token
-                const token = await user.getIdToken(true)
-                const response = await fetch(
-                    "http://127.0.0.1:5001/feedplanner/us-central1/validateUserJWTToken",
-                    {
-                        method: "GET",
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                )
                 isLoggedIn()
                 localStorage.setItem("email", user.email)
             }catch(error){
