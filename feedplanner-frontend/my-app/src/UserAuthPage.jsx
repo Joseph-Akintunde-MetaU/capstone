@@ -1,7 +1,6 @@
 import {FcGoogle} from "react-icons/fc"
-import {FaFacebook} from "react-icons/fa"
 import "./UserAuthPage.css"
-import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, FacebookAuthProvider, onAuthStateChanged} from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
 import { useState } from "react";
 import {auth} from "./config/firebase.config"
 import { useNavigate } from "react-router-dom";
@@ -19,32 +18,23 @@ export function UserAuthPage(){
             if (googleUserCred) {
                 console.log(googleUserCred);
             }
-           isLoggedIn()
+            const googleUser = googleUserCred.user
+            const token = await googleUser.getIdToken(true)
+                const response = await fetch(
+                    "http://127.0.0.1:5001/feedplanner/us-central1/validateUserJWTToken",
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
+            isLoggedIn()
+            localStorage.setItem("email", googleUser.email)
         }catch(error){
             console.log(error)
         }
     };
-    const facebookProvider = new FacebookAuthProvider();
-    async function handleFBLogin(){
-        signInWithPopup(auth, facebookProvider)
-        .then((result) => {
-            // The signed-in user info.
-            const user = result.user;
-            // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-            const credential = FacebookAuthProvider.credentialFromResult(result);
-            const accessToken = credential.accessToken;
-            isLoggedIn()
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = FacebookAuthProvider.credentialFromError(error);
-  });
-
-    }
     const nav = useNavigate()
     function isLoggedIn(){
         onAuthStateChanged(auth, (user) => {
@@ -56,32 +46,50 @@ export function UserAuthPage(){
         }
     })
     }
-    function handleEmailCreate(){
-        //For creating email and password
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Signed up 
+    async function handleEmailCreate(){
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+        try{
                 const user = userCredential.user;
                 console.log(user)
-                isLoggedIn()
-            })
-            .catch((error) => {
+                const token = await user.getIdToken(true)
+                const response = await fetch(
+                    "http://127.0.0.1:5001/feedplanner/us-central1/validateUserJWTToken",
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
+                 isLoggedIn()
+                localStorage.setItem("email", user.email)  
+            }catch(error){
                 const errorMessage = error.message;
                 console.log(errorMessage)
-            });
+            };
     }
-    function handleEmailSignIn(){
-        signInWithEmailAndPassword(auth, loginEmail, loginPassword)
-        .then((userCredential) => {
-            // Signed in 
-            const user = userCredential.user;
-            console.log(user)
-            isLoggedIn()
-        })
-        .catch((error) => {
+    async function handleEmailSignIn(){
+            const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword)
+            try{
+                const user = userCredential.user;
+                console.log(user)
+                //getting the access token
+                const token = await user.getIdToken(true)
+                const response = await fetch(
+                    "http://127.0.0.1:5001/feedplanner/us-central1/validateUserJWTToken",
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
+                isLoggedIn()
+                localStorage.setItem("email", user.email)
+            }catch(error){
             const errorMessage = error.message;
             console.log(errorMessage)
-        });
+        };
     }
     return(
         <div className="UserAuthPage">
@@ -92,7 +100,8 @@ export function UserAuthPage(){
                     {/* called onsubmit so it works by pressing enter */}
                     <label htmlFor="username">E-mail: </label>
                     <input
-                        type="text"
+                        type="email"
+                        placeholder="Enter your e-mail address"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
@@ -100,6 +109,7 @@ export function UserAuthPage(){
                     <input
                         type="password"
                         value={password}
+                        placeholder="Enter your Password"
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <button style={{margin: 10}} type="submit" className="emailSignUp">
@@ -112,8 +122,9 @@ export function UserAuthPage(){
                 <form action="" onSubmit={(e) => { e.preventDefault(); handleEmailSignIn(); }}>
                     <label htmlFor="loginUsername">E-mail: </label>
                     <input
-                        type="text"
+                        type="email"
                         id="loginUsername"
+                        placeholder="Enter your e-mail address"
                         value={loginEmail}
                         onChange={(e) => setLoginEmail(e.target.value)}
                     />
@@ -121,6 +132,7 @@ export function UserAuthPage(){
                     <input
                         type="password"
                         id="loginPassword"
+                        placeholder = "Enter your Password"
                         value={loginPassword}
                         onChange={e => setLoginPassword(e.target.value)}
                     />
@@ -131,9 +143,6 @@ export function UserAuthPage(){
             </div>
             <button onClick={handleGoogleLogin} className="googleSignIn">
                 <p><FcGoogle /> Sign in with Google</p>
-            </button>
-            <button style={{margin: 10}} onClick={handleFBLogin} className="googleSignIn">
-                <p><FaFacebook /> Sign in with Facebook</p>
             </button>
         </div>
     )
