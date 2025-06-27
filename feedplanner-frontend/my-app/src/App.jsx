@@ -18,7 +18,7 @@ function App() {
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
         <Route path='/home' element={<HomePage isSignedOut={isSignedOut}/>} />
-      </Routes>
+      </Routes> //routes
   );
 }
 
