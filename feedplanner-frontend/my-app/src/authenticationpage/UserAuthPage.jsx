@@ -2,7 +2,7 @@ import {FcGoogle} from "react-icons/fc"
 import "./UserAuthPage.css"
 import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
 import { useState } from "react";
-import {auth} from "./config/firebase.config"
+import {auth} from "../config/firebase.config"
 import { useNavigate } from "react-router-dom";
 
 export function UserAuthPage(){
@@ -54,6 +54,7 @@ export function UserAuthPage(){
                 const user = userCredential.user;
                 console.log(user)
                 const token = await user.getIdToken(true)
+                console.log(token)
                 const response = await fetch(
                     baseUrl,
                     {
@@ -75,6 +76,8 @@ export function UserAuthPage(){
             try{
                 const user = userCredential.user;
                 console.log(user)
+                const token = await user.getIdToken(true)
+                console.log(token)
                 isLoggedIn()
                 localStorage.setItem("email", user.email)
             }catch(error){
@@ -84,7 +87,7 @@ export function UserAuthPage(){
     }
     return(
         <div className="UserAuthPage">
-            <img width="400px" height="400px" src="img/logo.png" alt="2025 FeedPlanner &copy;" />
+            <img width="450px" height="400px" src="img/logo3.png" alt="2025 FeedPlanner &copy;" />
             <div className="signup">
                 <p>WELCOME! <br />SIGN UP</p>
                 <form onSubmit={(e) => { e.preventDefault(); handleEmailCreate(); }}> 
@@ -103,9 +106,9 @@ export function UserAuthPage(){
                         placeholder="Enter your Password"
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <button style={{margin: 10}} type="submit" className="emailSignUp">
+                    {email && password && <button style={{margin: 10}} type="submit" className="emailSignUp">
                         Sign up
-                    </button>
+                    </button>}
                 </form>
             </div>
             <p>ALREADY HAVE AN ACCOUNT? <br /> LOGIN</p>
