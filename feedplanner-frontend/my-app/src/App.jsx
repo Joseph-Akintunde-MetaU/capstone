@@ -1,11 +1,13 @@
-import { Routes, Route, useNavigate} from 'react-router-dom'
+import { Routes, Route, useNavigate, useLocation} from 'react-router-dom'
 import './App.css'
-import { UserAuthPage } from './UserAuthPage'
+import { UserAuthPage } from './authenticationpage/UserAuthPage'
 import { auth } from './config/firebase.config'
 import { signOut } from 'firebase/auth'
-import { HomePage } from './HomePage'
-import { ErrorPage } from './ErrorPage'
+import { HomePage } from './homepage/HomePage'
+import { ErrorPage } from './homepage/ErrorPage'
+import { PantryManager } from './pantry/PantryManager'
 function App() {
+  const location = useLocation()
   const nav = useNavigate()
    function isSignedOut(){
         signOut(auth).then(() => {
@@ -15,11 +17,23 @@ function App() {
         });
     }
   return (
+    <div>
+      {location.pathname !== '/' && <header>
+                <img width= "200px" height="180px" src="img/logo3.png" alt="2025 FeedPlanner &copy;" />
+                <nav>
+                    <a>RECIPES</a>
+                    <a>MEAL PLANNER</a>
+                    <a>PROFILE</a>
+                    <a style = {{cursor: "pointer"}}onClick={isSignedOut}>LOGOUT</a>
+                </nav>
+        </header>}
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
         <Route path='/home' element={<HomePage isSignedOut={isSignedOut}/>} />
         <Route path='/errorpage' element={<ErrorPage/>} />
+        <Route path='/pantry' element = {<PantryManager/>}/>
       </Routes>
+    </div>
   );
 }
 

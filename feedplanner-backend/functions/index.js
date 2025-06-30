@@ -1,10 +1,15 @@
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
 const functions = require("firebase-functions")
 const admin = require("firebase-admin")
-
 const cors = require("cors")({origin: true})
-
-admin.initializeApp()
+const authMiddleware = require('./authMiddleware')
+const pantryRoute = require('./routes/pantry')
 const db = admin.firestore();
+app.use(bodyParser.json());
+app.use(authMiddleware)
+app.use('/pantry', pantryRoute)
 //creating a new cloud function that's triggered by an https request.
 exports.validateUserJWTToken = functions.https.onRequest(async (req,res) => {
     cors(req,res, async () => {
@@ -30,3 +35,4 @@ exports.validateUserJWTToken = functions.https.onRequest(async (req,res) => {
         }
     })
 })
+exports.api = functions.https.onRequest(app)
