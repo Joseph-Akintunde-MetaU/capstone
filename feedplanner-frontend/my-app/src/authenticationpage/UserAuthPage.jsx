@@ -11,7 +11,7 @@ export function UserAuthPage(){
     const [loginEmail, setLoginEmail] = useState('')
     const [loginPassword, setLoginPassword] = useState('')
     const googleProvider = new GoogleAuthProvider();
-    const baseUrl = "http://127.0.0.1:5001/feedplanner/us-central1/validateUserJWTToken"
+    const baseUrl = "/feedplanner/us-central1/validateUserJWTToken"
     async function handleGoogleLogin(){
         try{
             // For Google sign-in
@@ -21,6 +21,7 @@ export function UserAuthPage(){
             }
             const googleUser = googleUserCred.user
             const token = await googleUser.getIdToken(true)
+                // eslint-disable-next-line no-unused-vars
                 const response = await fetch(
                     baseUrl,
                     {
@@ -40,11 +41,16 @@ export function UserAuthPage(){
     const nav = useNavigate()
     function isLoggedIn(){
         onAuthStateChanged(auth, (user) => {
-        if (user) {
-            nav("/home")
-            const uid = user.uid;
-        } else {
-            
+        try{
+            if (user) {
+                nav("/home")
+                // eslint-disable-next-line no-unused-vars
+                const uid = user.uid;
+        } else{
+            console.log("User not logged in")
+        }
+        }catch(error){
+            throw new Error(error)
         }
     })
     }
@@ -55,6 +61,7 @@ export function UserAuthPage(){
                 console.log(user)
                 const token = await user.getIdToken(true)
                 console.log(token)
+                // eslint-disable-next-line no-unused-vars
                 const response = await fetch(
                     baseUrl,
                     {
