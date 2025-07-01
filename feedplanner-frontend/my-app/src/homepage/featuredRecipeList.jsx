@@ -1,6 +1,6 @@
 import { featuredRecipe } from "../utility/featuredRecipe";
 import { FeaturedRecipeCard } from "./featuredRecipeCard";
-export function FeaturedRecipeList(featuredRecipes, HomePageRecipes){
+export function FeaturedRecipeList(featuredRecipes){
     const recipeList = featuredRecipe(featuredRecipes)
     return(
         <div>

@@ -1,6 +1,6 @@
 import {FcGoogle} from "react-icons/fc"
 import "./UserAuthPage.css"
-import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, validatePassword} from "firebase/auth";
 import { useState } from "react";
 import {auth} from "../config/firebase.config"
 import { useNavigate } from "react-router-dom";
@@ -48,6 +48,19 @@ export function UserAuthPage(){
         }
     })
     }
+    // async function name(params) {
+        
+    // }
+    // const status = await validatePassword(getAuth(), passwordFromUser);
+    //     if (!status.isValid) {
+    //     // Password could not be validated. Use the status to show what
+    //     // requirements are met and which are missing.
+
+    //     // If a criterion is undefined, it is not required by policy. If the
+    //     // criterion is defined but false, it is required but not fulfilled by
+    //     // the given password. For example:
+    //     const needsLowerCase = status.containsLowercaseLetter !== true;
+    //     }
     async function handleEmailCreate(){
         const userCredential = await createUserWithEmailAndPassword(auth, email, password)
         try{
@@ -87,57 +100,95 @@ export function UserAuthPage(){
     }
     return(
         <div className="UserAuthPage">
-            <img width="450px" height="400px" src="img/logo3.png" alt="2025 FeedPlanner &copy;" />
-            <div className="signup">
-                <p>WELCOME! <br />SIGN UP</p>
-                <form onSubmit={(e) => { e.preventDefault(); handleEmailCreate(); }}> 
+            <div className="UserAuthPageBody">
+                <div className="AuthHeader">
+                    <div className="logo">
+                        <img className="logo-icon" src="img/logo3.png" alt="2025 FeedPlanner &copy;" />
+                    </div>
+                    <h2 className="welcome">WELCOME !</h2>
+                    <h2 className="auth-mode">SIGN UP</h2>
+                </div>
+
+                {/* form */}
+                <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleEmailCreate(); }}> 
                     {/* called onsubmit so it works by pressing enter */}
-                    <label htmlFor="username">E-mail: </label>
-                    <input
-                        type="email"
-                        placeholder="Enter your e-mail address"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <label htmlFor="password">Password: </label>
-                    <input
-                        type="password"
-                        value={password}
-                        placeholder="Enter your Password"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    {email && password && <button style={{margin: 10}} type="submit" className="emailSignUp">
+                    <div className="form-group">
+                        <label className = "form-label" htmlFor="username">E-mail: </label>
+                        <div className="input-container">
+                            <span className="input-icon">📧</span>
+                            <input
+                                type="email"
+                                id="email"
+                                className="form-input"
+                                placeholder="Enter your e-mail address"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className = "form-label" htmlFor="password">Password: </label>
+                        <div className="input-container">
+                            <span className="input-icon">🔒</span>
+                            <input
+                                type="password"
+                                id="password"
+                                className="form-input"
+                                value={password}
+                                placeholder="Enter your Password"
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    {<button type="submit" className="btn">
                         Sign up
                     </button>}
                 </form>
-            </div>
-            <p>ALREADY HAVE AN ACCOUNT? <br /> LOGIN</p>
-            <div className="login">
-                <form action="" onSubmit={(e) => { e.preventDefault(); handleEmailSignIn(); }}>
-                    <label htmlFor="loginUsername">E-mail: </label>
-                    <input
-                        type="email"
-                        id="loginUsername"
-                        placeholder="Enter your e-mail address"
-                        value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
-                    />
-                    <label htmlFor="loginPassword">Password: </label>
-                    <input
-                        type="password"
-                        id="loginPassword"
-                        placeholder = "Enter your Password"
-                        value={loginPassword}
-                        onChange={e => setLoginPassword(e.target.value)}
-                    />
-                    <button style={{margin: 10}} onClick = {handleEmailSignIn} type="submit" className="emailSignIn">
-                        Log In
-                    </button>
+                <div className="login-section">
+                    <p id="toggleText" className="welcome">ALREADY HAVE AN ACCOUNT?</p>
+                    <p className="auth-mode">LOGIN</p>
+                </div>
+               <div className="login">
+                <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleEmailSignIn()}}> 
+                    <div className="form-group">
+                        <label className = "form-label" htmlFor="username">E-mail: </label>
+                        <div className="input-container">
+                            <span className="input-icon">📧</span>
+                            <input
+                                type="email"
+                                id="email"
+                                className="form-input"
+                                placeholder="Enter your e-mail address"
+                                value={loginEmail}
+                                onChange={(e) => setLoginEmail(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className = "form-label" htmlFor="password">Password: </label>
+                        <div className="input-container">
+                            <span className="input-icon">🔒</span>
+                            <input
+                                type="password"
+                                id="password"
+                                className="form-input"
+                                value={loginPassword}
+                                placeholder="Enter your Password"
+                                onChange={(e) => setLoginPassword(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    {<button type="submit" className="btn">Login
+                    </button>}
                 </form>
             </div>
-            <button onClick={handleGoogleLogin} className="googleSignIn">
-                <p><FcGoogle /> Sign in with Google</p>
+            <div className="divider">
+                <span className="dividerText">OR</span>
+            </div>
+            <button onClick={handleGoogleLogin} className="btn">
+                <FcGoogle /> Sign in with Google
             </button>
+            </div>     
         </div>
     )
 }

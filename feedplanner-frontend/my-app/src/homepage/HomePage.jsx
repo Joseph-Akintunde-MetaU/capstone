@@ -2,21 +2,20 @@ import { useNavigate } from 'react-router-dom'
 import './HomePage.css'
 import { useEffect, useState } from 'react'
 import { FeaturedRecipeList } from './featuredRecipeList'
-import { PantryManager } from '../pantry/PantryManager'
 export function HomePage({isSignedOut}){
     const email = localStorage.getItem("email")
     const [featuredRecipes, setFeaturedRecipes] = useState([])
     const nav = useNavigate()
     const apiKey = process.env.REACT_APP_API_KEY
-    async function HomePageRecipes(){
-        const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=99ef92bd289d40adad70faaf03409ec2&number=3&include-tags=vegetarian,dessert`)
-        const data = await response.json()
-        setFeaturedRecipes(data.recipes)
-        console.log(data.recipes)
-    }
-    useEffect(() => {
-        HomePageRecipes()
-    },[])
+    // async function HomePageRecipes(){
+    //     const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=99ef92bd289d40adad70faaf03409ec2&number=3&include-tags=vegetarian,dessert`)
+    //     const data = await response.json()
+    //     setFeaturedRecipes(data.recipes)
+    //     console.log(data.recipes)
+    // }
+    // useEffect(() => {
+    //     HomePageRecipes()
+    // },[])
     return(
         <div>
             <div>
@@ -27,10 +26,9 @@ export function HomePage({isSignedOut}){
                 </div>
             </div>
             <div className='pantryAdder'>
-                <button onClick={() => nav("/pantry")}>PANTRY MANAGER <br/>+</button>
+                <button onClick={() => nav("/pantry")}>PANTRY MANAGER <br/>your go-to pantry handler</button>
             </div>
-            <FeaturedRecipeList featuredRecipes = {featuredRecipes} HomePageRecipes = {HomePageRecipes} />
-            <PantryManager/>
+            <FeaturedRecipeList featuredRecipes = {featuredRecipes} />
         </div>
     )
 }
