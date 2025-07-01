@@ -4,10 +4,12 @@ import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
 export function PantryCard({id, name, quantity, unit, getPantry}){
     async function deletePantry(){
+        // eslint-disable-next-line no-unused-vars
         const deleteValid = onAuthStateChanged(auth, async(user) => {
             if(user){
                 const token = await user.getIdToken()
-                const response = await fetch(`http://localhost:5004/feedplanner/us-central1/api/pantry/${id}` ,{
+                // eslint-disable-next-line no-unused-vars
+                const response = await fetch(`http://localhost:5006/feedplanner/us-central1/api/pantry/${id}` ,{
                 method: "DELETE",
                 headers:{
                     Authorization: `Bearer ${token}`,

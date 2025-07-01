@@ -10,7 +10,7 @@ export function CreatePantryItem({closeModal,getPantry}){
         const unsubscribe = onAuthStateChanged(auth, async(user) => {
             if(user){
                 const token = await user.getIdToken()
-                const response = await fetch(`http://localhost:5004/feedplanner/us-central1/api/pantry/` ,{
+                const response = await fetch(`http://localhost:5005/feedplanner/us-central1/api/pantry/` ,{
                 method: "POST",
                 headers:{
                     Authorization: `Bearer ${token}`,

@@ -1,17 +1,17 @@
 import {FcGoogle} from "react-icons/fc"
 import "./UserAuthPage.css"
-import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, validatePassword} from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
 import { useState } from "react";
 import {auth} from "../config/firebase.config"
 import { useNavigate } from "react-router-dom";
-
+//http://127.0.0.1:5001
 export function UserAuthPage(){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loginEmail, setLoginEmail] = useState('')
     const [loginPassword, setLoginPassword] = useState('')
     const googleProvider = new GoogleAuthProvider();
-    const baseUrl = "http://127.0.0.1:5001/feedplanner/us-central1/validateUserJWTToken"
+    const baseUrl = "/feedplanner/us-central1/validateUserJWTToken"
     async function handleGoogleLogin(){
         try{
             // For Google sign-in
@@ -21,6 +21,7 @@ export function UserAuthPage(){
             }
             const googleUser = googleUserCred.user
             const token = await googleUser.getIdToken(true)
+                // eslint-disable-next-line no-unused-vars
                 const response = await fetch(
                     baseUrl,
                     {
@@ -42,25 +43,13 @@ export function UserAuthPage(){
         onAuthStateChanged(auth, (user) => {
         if (user) {
             nav("/home")
+            // eslint-disable-next-line no-unused-vars
             const uid = user.uid;
         } else {
-            
+            console.log("Can't log you in.")
         }
     })
     }
-    // async function name(params) {
-        
-    // }
-    // const status = await validatePassword(getAuth(), passwordFromUser);
-    //     if (!status.isValid) {
-    //     // Password could not be validated. Use the status to show what
-    //     // requirements are met and which are missing.
-
-    //     // If a criterion is undefined, it is not required by policy. If the
-    //     // criterion is defined but false, it is required but not fulfilled by
-    //     // the given password. For example:
-    //     const needsLowerCase = status.containsLowercaseLetter !== true;
-    //     }
     async function handleEmailCreate(){
         const userCredential = await createUserWithEmailAndPassword(auth, email, password)
         try{
@@ -68,6 +57,7 @@ export function UserAuthPage(){
                 console.log(user)
                 const token = await user.getIdToken(true)
                 console.log(token)
+                // eslint-disable-next-line no-unused-vars
                 const response = await fetch(
                     baseUrl,
                     {
@@ -117,8 +107,7 @@ export function UserAuthPage(){
                         <div className="input-container">
                             <span className="input-icon">📧</span>
                             <input
-                                type="email"
-                                id="email"
+                                type="email"   
                                 className="form-input"
                                 placeholder="Enter your e-mail address"
                                 value={email}
@@ -132,7 +121,6 @@ export function UserAuthPage(){
                             <span className="input-icon">🔒</span>
                             <input
                                 type="password"
-                                id="password"
                                 className="form-input"
                                 value={password}
                                 placeholder="Enter your Password"
@@ -148,7 +136,7 @@ export function UserAuthPage(){
                     <p id="toggleText" className="welcome">ALREADY HAVE AN ACCOUNT?</p>
                     <p className="auth-mode">LOGIN</p>
                 </div>
-               <div className="login">
+                <div className="login">
                 <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleEmailSignIn()}}> 
                     <div className="form-group">
                         <label className = "form-label" htmlFor="username">E-mail: </label>
@@ -156,7 +144,6 @@ export function UserAuthPage(){
                             <span className="input-icon">📧</span>
                             <input
                                 type="email"
-                                id="email"
                                 className="form-input"
                                 placeholder="Enter your e-mail address"
                                 value={loginEmail}
@@ -170,7 +157,6 @@ export function UserAuthPage(){
                             <span className="input-icon">🔒</span>
                             <input
                                 type="password"
-                                id="password"
                                 className="form-input"
                                 value={loginPassword}
                                 placeholder="Enter your Password"
