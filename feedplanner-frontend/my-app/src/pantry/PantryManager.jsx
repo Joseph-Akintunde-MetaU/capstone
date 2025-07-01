@@ -10,7 +10,7 @@ export function PantryManager(){
         const unsubscribe = onAuthStateChanged(auth, async(user) => {
             if(user){
                 const token = await user.getIdToken()
-                const response = await fetch(`http://localhost:5006/feedplanner/us-central1/api/pantry/` ,{
+                const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/` ,{
                 method: "GET",
                 headers:{
                     Authorization: `Bearer ${token}`,

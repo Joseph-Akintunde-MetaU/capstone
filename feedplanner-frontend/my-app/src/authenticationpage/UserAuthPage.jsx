@@ -46,7 +46,7 @@ export function UserAuthPage(){
             // eslint-disable-next-line no-unused-vars
             const uid = user.uid;
         } else {
-            console.log("Can't log you in.")
+            console.log("Not logged In")
         }
     })
     }
