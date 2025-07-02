@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {FcGoogle} from "react-icons/fc"
 import "./UserAuthPage.css"
 import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
@@ -16,11 +17,8 @@ export function UserAuthPage(){
         try{
             // For Google sign-in
             const googleUserCred = await signInWithPopup(auth, googleProvider)
-            if (googleUserCred) {
-                console.log(googleUserCred);
-            }
             const googleUser = googleUserCred.user
-            const token = await googleUser.getIdToken(true)
+            const token = await googleUser.getIdToken()
                 // eslint-disable-next-line no-unused-vars
                 const response = await fetch(
                     baseUrl,
@@ -44,7 +42,6 @@ export function UserAuthPage(){
         try{
             if (user) {
                 nav("/home")
-                // eslint-disable-next-line no-unused-vars
                 const uid = user.uid;
         } else{
             console.log("User not logged in")
@@ -58,10 +55,7 @@ export function UserAuthPage(){
         const userCredential = await createUserWithEmailAndPassword(auth, email, password)
         try{
                 const user = userCredential.user;
-                console.log(user)
-                const token = await user.getIdToken(true)
-                console.log(token)
-                // eslint-disable-next-line no-unused-vars
+                const token = await user.getIdToken()
                 const response = await fetch(
                     baseUrl,
                     {
@@ -82,9 +76,7 @@ export function UserAuthPage(){
             const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword)
             try{
                 const user = userCredential.user;
-                console.log(user)
-                const token = await user.getIdToken(true)
-                console.log(token)
+                const token = await user.getIdToken()
                 isLoggedIn()
                 localStorage.setItem("email", user.email)
             }catch(error){

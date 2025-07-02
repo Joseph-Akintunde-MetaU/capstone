@@ -1,8 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
 export function PantryManager(){
-// eslint-disable-next-line no-unused-vars
 const [pantry, setPantry] = useState([])
 useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async(user) => {

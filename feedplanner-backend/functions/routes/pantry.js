@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
+/* eslint-disable new-cap */
 const express = require("express");
-// eslint-disable-next-line new-cap
 const router = express.Router();
 const admin = require("firebase-admin");
 admin.initializeApp();
@@ -9,7 +9,6 @@ const db = admin.firestore();
 router.get("/", async (req, res) => {
   try {
     const userId = req.user.uid;
-    // eslint-disable-next-line max-len
     const pantryReference = db.collection("users").doc(userId).collection("pantry");
     const getPantryReference = await pantryReference.get();
     const PantryItems = getPantryReference.docs.map((pantry) => ({
