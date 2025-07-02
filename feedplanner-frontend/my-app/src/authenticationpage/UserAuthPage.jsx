@@ -41,12 +41,16 @@ export function UserAuthPage(){
     const nav = useNavigate()
     function isLoggedIn(){
         onAuthStateChanged(auth, (user) => {
-        if (user) {
-            nav("/home")
-            // eslint-disable-next-line no-unused-vars
-            const uid = user.uid;
-        } else {
-            console.log("Not logged In")
+        try{
+            if (user) {
+                nav("/home")
+                // eslint-disable-next-line no-unused-vars
+                const uid = user.uid;
+        } else{
+            console.log("User not logged in")
+        }
+        }catch(error){
+            throw new Error(error)
         }
     })
     }

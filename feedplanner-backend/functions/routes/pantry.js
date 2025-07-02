@@ -9,6 +9,7 @@ const db = admin.firestore();
 router.get("/", async (req, res) => {
   try {
     const userId = req.user.uid;
+    // eslint-disable-next-line max-len
     const pantryReference = db.collection("users").doc(userId).collection("pantry");
     const getPantryReference = await pantryReference.get();
     const PantryItems = getPantryReference.docs.map((pantry) => ({
@@ -17,7 +18,7 @@ router.get("/", async (req, res) => {
     }));
     res.status(200).json(PantryItems);
   } catch (error) {
-    res.status(500).json({error: "error"});
+    res.status(501).json({error: "error"});
     console.error(error.message);
   }
 });
@@ -37,7 +38,7 @@ router.post("/", async (req, res) => {
     res.status(201).json({id: addPantryReferences.id});
   } catch (error) {
     console.error("Pantry item couldn't be added: ", error.message);
-    res.status(500).json({error: error.message});
+    res.status(501).json({error: error.message});
   }
 });
 // delete from pantry
@@ -46,10 +47,11 @@ router.delete("/:pantryId", async (req, res) => {
     const {pantryId} = req.params;
     const userId = req.user.uid;
     const pantryReference = db.collection("users").doc(userId).collection("pantry").doc(pantryId);
-    await pantryReference.delete();
+    // eslint-disable-next-line no-unused-vars
+    const deletePantryReference = await pantryReference.delete();
     res.status(200).json({message: `item ${pantryId} deleted`});
   } catch (error) {
-    res.status(500).json({error: "error"});
+    res.status(501).json({error: "error"});
     console.error(error.message);
   }
 });

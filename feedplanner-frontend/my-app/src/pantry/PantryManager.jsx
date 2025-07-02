@@ -38,4 +38,3 @@ export function PantryManager(){
                 </div>
             </div>
         )
-}

@@ -9,7 +9,7 @@ export function PantryCard({id, name, quantity, unit, getPantry}){
             if(user){
                 const token = await user.getIdToken()
                 // eslint-disable-next-line no-unused-vars
-                const response = await fetch(`http://localhost:5006/feedplanner/us-central1/api/pantry/${id}` ,{
+                const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/${id}` ,{
                 method: "DELETE",
                 headers:{
                     Authorization: `Bearer ${token}`,
