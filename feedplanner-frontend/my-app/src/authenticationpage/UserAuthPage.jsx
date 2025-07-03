@@ -91,47 +91,70 @@ export function UserAuthPage(){
                 <p>WELCOME! <br />SIGN UP</p>
                 <form onSubmit={(e) => { e.preventDefault(); handleEmailCreate(); }}> 
                     {/* called onsubmit so it works by pressing enter */}
-                    <label htmlFor="username">E-mail: </label>
-                    <input
-                        type="email"
-                        placeholder="Enter your e-mail address"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <label htmlFor="password">Password: </label>
-                    <input
-                        type="password"
-                        value={password}
-                        placeholder="Enter your Password"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    {email && password && <button style={{margin: 10}} type="submit" className="emailSignUp">
+                    <div className="form-group">
+                        <label className = "form-label" htmlFor="username">E-mail: </label>
+                        <div className="input-container">
+                            <img className="input-icon" src="https://img.icons8.com/?size=100&id=tiHbAqWU3ZCQ&format=png&color=000000"/>
+                            <input
+                                type="email"   
+                                className="form-input"
+                                placeholder="Enter your e-mail address"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className = "form-label" htmlFor="password">Password: </label>
+                        <div className="input-container">
+                            <img className="input-icon" src = "https://img.icons8.com/?size=100&id=7Sm4QkMSvsON&format=png&color=000000"/>
+                            <input
+                                type="password"
+                                className="form-input"
+                                value={password}
+                                placeholder="Enter your Password"
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    {<button type="submit" className="btn">
                         Sign up
                     </button>}
                 </form>
-            </div>
-            <p>ALREADY HAVE AN ACCOUNT? <br /> LOGIN</p>
-            <div className="login">
-                <form action="" onSubmit={(e) => { e.preventDefault(); handleEmailSignIn(); }}>
-                    <label htmlFor="loginUsername">E-mail: </label>
-                    <input
-                        type="email"
-                        id="loginUsername"
-                        placeholder="Enter your e-mail address"
-                        value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
-                    />
-                    <label htmlFor="loginPassword">Password: </label>
-                    <input
-                        type="password"
-                        id="loginPassword"
-                        placeholder = "Enter your Password"
-                        value={loginPassword}
-                        onChange={e => setLoginPassword(e.target.value)}
-                    />
-                    <button style={{margin: 10}} onClick = {handleEmailSignIn} type="submit" className="emailSignIn">
-                        Log In
-                    </button>
+                <div className="login-section">
+                    <p id="toggleText" className="welcome">ALREADY HAVE AN ACCOUNT?</p>
+                    <p className="auth-mode">LOGIN</p>
+                </div>
+                <div className="login">
+                <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleEmailSignIn()}}> 
+                    <div className="form-group">
+                        <label className = "form-label" htmlFor="username">E-mail: </label>
+                        <div className="input-container">
+                            <img className="input-icon" src="https://img.icons8.com/?size=100&id=tiHbAqWU3ZCQ&format=png&color=000000"/>
+                            <input
+                                type="email"
+                                className="form-input"
+                                placeholder="Enter your e-mail address"
+                                value={loginEmail}
+                                onChange={(e) => setLoginEmail(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label className = "form-label" htmlFor="password">Password: </label>
+                        <div className="input-container">
+                            <img className="input-icon" src = "https://img.icons8.com/?size=100&id=7Sm4QkMSvsON&format=png&color=000000"/>
+                            <input
+                                type="password"
+                                className="form-input"
+                                value={loginPassword}
+                                placeholder="Enter your Password"
+                                onChange={(e) => setLoginPassword(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    {<button type="submit" className="btn">Login
+                    </button>}
                 </form>
             </div>
             <button onClick={handleGoogleLogin} className="googleSignIn">
