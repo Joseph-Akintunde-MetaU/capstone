@@ -5,12 +5,13 @@ import { PantryList } from "./pantryList"
 import { CreatePantryItem } from "./CreatePantryItem"
 export function PantryManager(){
     const [pantry, setPantry] = useState([])
+    const domain = `http://localhost:5001/`
     const [openModal, setOpenModal] = useState(false)
     async function getPantry(){
         const unsubscribe = onAuthStateChanged(auth, async(user) => {
             if(user){
                 const token = await user.getIdToken()
-                const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/` ,{
+                const response = await fetch(`${domain}feedplanner/us-central1/api/pantry/` ,{
                 method: "GET",
                 headers:{
                     Authorization: `Bearer ${token}`,
