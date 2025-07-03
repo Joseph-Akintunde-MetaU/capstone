@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { useEffect, useState } from "react"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
@@ -5,7 +6,7 @@ import { PantryList } from "./pantryList"
 import { CreatePantryItem } from "./CreatePantryItem"
 export function PantryManager(){
     const [pantry, setPantry] = useState([])
-    const domain = `http://localhost:5001/`
+    const domain = process.env.REACT_APP_BASE_URL
     const [openModal, setOpenModal] = useState(false)
     async function getPantry(){
         const unsubscribe = onAuthStateChanged(auth, async(user) => {
