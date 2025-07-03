@@ -1,17 +1,46 @@
-header{
-    background: whitesmoke;
-    display: flex;
+.mainContent{
     width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box;
-}
-header nav{
+    max-width: 900px;
+    padding: 40px 20px;
     display: flex;
-    list-style: none;
-    margin: auto;
-    gap: 8em;
+    flex-direction: column;
+    align-items: center;
 }
-header nav a{
-    text-decoration: none;
+.greeting h2{
+    font-size: 2rem;
+    margin-bottom: 8px;
+    color: var(--primary-color);
+}
+.greeting p{
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+.greeting span{
+    display: inline-block;
+    padding: 10px 15px;    
+}
+.featuredRecipes{
+    display: grid;
+    grid-template-columns: 1fr;
+}
+.recipeCards{
+    display: grid;
+}
+.recipeCards img{
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+.loader{
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    animation: blink 2s infinite;
+}
+@keyframes blink {
+    0%, 100% {opacity: 0.2}
+    50% {opacity: 1;}
 }

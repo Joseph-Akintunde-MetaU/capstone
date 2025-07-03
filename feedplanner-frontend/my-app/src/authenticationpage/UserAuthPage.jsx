@@ -16,11 +16,9 @@ export function UserAuthPage(){
         try{
             // For Google sign-in
             const googleUserCred = await signInWithPopup(auth, googleProvider)
-            if (googleUserCred) {
-                console.log(googleUserCred);
-            }
             const googleUser = googleUserCred.user
-            const token = await googleUser.getIdToken(true)
+            const token = await googleUser.getIdToken()
+            console.log(token)
                 // eslint-disable-next-line no-unused-vars
                 const response = await fetch(
                     baseUrl,
@@ -105,7 +103,7 @@ export function UserAuthPage(){
                     <div className="form-group">
                         <label className = "form-label" htmlFor="username">E-mail: </label>
                         <div className="input-container">
-                            <span className="input-icon">📧</span>
+                            <img className="input-icon" src="https://img.icons8.com/?size=100&id=tiHbAqWU3ZCQ&format=png&color=000000"/>
                             <input
                                 type="email"   
                                 className="form-input"
@@ -118,7 +116,7 @@ export function UserAuthPage(){
                     <div className="form-group">
                         <label className = "form-label" htmlFor="password">Password: </label>
                         <div className="input-container">
-                            <span className="input-icon">🔒</span>
+                            <img className="input-icon" src = "https://img.icons8.com/?size=100&id=7Sm4QkMSvsON&format=png&color=000000"/>
                             <input
                                 type="password"
                                 className="form-input"
@@ -141,7 +139,7 @@ export function UserAuthPage(){
                     <div className="form-group">
                         <label className = "form-label" htmlFor="username">E-mail: </label>
                         <div className="input-container">
-                            <span className="input-icon">📧</span>
+                            <img className="input-icon" src="https://img.icons8.com/?size=100&id=tiHbAqWU3ZCQ&format=png&color=000000"/>
                             <input
                                 type="email"
                                 className="form-input"
@@ -154,7 +152,7 @@ export function UserAuthPage(){
                     <div className="form-group">
                         <label className = "form-label" htmlFor="password">Password: </label>
                         <div className="input-container">
-                            <span className="input-icon">🔒</span>
+                            <img className="input-icon" src = "https://img.icons8.com/?size=100&id=7Sm4QkMSvsON&format=png&color=000000"/>
                             <input
                                 type="password"
                                 className="form-input"

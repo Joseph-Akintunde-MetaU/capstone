@@ -6,6 +6,7 @@ import { signOut } from 'firebase/auth'
 import { HomePage } from './homepage/HomePage'
 import { ErrorPage } from './homepage/ErrorPage'
 import { PantryManager } from './pantry/PantryManager'
+import { RecipePage } from './recipe/recipePage'
 function App() {
   const location = useLocation()
   const nav = useNavigate()
@@ -16,12 +17,18 @@ function App() {
             console.error(error)
         });
     }
+    function handleImageClick(){
+      nav("/home")
+    }
+    function handleRecipeClick(){
+      nav("/recipes")
+    }
   return (
-    <div>
-      {location.pathname !== '/' && <header>
-                <img width= "200px" height="180px" src="img/logo3.png" alt="2025 FeedPlanner &copy;" />
-                <nav>
-                    <a>RECIPES</a>
+    <div >
+      {location.pathname !== '/' && <header className='header'>
+                <img style = {{cursor: "pointer", padding: "0"}} onClick = {handleImageClick} className = 'nav-fp-logo'  src="img/logo4.png" alt="2025 FeedPlanner &copy;" />
+                <nav className='links'>
+                    <a onClick={handleRecipeClick}>RECIPES</a>
                     <a>MEAL PLANNER</a>
                     <a>PROFILE</a>
                     <a style = {{cursor: "pointer"}}onClick={isSignedOut}>LOGOUT</a>
@@ -32,6 +39,7 @@ function App() {
         <Route path='/home' element={<HomePage isSignedOut={isSignedOut}/>} />
         <Route path='/errorpage' element={<ErrorPage/>} />
         <Route path='/pantry' element = {<PantryManager/>}/>
+        <Route path = "/recipes" element = {<RecipePage/>}/>
       </Routes>
     </div>
   );

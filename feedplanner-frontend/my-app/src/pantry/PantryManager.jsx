@@ -19,6 +19,7 @@ export function PantryManager(){
             })
                 const data = await response.json()
                 setPantry(data)
+                console.log(data)
             }else{
                 console.log("user not logged in")
             }
