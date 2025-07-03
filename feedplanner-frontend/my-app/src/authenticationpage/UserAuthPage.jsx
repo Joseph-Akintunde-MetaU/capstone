@@ -4,7 +4,6 @@ import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, si
 import { useState } from "react";
 import {auth} from "../config/firebase.config"
 import { useNavigate } from "react-router-dom";
-//http://127.0.0.1:5001
 export function UserAuthPage(){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -18,9 +17,8 @@ export function UserAuthPage(){
             const googleUserCred = await signInWithPopup(auth, googleProvider)
             const googleUser = googleUserCred.user
             const token = await googleUser.getIdToken()
-            console.log(token)
-                // eslint-disable-next-line no-unused-vars
-                const response = await fetch(
+             // eslint-disable-next-line no-unused-vars
+             const response = await fetch(
                     baseUrl,
                     {
                         method: "GET",
@@ -39,12 +37,15 @@ export function UserAuthPage(){
     const nav = useNavigate()
     function isLoggedIn(){
         onAuthStateChanged(auth, (user) => {
-        if (user) {
-            nav("/home")
-            // eslint-disable-next-line no-unused-vars
-            const uid = user.uid;
-        } else {
-            console.log("Not logged In")
+        try{
+            if (user) {
+                nav("/home")
+                const uid = user.uid;
+        } else{
+            console.log("User not logged in")
+        }
+        }catch(error){
+            throw new Error(error)
         }
     })
     }
@@ -53,9 +54,8 @@ export function UserAuthPage(){
         try{
                 const user = userCredential.user;
                 console.log(user)
-                const token = await user.getIdToken(true)
-                console.log(token)
                 // eslint-disable-next-line no-unused-vars
+                const token = await user.getIdToken()
                 const response = await fetch(
                     baseUrl,
                     {
@@ -76,9 +76,7 @@ export function UserAuthPage(){
             const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword)
             try{
                 const user = userCredential.user;
-                console.log(user)
-                const token = await user.getIdToken(true)
-                console.log(token)
+                const token = await user.getIdToken()
                 isLoggedIn()
                 localStorage.setItem("email", user.email)
             }catch(error){

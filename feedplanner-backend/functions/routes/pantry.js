@@ -38,7 +38,6 @@ router.get("/ingredients", async (req, res) => {
     res.status(500).json({error: "error"});
   }
 });
-
 // add to pantry items
 router.post("/", async (req, res) => {
   try {
@@ -55,6 +54,7 @@ router.post("/", async (req, res) => {
     res.status(201).json({id: addPantryReferences.id});
   } catch (error) {
     console.error("Pantry item couldn't be added: ", error.message);
+
     res.status(500).json({error: error.message});
   }
 });
