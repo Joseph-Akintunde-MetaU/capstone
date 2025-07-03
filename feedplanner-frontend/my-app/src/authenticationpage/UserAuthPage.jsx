@@ -161,5 +161,6 @@ export function UserAuthPage(){
                 <p><FcGoogle /> Sign in with Google</p>
             </button>
         </div>
+        </div>
     )
 }
