@@ -1,5 +1,6 @@
 import "./FeaturedRecipeCard.css"
 export function FeaturedRecipeCard({image, title, duration}){
+
     return(
         <div className="cardContainer">
             <div className="recipeCard">
