@@ -6,6 +6,8 @@ import { signOut } from 'firebase/auth'
 import { HomePage } from './homepage/HomePage'
 import { ErrorPage } from './homepage/ErrorPage'
 import { PantryManager } from './pantry/PantryManager'
+import { RecipePage } from './recipe/recipePage'
+import { MealPlannerPage } from './mealplanner/MealPlannerPage'
 function App() {
   const location = useLocation()
   const nav = useNavigate()
@@ -32,6 +34,8 @@ function App() {
         <Route path='/home' element={<HomePage isSignedOut={isSignedOut}/>} />
         <Route path='/errorpage' element={<ErrorPage/>} />
         <Route path='/pantry' element = {<PantryManager/>}/>
+        <Route path = "/recipes" element = {<RecipePage/>}/>
+        <Route path='/mealplanner' element = {<MealPlannerPage/>}/>
       </Routes>
     </div>
   );

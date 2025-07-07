@@ -6,18 +6,34 @@ import { useEffect, useState } from 'react'
 import { FeaturedRecipeList } from './featuredRecipeList'
 import { PantryManager } from '../pantry/PantryManager'
 export function HomePage({isSignedOut}){
-    const email = localStorage.getItem("email")
+    const apiKey = "99ef92bd289d40adad70faaf03409ec2"
+    const email = localStorage.getItem("username")
     const [featuredRecipes, setFeaturedRecipes] = useState([])
     const nav = useNavigate()
-    const apiKey = `99ef92bd289d40adad70faaf03409ec2`
     async function HomePageRecipes(){
-        const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=3`)
-        const data = await response.json()
-        setFeaturedRecipes(data.recipes)
+        try{
+            const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=3`)
+            const data = await response.json()
+            setFeaturedRecipes(data.recipes)
+            console.log(data.recipes)
+        }catch(error){
+            console.error(error)
+        }finally{
+            setLoading(false)
+        }
+    }
+    async function FoodTrivia(){
+        try{
+            const response = await fetch(`https://api.spoonacular.com/food/trivia/random?apiKey=${apiKey}`)
+            const data = await response.json()
+            console.log(data)
+        }catch(error){
+            console.error(error)
+        }
     }
     useEffect(() => {
         HomePageRecipes()
-
+        FoodTrivia()
     },[])
     return(
         <div>
