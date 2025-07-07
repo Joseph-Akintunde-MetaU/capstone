@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { useEffect, useState } from "react"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
@@ -5,12 +6,13 @@ import { PantryList } from "./pantryList"
 import { CreatePantryItem } from "./CreatePantryItem"
 export function PantryManager(){
     const [pantry, setPantry] = useState([])
+    const domain = process.env.REACT_APP_BASE_URL
     const [openModal, setOpenModal] = useState(false)
     async function getPantry(){
         const unsubscribe = onAuthStateChanged(auth, async(user) => {
             if(user){
                 const token = await user.getIdToken()
-                const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/` ,{
+                const response = await fetch(`${domain}feedplanner/us-central1/api/pantry/` ,{
                 method: "GET",
                 headers:{
                     Authorization: `Bearer ${token}`,
