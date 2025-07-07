@@ -7,10 +7,12 @@ const admin = require("firebase-admin");
 const cors = require("cors")({origin: true});
 const authMiddleware = require("./authMiddleware");
 const pantryRoute = require("./routes/pantry");
+const MealPlannerRoute = require("./routes/mealPlanner");
 const db = admin.firestore();
 app.use(bodyParser.json());
 app.use(authMiddleware);
 app.use("/pantry", pantryRoute);
+app.use("/mealPlanner", MealPlannerRoute);
 // creating a new cloud function that's triggered by an https request.
 exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
