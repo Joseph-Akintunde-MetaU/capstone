@@ -7,6 +7,7 @@ import { HomePage } from './homepage/HomePage'
 import { ErrorPage } from './homepage/ErrorPage'
 import { PantryManager } from './pantry/PantryManager'
 import { RecipePage } from './recipe/recipePage'
+import { MealPlannerPage } from './mealplanner/MealPlannerPage'
 function App() {
   const location = useLocation()
   const nav = useNavigate()
@@ -23,13 +24,16 @@ function App() {
     function handleRecipeClick(){
       nav("/recipes")
     }
+    function handleMealPlanClick(){
+      nav("/mealplanner")
+    }
   return (
     <div >
       {location.pathname !== '/' && <header className='header'>
                 <img style = {{cursor: "pointer", padding: "0"}} onClick = {handleImageClick} className = 'nav-fp-logo'  src="img/logo4.png" alt="2025 FeedPlanner &copy;" />
                 <nav className='links'>
                     <a onClick={handleRecipeClick}>RECIPES</a>
-                    <a>MEAL PLANNER</a>
+                    <a onClick={handleMealPlanClick}>MEAL PLANNER</a>
                     <a>PROFILE</a>
                     <a style = {{cursor: "pointer"}}onClick={isSignedOut}>LOGOUT</a>
                 </nav>
@@ -40,6 +44,7 @@ function App() {
         <Route path='/errorpage' element={<ErrorPage/>} />
         <Route path='/pantry' element = {<PantryManager/>}/>
         <Route path = "/recipes" element = {<RecipePage/>}/>
+        <Route path='/mealplanner' element = {<MealPlannerPage/>}/>
       </Routes>
     </div>
   );

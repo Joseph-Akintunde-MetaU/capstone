@@ -1,8 +1,8 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
 import { PantryList } from "./pantryList"
+import { CreatePantryItem } from "./CreatePantryItem"
 export function PantryManager(){
     const [pantry, setPantry] = useState([])
     const [openModal, setOpenModal] = useState(false)
@@ -19,22 +19,21 @@ export function PantryManager(){
             })
                 const data = await response.json()
                 setPantry(data)
-                console.log(data)
-            }else{
-                console.log("user not logged in")
             }
         })
-            const data = await response.json()
-            setPantry(data)
-        return unsubscribe
+        return unsubscribe;
     }
     useEffect(() => {
         getPantry()
-    }, []) 
+    },[])
     return(
         <div>
             <h2>PANTRY</h2>
-            <PantryList pantry = {pantry} getPantry={getPantry}/>
+            <button style={{margin: 4}} onClick={() => setOpenModal(true)}>ADD</button>
+            <div>
+                <PantryList pantry = {pantry} getPantry={getPantry}/>
+                {openModal && <CreatePantryItem closeModal={setOpenModal} getPantry={getPantry}/>}
+            </div>
         </div>
-    )
+        )
 }
