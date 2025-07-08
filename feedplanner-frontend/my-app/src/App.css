@@ -4,7 +4,7 @@
   padding: 2rem;
   text-align: center;
 }
-.header{
+.light-mode .header{
     background: rgb(255, 253, 253);
     display: flex;
     width: 100%;
@@ -15,6 +15,36 @@
     position: sticky;
     top: 0;
     z-index: 1000;
+}
+.dark-mode .header{
+    background: rgb(0, 0, 0);
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+body.dark-mode {
+  background: #000000;
+  color: #f1f1f1;
+}
+body.light-mode{
+  background: white;
+  color: black;
+}
+.light-mode button{
+  background-color: white;
+  
+  border: 2px solid black;
+}
+.dark-mode button{
+  background: black;
+  border: 2px solid white;
+  color: white;
 }
 .header .links{
     display: flex;
