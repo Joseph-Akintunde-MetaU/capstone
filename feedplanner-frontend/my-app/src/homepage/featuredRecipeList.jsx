@@ -1,6 +1,6 @@
 import { FeaturedRecipeCard } from "./featuredRecipeCard";
 export function FeaturedRecipeList({featuredRecipes, HomePageRecipes}){
     return featuredRecipes.map((recipe) => (
-                <FeaturedRecipeCard image = {recipe.image} title = {recipe.title} duration = {recipe.duration} HomePageRecipes = {HomePageRecipes}/>
+                <FeaturedRecipeCard key = {recipe.id} image = {recipe.image} title = {recipe.title} HomePageRecipes = {HomePageRecipes}/>
     ))
 }

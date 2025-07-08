@@ -5,7 +5,7 @@ import { onAuthStateChanged } from "firebase/auth"
 export function PantryCard({id, name, quantity, unit, getPantry}){
     async function deletePantry(){
         // eslint-disable-next-line no-unused-vars
-        const deleteValid = onAuthStateChanged(auth, async(user) => {
+        onAuthStateChanged(auth, async(user) => {
             if(user){
                 const token = await user.getIdToken()
                 // eslint-disable-next-line no-unused-vars
@@ -17,8 +17,6 @@ export function PantryCard({id, name, quantity, unit, getPantry}){
                 }
             })
             getPantry()
-            }else{
-                console.log("user not logged in")
             }
         })
     }
