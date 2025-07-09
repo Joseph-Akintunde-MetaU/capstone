@@ -5,7 +5,7 @@ import { onAuthStateChanged } from "firebase/auth"
 import { useEffect } from "react";
 export function RecipePage(){
     const [recipes, setRecipes] = useState ([]);
-    const apiKey = `09acdb4877f5429e998f19def7cd5028`
+    const apiKey = process.env.REACT_APP_API_KEY
     async function getRecipes(){
         const fetchMatchingRecipe = onAuthStateChanged(auth, async(user) => {
             try{
