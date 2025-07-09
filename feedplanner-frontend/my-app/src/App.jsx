@@ -34,7 +34,7 @@ function App() {
         <Route path='/home' element={<HomePage isSignedOut={isSignedOut}/>} />
         <Route path='/errorpage' element={<ErrorPage/>} />
         <Route path='/pantry' element = {<PantryManager/>}/>
-        <Route path = "/recipes" element = {<RecipePage/>}/>
+        <Route path = '/recipes' element = {<RecipePage/>}/>
         <Route path='/mealplanner' element = {<MealPlannerPage/>}/>
       </Routes>
     </div>

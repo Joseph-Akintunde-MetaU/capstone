@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { FeaturedRecipeList } from './featuredRecipeList'
 import { PantryManager } from '../pantry/PantryManager'
 export function HomePage({isSignedOut}){
-    const apiKey = "99ef92bd289d40adad70faaf03409ec2"
+    const apiKey = process.env.REACT_APP_API_KEY
     const email = localStorage.getItem("username")
     const [featuredRecipes, setFeaturedRecipes] = useState([])
     const nav = useNavigate()
