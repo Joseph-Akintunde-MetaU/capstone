@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { RecipeList } from "./RecipeList";
+import "./recipePage.css"
 import { useState } from "react"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
@@ -8,7 +9,7 @@ import { useEffect } from "react";
 export function RecipePage(){
     const [loading, setLoading] = useState(true)
     const [recipes, setRecipes] = useState ([]);
-    const apiKey = `995c9d32eea04be99d91f6c9dbe6b421`
+   const apiKey = process.env.REACT_APP_API_KEY
     async function getRecipes(){
         const fetchMatchingRecipe = onAuthStateChanged(auth, async(user) => {
             try{
@@ -41,10 +42,12 @@ export function RecipePage(){
         getRecipes()
     }, [])
     return(
-        <div>
-            <h1>RECIPE</h1>
-            {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
-            <div><RecipeList recipes={recipes}/></div>}
+        <div className="recipePage">
+            <h1>RECIPES</h1>
+            <div className="recipes">
+                {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
+                <div className="recipeList"><RecipeList recipes={recipes}/></div>}
+            </div>        
         </div>
     )
 }
