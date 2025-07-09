@@ -4,68 +4,226 @@
   padding: 2rem;
   text-align: center;
 }
-.header{
-    background: rgb(255, 253, 253);
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 30px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+html {
+  scroll-behavior: smooth;
 }
-.header .links{
-    display: flex;
-    gap: 25px;
-    margin-left: 15px;
+.home {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  padding-top: 13em;
 }
-.header .links a{
-    text-decoration: none;
-    color: var(--primary-color);
-    font-weight: 600;
-    transition: 0.5s;
-    cursor: pointer;
-    position: relative;
+body.dark-mode {
+  background: black;
+  width: 100%;
 }
-.links a::after,
-.links a::before{
+.header {
+  position: fixed;
+  border-radius: 10px;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(250, 250, 250, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+body.dark-mode .header {
+  background: rgba(0, 0, 0, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.nav-fp-logo {
+  width: auto;
+  transition: transform 0.5s ease;
+  height: 13em;
+  padding: 1.5em;
+  mix-blend-mode:multiply;
+}
+.dark-mode .nav-fp-logo{
+  filter: invert(1);
+  mix-blend-mode: hard-light;
+}
+.nav-fp-logo:hover {
+  transform: scale(1.1);
+}
+
+/* Navigation links container */
+.links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Navigation links */
+.links a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 650;
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  transition: all 0.5s ease;
+  position: relative;
+  cursor: pointer;
+}
+body.dark-mode .links a {
+  color: var(--text-muted);
+}
+.links a:not(:last-of-type):after,
+.links a:not(:last-of-type):before{
   content: '';
   position: absolute;
   width: 100%;
   height: 1px;
   background: linear-gradient(var(--primary-color), var(--accent-hover));
-  bottom: -5px;
+  bottom: -1px;
   left: 0;
   transform: scaleX(0);
   transform-origin: right;
 }
-.links a::before{
+.links a:not(:last-of-type):before{
   top: -5px;
   transform-origin: left;
 }
-.links a:hover::after,
-.links a:hover::before {
+.links a:hover:not(:last-of-type):after,
+.links a:hover:not(:last-of-type):before {
   transform: scaleX(1);
   transition: 0.8s ease-out;
 }
-.nav-fp-logo {
-  height: 12em;
-  padding: 1.5em;
-  transition: filter 300ms;
-  mix-blend-mode:multiply;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #334155);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #334155);
-}
-.card {
-  padding: 2em;
+.links a:last-of-type {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-weight: 650;
 }
 
-.read-the-docs {
-  color: #888;
+.links a:last-of-type:hover {
+  background: var(--text-muted);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px var(--text-secondary);
+}
+.links button {
+  background: none;
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 1rem;
+}
+.links button img {
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease;
+}
+.light-mode .links button:hover img {
+  filter: brightness(0) invert(0.5);
+}
+.dark-mode .links button:hover img {
+  filter: brightness(0) invert(1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .nav-bar {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .links {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .links a {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .nav-fp-logo {
+    height: 10em;
+  }
+}
+
+@media (max-width: 480px) {
+  .links {
+    gap: 0.5rem;
+  }
+  
+  .links a {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+  
+  .links button {
+    width: 40px;
+    height: 40px;
+    margin-left: 0.5rem;
+  }
+  
+  .links button img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Animation for page transitions */
+.home > div {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Loading animation for the header */
+.header {
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+/* glow effect for the navigation */
+.nav-bar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-hover), transparent);
+  opacity: 0.5;
+}
+body.dark-mode .nav-bar::after {
+  background: linear-gradient(90deg, transparent, var(--accent-hover), transparent);
 }
