@@ -10,6 +10,7 @@ import { RecipePage } from './recipe/recipePage'
 import { MealPlannerPage } from './mealplanner/MealPlannerPage'
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
+import { ProfilePage } from './homepage/ProfilePage'
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   function toggleDarkMode(){
@@ -44,6 +45,9 @@ function App() {
     function handleMealPlanClick(){
       nav("/mealplanner")
     }
+    function handleProfileClick(){
+      nav("/profile")
+    }
   const [isAuthenticated, setIsAuthenticated] = useState(null)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -60,7 +64,7 @@ function App() {
                     <a onClick={handleImageClick}>HOME</a>
                     <a onClick={handleRecipeClick}>RECIPES</a>
                     <a onClick={handleMealPlanClick}>MEAL PLANNER</a>
-                    <a>PROFILE</a>
+                    <a onClick={handleProfileClick}>PROFILE</a>
                     <a style = {{cursor: "pointer"}}onClick={isSignedOut}>LOGOUT</a>
                     <button onClick={toggleDarkMode}>
                   {darkMode ? <img src = "https://img.icons8.com/?size=100&id=q4yXFoEnYRH7&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=45475&format=png&color=000000"/>}
@@ -76,6 +80,7 @@ function App() {
         <Route path='/pantry' element = {isAuthenticated === false ? <Navigate to="/"/> : <PantryManager/>}/>
         <Route path = "/recipes" element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage/>}/>
         <Route path='/mealplanner' element = {isAuthenticated === false ? <Navigate to="/"/> : <MealPlannerPage/>}/>
+        <Route path='/profile' element = {isAuthenticated === false ? <Navigate to = "/"/> : <ProfilePage isSignedOut={isSignedOut}/>}/>
       </Routes>
     </div>
   );
