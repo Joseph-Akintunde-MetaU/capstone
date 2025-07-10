@@ -7,7 +7,7 @@ import { FeaturedRecipeList } from './featuredRecipeList'
 import { PantryManager } from '../pantry/PantryManager'
 export function HomePage({isSignedOut}){
     const apiKey = process.env.REACT_APP_API_KEY
-    const email = localStorage.getItem("username")
+    const username = localStorage.getItem('username')
     const [featuredRecipes, setFeaturedRecipes] = useState([])
     const nav = useNavigate()
     async function HomePageRecipes(){
