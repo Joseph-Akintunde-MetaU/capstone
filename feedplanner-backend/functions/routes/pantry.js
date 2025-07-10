@@ -1,3 +1,4 @@
+/* eslint-disable no-trailing-spaces */
 /* eslint-disable max-len */
 /* eslint-disable new-cap */
 const express = require("express");
@@ -21,6 +22,23 @@ router.get("/", async (req, res) => {
     console.error(error.message);
   }
 });
+router.get("/ingredients", async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const pantryCollection = db.collection("users").doc(userId).collection("pantry");
+    const getPantryCollection = await pantryCollection.get();
+    const ingredientsArray = getPantryCollection.docs.map((doc) => {
+      const name = doc.data().name;
+      return typeof name === "string" ? name.trim().toLowerCase() : null;
+    });
+    const stringedIngredients = ingredientsArray.join(",+");
+    res.status(201).json({Ingredients: stringedIngredients});
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({error: "error"});
+  }
+});
+
 // add to pantry items
 router.post("/", async (req, res) => {
   try {

@@ -1,4 +1,3 @@
-import { featuredRecipe } from "../utility/featuredRecipe";
 import { FeaturedRecipeCard } from "./featuredRecipeCard";
 export function FeaturedRecipeList({featuredRecipes, HomePageRecipes}){
     return featuredRecipes.map((recipe) => (

@@ -3,19 +3,21 @@
 import { useNavigate } from 'react-router-dom'
 import './HomePage.css'
 import { useEffect, useState } from 'react'
+import CircularProgress from '@mui/material/CircularProgress';
 import { FeaturedRecipeList } from './featuredRecipeList'
 import { PantryManager } from '../pantry/PantryManager'
 export function HomePage({isSignedOut}){
     const apiKey = process.env.REACT_APP_API_KEY
     const username = localStorage.getItem('username')
     const [featuredRecipes, setFeaturedRecipes] = useState([])
+    // eslint-disable-next-line no-unused-vars
+    const [loading, setLoading] = useState(true)
     const nav = useNavigate()
     async function HomePageRecipes(){
         try{
-            const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=3`)
-            const data = await response.json()
-            setFeaturedRecipes(data.recipes)
-            console.log(data.recipes)
+          const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=6`)
+          const data = await response.json()
+          setFeaturedRecipes(data.recipes)
         }catch(error){
             console.error(error)
         }finally{
@@ -36,19 +38,22 @@ export function HomePage({isSignedOut}){
         FoodTrivia()
     },[])
     return(
-        <div>
-            <div>
-                <p>Welcome {email ? email : nav('/errorpage')}</p>
-                <h2>DISH DISCOVERY</h2>
-                <div>
-                    <h3>FEATURED RECIPES OF THE DAY</h3>
-                </div>
-            </div>
+        <div className='homeWrap'>
+            <main className='mainContent'>
+                <section className='greeting'>
+                    <h2>Welcome, {email ? email : nav('/errorpage')}!</h2>
+                    <p>DISH DISCOVERY</p>
+                    <span>FEATURED RECIPES OF THE DAY</span>
+                </section>
+                <section className='featuredRecipes'>
+                    {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
+                    (<div className='recipeCards'><FeaturedRecipeList featuredRecipes = {featuredRecipes} HomePageRecipes = {HomePageRecipes}/></div>)}
+                </section>
             <div className='pantryAdder'>
-                <button onClick={() => nav("/pantry")}>PANTRY MANAGER <br/>+</button>
+                <button onClick={() => nav("/pantry")}>PANTRY MANAGER <br/>your go-to pantry handler</button>
             </div>
-            <FeaturedRecipeList featuredRecipes = {featuredRecipes} HomePageRecipes = {HomePageRecipes} />
-            <PantryManager/>
+           
+            </main>
         </div>
     )
 }
