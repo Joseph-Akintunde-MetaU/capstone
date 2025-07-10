@@ -7,26 +7,35 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { FeaturedRecipeList } from './featuredRecipeList'
 import { PantryManager } from '../pantry/PantryManager'
 export function HomePage({isSignedOut}){
-    const apiKey = `09acdb4877f5429e998f19def7cd5028`
-    const email = localStorage.getItem("email")
+    const apiKey = process.env.REACT_APP_API_KEY
+    const username = localStorage.getItem('username')
     const [featuredRecipes, setFeaturedRecipes] = useState([])
     // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(true)
     const nav = useNavigate()
     async function HomePageRecipes(){
         try{
-        const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=6`)
-        const data = await response.json()
-        setFeaturedRecipes(data.recipes)
+          const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=6`)
+          const data = await response.json()
+          setFeaturedRecipes(data.recipes)
         }catch(error){
             console.error(error)
         }finally{
             setLoading(false)
         }
     }
+    async function FoodTrivia(){
+        try{
+            const response = await fetch(`https://api.spoonacular.com/food/trivia/random?apiKey=${apiKey}`)
+            const data = await response.json()
+            console.log(data)
+        }catch(error){
+            console.error(error)
+        }
+    }
     useEffect(() => {
         HomePageRecipes()
-
+        FoodTrivia()
     },[])
     return(
         <div className='homeWrap'>

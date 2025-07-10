@@ -1,9 +1,12 @@
 /* eslint-disable no-unused-vars */
+import { RecipeList } from "./RecipeList";
 import { useState } from "react"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
+import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect } from "react";
 export function RecipePage(){
+    const [loading, setLoading] = useState(true)
     const [recipes, setRecipes] = useState ([]);
     const apiKey = process.env.REACT_APP_API_KEY
     async function getRecipes(){
@@ -20,15 +23,16 @@ export function RecipePage(){
                 })
                 const ingredients = await response.json()
                 const stringIngredients = JSON.stringify(ingredients)
-                const fetchFromApi = await fetch (`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}`)
+                const fetchFromApi = await fetch (`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=100`)
                 const data = await fetchFromApi.json()
                 setRecipes(data)
-                console.log(data)
                 }else{
                     console.log("user not logged in")
                 }
         }catch(error){
             console.error(error.message)
+        }finally{
+            setLoading(false)
         }
         })
         return fetchMatchingRecipe
@@ -39,6 +43,8 @@ export function RecipePage(){
     return(
         <div>
             <h1>RECIPE</h1>
+            {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
+            <div><RecipeList recipes={recipes}/></div>}
         </div>
     )
 }

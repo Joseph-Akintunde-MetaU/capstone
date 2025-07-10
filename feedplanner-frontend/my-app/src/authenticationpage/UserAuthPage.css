@@ -1,42 +1,45 @@
 .UserAuthPage{
-    margin: 2em auto;
-    padding: 2em;
-    background: #fff;
-    overflow: hidden;
-    border: 3px solid black;
-    border-radius: 20px;
-    background-color: rgb(241, 243, 243);
-    max-width: 900px;
-    position: relative;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
 }
-.UserAuthPage img{
-    mix-blend-mode: darken;
+.UserAuthPageBody{
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: var(--transition);
+  width: 600px;
 }
-.signup{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 2em;
-    border: 2px solid black;
-    border-radius: 10px;
+.UserAuthPageBody:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.35);
 }
-.signup form{
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
+.AuthHeader{
+  text-align: center;
+  padding: 3rem 2rem 2rem;
 }
-.login{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 2em;
-    border: 2px solid black;
-    border-radius: 10px;
+
+.logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5rem;
+  mix-blend-mode: multiply;
 }
-.login form{
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
+.logo-icon {
+  width: 200px;
+  height: 200px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+  margin-right: 12px;
+  margin-top: 1.5rem;
 }
 .welcome{
   font-size: 1.4rem;
