@@ -20,17 +20,6 @@
   font-family: "Lato", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  
-}
-/* a {
-  font-weight: 500;
-  color: var(--primary-color);
-  text-decoration: inherit;
-}
-a:hover {
-  color: var(--primary-hover);
-} */
-
 body {
   background: var(--background-gradient);
   min-height: 100vh;
