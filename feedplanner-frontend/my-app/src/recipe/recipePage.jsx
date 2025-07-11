@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { RecipeList } from "./RecipeList";
+import "./recipePage.css"
 import { useState } from "react"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
@@ -41,10 +42,12 @@ export function RecipePage(){
         getRecipes()
     }, [])
     return(
-        <div>
-            <h1>RECIPE</h1>
-            {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
-            <div><RecipeList recipes={recipes}/></div>}
+        <div className="recipePage">
+            <h1>RECIPES</h1>
+            <div className="recipes">
+                {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
+                <div className="recipeList"><RecipeList recipes={recipes}/></div>}
+            </div>        
         </div>
     )
 }
