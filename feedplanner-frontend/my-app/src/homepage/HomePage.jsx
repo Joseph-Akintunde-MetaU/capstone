@@ -5,7 +5,6 @@ import './HomePage.css'
 import { useEffect, useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress';
 import { FeaturedRecipeList } from './featuredRecipeList'
-import { PantryManager } from '../pantry/PantryManager'
 export function HomePage({isSignedOut}){
     const apiKey = process.env.REACT_APP_API_KEY
     const username = localStorage.getItem('username')
@@ -41,7 +40,7 @@ export function HomePage({isSignedOut}){
         <div className='homeWrap'>
             <main className='mainContent'>
                 <section className='greeting'>
-                    <h2>Welcome, {email ? email : nav('/errorpage')}!</h2>
+                    <h2>Welcome, {username ? username : nav('/errorpage')}!</h2>
                     <p>DISH DISCOVERY</p>
                     <span>FEATURED RECIPES OF THE DAY</span>
                 </section>
@@ -51,8 +50,7 @@ export function HomePage({isSignedOut}){
                 </section>
             <div className='pantryAdder'>
                 <button onClick={() => nav("/pantry")}>PANTRY MANAGER <br/>your go-to pantry handler</button>
-            </div>
-           
+            </div> 
             </main>
         </div>
     )

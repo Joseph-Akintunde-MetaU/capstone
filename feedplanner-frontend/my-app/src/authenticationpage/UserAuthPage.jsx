@@ -61,7 +61,6 @@ export function UserAuthPage(){
                     userId: user.uid,
                     createdAt: serverTimestamp()
                 })
-                console.log(user)
                 // eslint-disable-next-line no-unused-vars
                 const token = await user.getIdToken()
                 const response = await fetch(
@@ -85,7 +84,6 @@ export function UserAuthPage(){
             try{
                 const user = userCredential.user;
                 const token = await user.getIdToken()
-                console.log(token)
                  const response = await fetch(
                     baseUrl,
                     {
@@ -96,7 +94,6 @@ export function UserAuthPage(){
                     }
                 )
                 isLoggedIn()
-                localStorage.setItem("email", user.email)
             }catch(error){
             const errorMessage = error.message;
             console.log(errorMessage)
@@ -112,10 +109,7 @@ export function UserAuthPage(){
                     <h2 className="welcome">WELCOME !</h2>
                     <h2 className="auth-mode">SIGN UP</h2>
                 </div>
-
-                {/* form */}
                 <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleEmailCreate(); }}> 
-                    {/* called onsubmit so it works by pressing enter */}
                     <div className="form-group">
                         <label className = "form-label" htmlFor="username">E-mail: </label>
                         <div className="input-container">
@@ -201,7 +195,7 @@ export function UserAuthPage(){
             <button onClick={handleGoogleLogin} className="btn">
                 <FcGoogle /> Sign in with Google
             </button>
-        </div>
+            </div>     
         </div>
     )
 }
