@@ -1,18 +1,25 @@
-/* eslint-disable no-restricted-globals */
 /* eslint-disable no-undef */
-/* eslint-disable max-len */
-/* eslint-disable new-cap */
+/* eslint-disable require-jsdoc */
 /* eslint-disable no-unused-vars */
+/* eslint-disable new-cap */
+/* eslint- no-unused-vars */
+/* eslint- require-jsdoc */
+/* eslint- no-restricted-globals */
+/* eslint- max-len */
 const express = require("express");
 const router = express.Router();
 const admin = require("firebase-admin");
 const db = admin.firestore();
+// to get all the planned meals
+async function userIdAndMealPlannerReference() {
+  const userId = req.user.uid;
+  const mealPlannerRef =
+  db.collection("users").doc(userId).collection("mealPlan");
+}
 router.get("/", async (req, res) => {
   try {
-    const userId = req.user.uid;
-    const weekOf = req.query.weekOf;
-    const mealPlannerRef = db.collection("users").doc(userId).collection("mealPlan");
-    const getMealPlannerRef = await mealPlannerRef.where("weekOf", "==", weekOf).get();
+    const mealPlannerRef = await userIdAndMealPlannerReference();
+    const getMealPlannerRef = await mealPlannerRef.get();
     const mealPlan = getMealPlannerRef.docs.map((plan) => ({
       id: plan.id,
       ...plan.data(),
@@ -25,13 +32,8 @@ router.get("/", async (req, res) => {
 });
 router.post("/", async (req, res) => {
   try {
-    const userId = req.user.uid;
-    const {recipeId, recipeName, dayOfTheWeek, mealType} = req.body;
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay());
-    const weekOf = req.body.weekOf || startOfWeek.toISOString().split("T")[0];
-    const mealPlannerRef = db.collection("users").doc(userId).collection("mealPlan");
+    const {recipeId, recipeName, dayOfTheWeek, mealType, weekOf} = req.body;
+    const mealPlannerRef = await userIdAndMealPlannerReference();
     const getMealPlannerRef = await mealPlannerRef.add({
       recipeId,
       recipeName,
@@ -48,11 +50,10 @@ router.post("/", async (req, res) => {
 });
 router.delete("/mealPlannerId", async (req, res) => {
   try {
-    const user = req.user.uid;
     const {mealPlannerId} = req.params;
-    const mealPlannerRef = db.collection("users").doc(userId).collection("mealPlan");
+    const mealPlannerRef = await userIdAndMealPlannerReference();
     const deleteMealPlannerRef = await mealPlannerRef.delete();
-    res.status(200).json({"message": "entry deleted"});
+    res.status(200).json({"deleted": deleteMealPlannerRef});
   } catch (error) {
     res.status(501).json({error: "error"});
   }
