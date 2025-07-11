@@ -2,13 +2,15 @@ import { Routes, Route, useNavigate, useLocation} from 'react-router-dom'
 import './App.css'
 import { UserAuthPage } from './authenticationpage/UserAuthPage'
 import { auth } from './config/firebase.config'
-import { signOut } from 'firebase/auth'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { HomePage } from './homepage/HomePage'
 import { ErrorPage } from './homepage/ErrorPage'
 import { PantryManager } from './pantry/PantryManager'
 import { RecipePage } from './recipe/recipePage'
 import { MealPlannerPage } from './mealplanner/MealPlannerPage'
 import { useEffect, useState } from 'react'
+import { Navigate } from 'react-router-dom'
+import { ProfilePage } from './homepage/ProfilePage'
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   function toggleDarkMode(){
@@ -43,27 +45,41 @@ function App() {
     function handleMealPlanClick(){
       nav("/mealplanner")
     }
+    function handleProfileClick(){
+      nav("/profile")
+    }
+  const [isAuthenticated, setIsAuthenticated] = useState(null)
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user)
+    })
+    return () => unsubscribe()
+  },[])
   return (
     <div className='home'>
       {location.pathname !== '/' && <header className='header'>
-                <nav className='links'>
-                    <img style = {{cursor: "pointer", padding: "0"}} onClick = {handleImageClick} className = 'nav-fp-logo'  src="img/logo4.png" alt="2025 FeedPlanner &copy;" />
+                <nav className='nav-bar'>
+                  <img style = {{cursor: "pointer", padding: "0"}} onClick = {handleImageClick} className = 'nav-fp-logo'  src="img/logo4.png" alt="2025 FeedPlanner &copy;" />
+                  <div className='links'> 
+                    <a onClick={handleImageClick}>HOME</a>
                     <a onClick={handleRecipeClick}>RECIPES</a>
                     <a onClick={handleMealPlanClick}>MEAL PLANNER</a>
-                    <a>PROFILE</a>
+                    <a onClick={handleProfileClick}>PROFILE</a>
                     <a style = {{cursor: "pointer"}}onClick={isSignedOut}>LOGOUT</a>
-                </nav>
-                <button onClick={toggleDarkMode}>
+                    <button onClick={toggleDarkMode}>
                   {darkMode ? <img src = "https://img.icons8.com/?size=100&id=q4yXFoEnYRH7&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=45475&format=png&color=000000"/>}
                 </button>
+                  </div>
+                </nav>
         </header>}
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
-        <Route path='/home' element={<HomePage isSignedOut={isSignedOut}/>} />
-        <Route path='/errorpage' element={<ErrorPage/>} />
-        <Route path='/pantry' element = {<PantryManager/>}/>
-        <Route path = '/recipes' element = {<RecipePage/>}/>
-        <Route path='/mealplanner' element = {<MealPlannerPage/>}/>
+        <Route path='/home' element={ isAuthenticated === false ? <Navigate to="/"/> : <HomePage isSignedOut={isSignedOut}/>} />
+        <Route path='/errorpage' element={ isAuthenticated === false ? <Navigate to="/"/> : <ErrorPage/>} />
+        <Route path='/pantry' element = {isAuthenticated === false ? <Navigate to="/"/> : <PantryManager/>}/>
+        <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage/>}/>
+        <Route path='/mealplanner' element = {isAuthenticated === false ? <Navigate to="/"/> : <MealPlannerPage/>}/>
+        <Route path='/profile' element = {isAuthenticated === false ? <Navigate to = "/"/> : <ProfilePage isSignedOut={isSignedOut}/>}/>
       </Routes>
     </div>
   );
