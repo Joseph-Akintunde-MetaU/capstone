@@ -1,0 +1,44 @@
+.profile-container{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 3rem 1rem;
+    background-color: var(--text-secondary);
+    min-height: 100vh;
+}
+.profile-card{
+    background: var(--text-primary);
+    color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgb(0, 0, 0, 0.7);
+    max-width: 500px;
+    width: 100%;
+}
+.profile-header{
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.profile-header h2{
+    margin-bottom: 0.3rem;
+    font-size: 2rem;
+}
+.profile-section{
+    margin-bottom: 1.5rem;
+}
+.profile-section h4{
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+.profile-section p{
+    margin: 0.25rem 0;
+}
+.profile-actions button{
+    margin-right: 0.5rem;
+    background-color: var(--text-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}

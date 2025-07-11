@@ -73,7 +73,8 @@ export function UserAuthPage(){
                     }
                 )
                 isLoggedIn()
-                localStorage.setItem("username", username)  
+                localStorage.setItem("username", username) 
+                localStorage.setItem("email", user.email) 
             }catch(error){
                 const errorMessage = error.message;
                 console.log(errorMessage)
