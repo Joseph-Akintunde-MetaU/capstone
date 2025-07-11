@@ -1519,7 +1519,6 @@
   version "0.9.3"
   resolved "https://registry.npmjs.org/@firebase/app-types/-/app-types-0.9.3.tgz"
   integrity sha512-kRVpIl4vVGJ4baogMDINbyrIOtOxqhkZQg4jTq3l8Lw6WSk0xfpEYzezFu+Kl4ve4fbPl79dvwRtaFqAC/ucCw==
-
 "@firebase/app@0.13.2":
   version "0.13.2"
   resolved "https://registry.yarnpkg.com/@firebase/app/-/app-0.13.2.tgz#12779f6c923c7594deac004a72cb93c742da38d5"

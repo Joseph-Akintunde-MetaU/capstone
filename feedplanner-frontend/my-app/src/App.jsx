@@ -78,7 +78,6 @@ function App() {
                 </button>
                   </div>
                 </nav>
-                
         </header>}
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
