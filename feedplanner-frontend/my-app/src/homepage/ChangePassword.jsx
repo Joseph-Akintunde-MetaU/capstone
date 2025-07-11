@@ -3,11 +3,11 @@ import { auth } from "../config/firebase.config";
 import { updatePassword} from "firebase/auth";
 export function ChangePassword({close, isSignedOut}){
     const [newPassword, setNewPassword] = useState('')
-    function handleChangePassword(){
+    async function handleChangePassword(){
         const user = auth.currentUser;
-        updatePassword(user, newPassword).then(() => {
+        updatePassword(user, newPassword).then(async () => {
+            await isSignedOut()
             console.log("Password Reset Successful")
-            isSignedOut()
         }).catch((error) => {
             console.error(error)
         })
