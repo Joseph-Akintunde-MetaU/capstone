@@ -1,6 +1,5 @@
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "../config/firebase.config"
-import { useState } from "react"
 export async function getMealPlans(setMealPlans,setGroupedData) {
         const getMeals = onAuthStateChanged(auth, async(user) => {
             try{

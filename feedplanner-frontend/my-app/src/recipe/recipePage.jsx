@@ -6,10 +6,9 @@ import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
 import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect } from "react";
-export function RecipePage(){
+export function RecipePage({recipes, setRecipes}){
     const [loading, setLoading] = useState(true)
-    const [recipes, setRecipes] = useState ([]);
-    const apiKey = `995c9d32eea04be99d91f6c9dbe6b421`
+    const apiKey = `39a5dfc9b1c848038cf4874227a4e90d`
         async function getRecipes(){
         const fetchMatchingRecipe = onAuthStateChanged(auth, async(user) => {
             try{

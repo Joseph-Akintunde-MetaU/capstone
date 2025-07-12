@@ -8,6 +8,7 @@ export function RecipeCard({id, image, title, duration}){
     const [openModal, setOpenModal] = useState(false)
     const [rating, setRating] = useState(null)
     const [hover, setHover] = useState(null)
+    const bookmarked = `bookmarked: ${id}`
     const [bookmarkedRecipe, setBookmarkedRecipe] = useState(false)
     async function bookMarkingToggle(e){
         e.stopPropagation()
@@ -43,7 +44,6 @@ export function RecipeCard({id, image, title, duration}){
                    
                     </div>
                         <div className="back-recipe-card">
-                            <p>{duration > 1 ? (`${duration} minutes`) : (`${duration} minute`)} to cook</p>
                             <div className="ratings">
                                 {[...Array(5)].map((star, i) => {
                                     const ratingNumber = i+1;
