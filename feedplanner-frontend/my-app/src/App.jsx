@@ -59,6 +59,7 @@ function App() {
     })
     return () => unsubscribe()
   },[])
+  const [recipes, setRecipes] = useState ([]);
   return (
     <div className='home'>
       {location.pathname !== '/' && <header className='header'>
@@ -87,7 +88,7 @@ function App() {
         <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage/>}/>
         <Route path='/mealplanner' element = {isAuthenticated === false ? <Navigate to="/"/> : <MealPlannerPage/>}/>
         <Route path='/profile' element = {isAuthenticated === false ? <Navigate to = "/"/> : <ProfilePage isSignedOut={isSignedOut}/>}/>
-        <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage/>}/>
+        <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage recipes={recipes}/>}/>
       </Routes>
     </div>
   );
