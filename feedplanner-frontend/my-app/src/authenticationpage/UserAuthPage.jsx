@@ -30,7 +30,7 @@ export function UserAuthPage(){
                     }
                 )
             isLoggedIn()
-            localStorage.setItem("email", googleUser.name)
+            localStorage.setItem("username", googleUser.name)
         }catch(error){
             console.log(error)
         }
