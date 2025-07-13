@@ -8,7 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect } from "react";
 export function RecipePage({recipes, setRecipes}){
     const [loading, setLoading] = useState(true)
-    const apiKey = `39a5dfc9b1c848038cf4874227a4e90d`
+    const apiKey = process.env.REACT_APP_API_KEY
         async function getRecipes(){
         const fetchMatchingRecipe = onAuthStateChanged(auth, async(user) => {
             try{

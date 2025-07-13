@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "../config/firebase.config"
 import { useNavigate } from "react-router-dom"
@@ -7,9 +7,11 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
     const [selectedMealType, setSelectedMealType] = useState('')
     const nav = useNavigate()
     async function AddMealPlan() {
-        const today = new Date()
-        const startOfWeek = new Date(today)
-        startOfWeek.setDate(today.getDate() - today.getDay())
+        const today = new Date() 
+        const day = today.getDay()
+        const diff = today.getDate() - day
+        const startOfWeek =new Date(today.getFullYear(), today.getMonth(), diff)
+        startOfWeek.setHours(0,0,0,0)
         const weekOf = startOfWeek.toISOString().split("T")[0]
         onAuthStateChanged(auth, async(user) => {
             try{
@@ -29,10 +31,18 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
                             weekOf: weekOf
                         })
                     })
-                    nav("/mealPlanner")
-                    getMealPlans()
+                    if(response.status === 409){
+                        alert("You have already added a recipe for this slot")
+                        return;
+                    }
+                    if(!response.ok){
+                        alert("something went wrong")
+                        return;
+                    }
                     const data = await response.json()
+                    getMealPlans()
                     closeModal(false)
+                    nav("/mealPlanner")
                 }else{
                     throw new Error()
                 }  
