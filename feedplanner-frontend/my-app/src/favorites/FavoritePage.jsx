@@ -4,7 +4,7 @@ import { GetBookmarks } from "../utility/getBookmarks";
 import  FavoritePageList  from "./FavoritesPageList";
 export function FavoritePage({recipes}){
     const [bookmarkedData, setBookmarkedData] = useState([])
-     const apiKey = `39a5dfc9b1c848038cf4874227a4e90d`
+    const apiKey = process.env.REACT_APP_API_KEY
     const [loading, setLoading] = useState(true)
     const [bookmarkedRecipeCards, setBookmarkedRecipeCards] = useState([])
     useEffect(() => {
@@ -19,7 +19,6 @@ export function FavoritePage({recipes}){
                 return data
             })
             const results = await Promise.all(fetches)
-            console.log(results)
             setBookmarkedRecipeCards(results)
         }catch(error){
             console.error(error)
@@ -33,8 +32,8 @@ export function FavoritePage({recipes}){
     return(
         <div style = {{padding: "4rem"}}className="favorites-list">
             <h1>BOOKMARKS</h1>
-            {/* {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) :  */}
-            <FavoritePageList recipes={bookmarkedRecipeCards}/>
+            {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
+            <FavoritePageList recipes={bookmarkedRecipeCards}/>}
         </div>
     )
 }
