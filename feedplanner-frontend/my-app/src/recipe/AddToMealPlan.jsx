@@ -30,7 +30,7 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
                         })
                     })
                     nav("/mealPlanner")
-                    getMealPlans() 
+                    getMealPlans()
                     const data = await response.json()
                     closeModal(false)
                 }else{

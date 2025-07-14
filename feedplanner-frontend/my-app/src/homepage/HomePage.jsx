@@ -27,7 +27,6 @@ export function HomePage({isSignedOut}){
         try{
             const response = await fetch(`https://api.spoonacular.com/food/trivia/random?apiKey=${apiKey}`)
             const data = await response.json()
-            console.log(data)
         }catch(error){
             console.error(error)
         }
