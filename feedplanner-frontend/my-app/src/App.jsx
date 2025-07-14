@@ -66,8 +66,7 @@ function App() {
                   {darkMode ? <img src = "https://img.icons8.com/?size=100&id=q4yXFoEnYRH7&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=45475&format=png&color=000000"/>}
                 </button>
                   </div>
-                </nav>
-                
+                </nav>           
         </header>}
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
