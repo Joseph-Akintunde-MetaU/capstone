@@ -7,7 +7,7 @@ export function ChangePassword({close, isSignedOut}){
         const user = auth.currentUser;
         updatePassword(user, newPassword).then(async () => {
             await isSignedOut()
-            console.log("Password Reset Successful")
+            alert("Password Reset Successful")
         }).catch((error) => {
             console.error(error)
         })

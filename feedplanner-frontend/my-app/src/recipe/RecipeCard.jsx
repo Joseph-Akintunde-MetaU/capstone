@@ -39,8 +39,6 @@ export function RecipeCard({id, image, title, duration}){
                     <div className="front-recipe-card">
                         <img src={image} alt={title}></img>
                         <p>{title}</p>
-                        
-                   
                     </div>
                         <div className="back-recipe-card">
                             <p>{duration > 1 ? (`${duration} minutes`) : (`${duration} minute`)} to cook</p>
