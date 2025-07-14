@@ -17,8 +17,8 @@ export async function GetBookmarks(setBookmarkedData, setLoading){
                 }else{
                     throw new Error
                 }
-            }catch(error){
-                console.error(error)
+            }catch{
+               throw new Error
             }finally{
                 setLoading(false)
             }
