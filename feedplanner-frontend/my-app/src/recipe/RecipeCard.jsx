@@ -10,6 +10,14 @@ export function RecipeCard({id, image, title, duration}){
     const [hover, setHover] = useState(null)
     const bookmarked = `bookmarked: ${id}`
     const [bookmarkedRecipe, setBookmarkedRecipe] = useState(false)
+
+    useEffect(() => {
+        const storedBookmark = localStorage.getItem(bookmarked);
+        if (storedBookmark === "true") {
+            setBookmarkedRecipe(true);
+        }
+    }, []);
+
     async function bookMarkingToggle(e){
         e.stopPropagation()
        
@@ -28,7 +36,7 @@ export function RecipeCard({id, image, title, duration}){
                 }),
             });
             setBookmarkedRecipe(nextBookmarkedState)
-            localStorage.setItem('bookmarked', nextBookmarkedState.toString())
+            localStorage.setItem(bookmarked, nextBookmarkedState.toString())
         }catch(error){
             console.error("failed to bookmark")
         }
