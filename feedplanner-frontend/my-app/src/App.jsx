@@ -85,7 +85,7 @@ function App() {
         <Route path='/home' element={ isAuthenticated === false ? <Navigate to="/"/> : <HomePage isSignedOut={isSignedOut}/>} />
         <Route path='/errorpage' element={ isAuthenticated === false ? <Navigate to="/"/> : <ErrorPage/>} />
         <Route path='/pantry' element = {isAuthenticated === false ? <Navigate to="/"/> : <PantryManager/>}/>
-        <Route path = "/recipes" element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes={recipes} setRecipes={setRecipes}/>}/>
+        <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes={recipes} setRecipes={setRecipes}/>}/>
         <Route path='/mealplanner' element = {isAuthenticated === false ? <Navigate to="/"/> : <MealPlannerPage/>}/>
         <Route path='/profile' element = {isAuthenticated === false ? <Navigate to = "/"/> : <ProfilePage isSignedOut={isSignedOut}/>}/>
         <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage recipes={recipes}/>}/>

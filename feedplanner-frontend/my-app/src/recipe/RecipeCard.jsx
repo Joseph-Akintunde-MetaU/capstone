@@ -20,7 +20,6 @@ export function RecipeCard({id, image, title, duration}){
 
     async function bookMarkingToggle(e){
         e.stopPropagation()
-       
         try{
             const token = await auth.currentUser.getIdToken()
             const nextBookmarkedState = !bookmarkedRecipe;
@@ -48,8 +47,6 @@ export function RecipeCard({id, image, title, duration}){
                     <div className="front-recipe-card">
                         <img src={image} alt={title}></img>
                         <p>{title}</p>
-                        
-                   
                     </div>
                         <div className="back-recipe-card">
                             <div className="ratings">
