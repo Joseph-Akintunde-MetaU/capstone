@@ -2,17 +2,13 @@ import AddToMealPlan from "./AddToMealPlan"
 import "./RecipeCard.css"
 import { getMealPlans } from "../utility/getmealplanner"
 import {FaStar} from "react-icons/fa"
-import { useState,useEffect } from "react"
+import { useState } from "react"
 export function RecipeCard({id, image, title, duration}){
     const [openModal, setOpenModal] = useState(false)
     const [rating, setRating] = useState(null)
     const [hover, setHover] = useState(null)
     const bookmarked = `bookmarked: ${id}`
     const [bookmarkedRecipe, setBookmarkedRecipe] = useState(true)
-    useEffect(() => {
-        const getBookmarkedStatus = localStorage.getItem(bookmarked)
-        if(getBookmarkedStatus === 'true') setBookmarkedRecipe(true)
-    }, [bookmarked])
     function bookMarking(){
         const notBookmarked = !bookmarkedRecipe;
         setBookmarkedRecipe(notBookmarked)
