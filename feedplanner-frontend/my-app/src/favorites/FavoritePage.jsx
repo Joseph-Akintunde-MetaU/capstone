@@ -1,7 +1,7 @@
 export function FavoritePage(){
     return(
         <div>
-            <h1>nofi</h1>
+            <h1>favorites</h1>
         </div>
     )
 }
