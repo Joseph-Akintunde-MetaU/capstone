@@ -19,21 +19,23 @@ export function PantryManager(){
             })
                 const data = await response.json()
                 setPantry(data)
+            }else{
+                console.log("user not logged in")
             }
         })
-        return unsubscribe;
+        return unsubscribe
     }
-    useEffect(() => {
-        getPantry()
-    },[])
-    return(
-        <div>
-            <h2>PANTRY</h2>
-            <button style={{margin: 4}} onClick={() => setOpenModal(true)}>ADD</button>
+        useEffect(() => {
+            getPantry()
+        },[])
+        return(
             <div>
-                <PantryList pantry = {pantry} getPantry={getPantry}/>
-                {openModal && <CreatePantryItem closeModal={setOpenModal} getPantry={getPantry}/>}
+                <h2>PANTRY</h2>
+                <button style={{margin: 4}} onClick={() => setOpenModal(true)}>ADD</button>
+                <div>
+                    <PantryList pantry = {pantry} getPantry = {getPantry}/>
+                    {openModal && <CreatePantryItem closeModal={setOpenModal} getPantry={getPantry}/>}
+                </div>
             </div>
-        </div>
         )
 }

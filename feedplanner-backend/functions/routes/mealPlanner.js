@@ -1,18 +1,25 @@
-/* eslint-disable no-restricted-globals */
 /* eslint-disable no-undef */
-/* eslint-disable max-len */
-/* eslint-disable new-cap */
+/* eslint-disable require-jsdoc */
 /* eslint-disable no-unused-vars */
+/* eslint-disable new-cap */
+/* eslint- no-unused-vars */
+/* eslint- require-jsdoc */
+/* eslint- no-restricted-globals */
+/* eslint- max-len */
 const express = require("express");
 const router = express.Router();
 const admin = require("firebase-admin");
 const db = admin.firestore();
+// to get all the planned meals
+async function userIdAndMealPlannerReference() {
+  const userId = req.user.uid;
+  const mealPlannerRef =
+  db.collection("users").doc(userId).collection("mealPlan");
+}
 router.get("/", async (req, res) => {
   try {
-    const userId = req.user.uid;
-    const weekOf = req.query.weekOf;
-    const mealPlannerRef = db.collection("users").doc(userId).collection("mealPlan");
-    const getMealPlannerRef = await mealPlannerRef.where("weekOf", "==", weekOf).get();
+    const mealPlannerRef = await userIdAndMealPlannerReference();
+    const getMealPlannerRef = await mealPlannerRef.get();
     const mealPlan = getMealPlannerRef.docs.map((plan) => ({
       id: plan.id,
       ...plan.data(),
