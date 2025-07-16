@@ -18,7 +18,14 @@ export function UserAuthPage(){
             // For Google sign-in
             const googleUserCred = await signInWithPopup(auth, googleProvider)
             const googleUser = googleUserCred.user
+            await setDoc(doc(db, "users", googleUser.uid),{
+                    email: googleUser.email,
+                    username: googleUser.displayName,
+                    userId: googleUser.uid,
+                    createdAt: serverTimestamp()
+                })
             const token = await googleUser.getIdToken()
+            console.log(token)
              // eslint-disable-next-line no-unused-vars
              const response = await fetch(
                     baseUrl,
@@ -30,7 +37,8 @@ export function UserAuthPage(){
                     }
                 )
             isLoggedIn()
-            localStorage.setItem("email", googleUser.name)
+            localStorage.setItem("username", googleUser.displayName) 
+            localStorage.setItem("email", googleUser.email) 
         }catch(error){
             console.log(error)
         }
@@ -85,6 +93,7 @@ export function UserAuthPage(){
             try{
                 const user = userCredential.user;
                 const token = await user.getIdToken()
+                console.log(token)
                 const response = await fetch(
                     baseUrl,
                     {

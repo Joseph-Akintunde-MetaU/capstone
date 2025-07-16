@@ -4,13 +4,12 @@ import { getMealPlans } from "../utility/getmealplanner"
 import {FaStar} from "react-icons/fa"
 import { auth } from "../config/firebase.config"
 import { useState,useEffect } from "react"
-export function RecipeCard({id, image, title, duration}){
+export function RecipeCard({id, image, title}){
     const [openModal, setOpenModal] = useState(false)
     const [rating, setRating] = useState(null)
     const [hover, setHover] = useState(null)
     const bookmarked = `bookmarked: ${id}`
     const [bookmarkedRecipe, setBookmarkedRecipe] = useState(false)
-
     useEffect(() => {
         const storedBookmark = localStorage.getItem(bookmarked);
         if (storedBookmark === "true") {
@@ -20,7 +19,6 @@ export function RecipeCard({id, image, title, duration}){
 
     async function bookMarkingToggle(e){
         e.stopPropagation()
-       
         try{
             const token = await auth.currentUser.getIdToken()
             const nextBookmarkedState = !bookmarkedRecipe;
@@ -36,9 +34,10 @@ export function RecipeCard({id, image, title, duration}){
                 }),
             });
             setBookmarkedRecipe(nextBookmarkedState)
+            
             localStorage.setItem(bookmarked, nextBookmarkedState.toString())
         }catch(error){
-            console.error("failed to bookmark")
+            console.error(`failed to bookmark due to ${error}`)
         }
     }
      return(
@@ -69,7 +68,7 @@ export function RecipeCard({id, image, title, duration}){
                     }}
                     >ADD TO MEAL PLANNER</button> 
                     <button onClick={bookMarkingToggle}>
-                       <img src={ bookmarkedRecipe ? "https://img.icons8.com/?size=100&id=26083&format=png&color=000000" : "https://img.icons8.com/?size=100&id=25157&format=png&color=000000"}/>
+                        <img src={ bookmarkedRecipe ? "https://img.icons8.com/?size=100&id=26083&format=png&color=000000" : "https://img.icons8.com/?size=100&id=25157&format=png&color=000000"}/>
                     </button>
                     </div>  
                 </div>
