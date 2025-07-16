@@ -24,16 +24,16 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
         throw new Error('Invalid Expiry Date')
     }
     const daysLeft = (new Date(`${expiryDate}T23:59:59`) - new Date())
-    const isExpired = daysLeft < 0;
+    const isExpired = daysLeft <= 0;
     const millisecondsInADay = 1000*60*60*24
     const absoluteDaysLeft = Math.abs(daysLeft)
-    const days = Math.floor((absoluteDaysLeft)/(millisecondsInADay))
-    const hours = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60*60))
-    const minutes = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60))%60
+    const daysUntilExpiry = Math.floor((absoluteDaysLeft)/(millisecondsInADay))
+    const hoursUntilExpiry = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60*60))
+    const minutesUntilExpiry = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60))%60
     let color = ''
-    if( days > 5){
+    if( daysUntilExpiry > 5){
         color = 'green'
-    }else if(days > 1){
+    }else if(daysUntilExpiry > 1){
         color = 'orange'
     }else{
         color = 'red'
@@ -45,7 +45,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
             <p>{quantity}</p>
             <p>{unit}</p>
             <p style={{color}}>
-                {isExpired ? `Expired ${days > 0 ? `${days}d and `: ""} ${hours}h ago` : `Expires in ${days > 0 ? `${days}d ` : ""} ${hours}h ${minutes}m`}</p>
+                {isExpired ? `Expired ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d and `: ""} ${hoursUntilExpiry}h ago` : `Expires in ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d ` : ""} ${hoursUntilExpiry}h ${minutesUntilExpiry}m`}</p>
             <button onClick={deletePantry}><MdOutlineDelete/></button>
         </div>
     )
