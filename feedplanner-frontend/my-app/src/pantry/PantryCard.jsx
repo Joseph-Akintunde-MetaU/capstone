@@ -29,7 +29,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
     const absoluteDaysLeft = Math.abs(daysLeft)
     const days = Math.floor((absoluteDaysLeft)/(millisecondsInADay))
     const hours = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60*60))
-    const minutes = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60))
+    const minutes = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60))%60
     let color = ''
     if( days > 5){
         color = 'green'
