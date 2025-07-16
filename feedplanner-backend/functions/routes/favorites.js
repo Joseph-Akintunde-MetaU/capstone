@@ -5,14 +5,14 @@ const router = express.Router();
 const admin = require("firebase-admin");
 const db = admin.firestore();
 router.post("/", async (req, res) => {
-  const {recipeId, isBookmarked} = req.body;
+  const {recipeId, isFavorited} = req.body;
   const userId = req.user.uid;
-  const bookmarkRef = db.collection("users").doc(userId).collection("bookmarks").doc(recipeId.toString());
+  const favoriteRef = db.collection("users").doc(userId).collection("favorites").doc(recipeId.toString());
   try {
-    if (isBookmarked) {
-      await bookmarkRef.set({bookmarked: true, Timestamp: Date.now()});
+    if (isFavorited) {
+      await favoriteRef.set({favorited: true, Timestamp: Date.now()});
     } else {
-      await bookmarkRef.delete();
+      await favoriteRef.delete();
     }
     res.status(200).json("bookmark updated");
   } catch (error) {
@@ -22,9 +22,9 @@ router.post("/", async (req, res) => {
 });
 router.get("/", async (req, res) => {
   const userId = req.user.uid;
-  const bookmarkRef = db.collection("users").doc(userId).collection("bookmarks");
-  const getBookmark = await bookmarkRef.get();
-  const bookmark = getBookmark.docs.map((bookmark) => bookmark.id);
-  res.status(201).json(bookmark);
+  const favoriteRef = db.collection("users").doc(userId).collection("favorites");
+  const getFavorite = await favoriteRef.get();
+  const favorite = getFavorite.docs.map((favorite) => favorite.id);
+  res.status(201).json(favorite);
 });
 module.exports = router;

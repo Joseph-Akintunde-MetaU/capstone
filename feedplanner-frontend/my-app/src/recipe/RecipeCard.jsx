@@ -8,13 +8,13 @@ export function RecipeCard({id, image, title, duration}){
     const [openModal, setOpenModal] = useState(false)
     const [rating, setRating] = useState(null)
     const [hover, setHover] = useState(null)
-    const [bookmarkedRecipe, setBookmarkedRecipe] = useState(false)
-    async function bookMarkingToggle(e){
+    const [favoritedRecipe, setFavoritedRecipe] = useState(false)
+    async function favoriteToggle(e){
         e.stopPropagation()
        
         try{
             const token = await auth.currentUser.getIdToken()
-            const nextBookmarkedState = !bookmarkedRecipe;
+            const nextFavoritedState = !favoritedRecipe;
             await fetch("http://localhost:5001/feedplanner/us-central1/api/bookmark",{
                 method: "POST",
                 headers:{
@@ -23,13 +23,13 @@ export function RecipeCard({id, image, title, duration}){
                 },
                 body: JSON.stringify({
                     recipeId: id,
-                    isBookmarked: nextBookmarkedState,
+                    isFavorited: nextFavoritedState,
                 }),
             });
-            setBookmarkedRecipe(nextBookmarkedState)
-            localStorage.setItem('bookmarked', nextBookmarkedState.toString())
+            setFavoritedRecipe(nextFavoritedState)
+            localStorage.setItem('favorited', nextFavoritedState.toString())
         }catch(error){
-            console.error("failed to bookmark")
+            console.error("failed to make favorite")
         }
     }
      return(
@@ -60,8 +60,8 @@ export function RecipeCard({id, image, title, duration}){
                         setOpenModal(true)
                     }}
                     >ADD TO MEAL PLANNER</button> 
-                    <button onClick={bookMarkingToggle}>
-                       <img src={ bookmarkedRecipe ? "https://img.icons8.com/?size=100&id=26083&format=png&color=000000" : "https://img.icons8.com/?size=100&id=25157&format=png&color=000000"}/>
+                    <button onClick={favoriteToggle}>
+                       <img src={ favoritedRecipe ? "https://img.icons8.com/?size=100&id=26083&format=png&color=000000" : "https://img.icons8.com/?size=100&id=25157&format=png&color=000000"}/>
                     </button>
                     </div>  
                 </div>
