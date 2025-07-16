@@ -78,15 +78,14 @@ function App() {
                    {darkMode ? <img src = "https://img.icons8.com/?size=100&id=36g5wgnLThGl&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=112373&format=png&color=000000"/> }
                 </button>
                   </div>
-                </nav>
-                
+                </nav>           
         </header>}
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
         <Route path='/home' element={ isAuthenticated === false ? <Navigate to="/"/> : <HomePage isSignedOut={isSignedOut}/>} />
         <Route path='/errorpage' element={ isAuthenticated === false ? <Navigate to="/"/> : <ErrorPage/>} />
         <Route path='/pantry' element = {isAuthenticated === false ? <Navigate to="/"/> : <PantryManager/>}/>
-        <Route path = "/recipes" element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes={recipes} setRecipes={setRecipes}/>}/>
+        <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes={recipes} setRecipes={setRecipes}/>}/>
         <Route path='/mealplanner' element = {isAuthenticated === false ? <Navigate to="/"/> : <MealPlannerPage/>}/>
         <Route path='/profile' element = {isAuthenticated === false ? <Navigate to = "/"/> : <ProfilePage isSignedOut={isSignedOut}/>}/>
         <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage recipes={recipes}/>}/>
