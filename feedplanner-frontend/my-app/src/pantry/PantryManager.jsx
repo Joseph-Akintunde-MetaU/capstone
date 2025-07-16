@@ -23,7 +23,6 @@ export function PantryManager(){
         })
     }
     useEffect(() => {
-        console.log("hello world")
         getPantry()
     },[])
     return(

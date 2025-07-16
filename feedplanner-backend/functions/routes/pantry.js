@@ -27,10 +27,10 @@ router.get("/ingredients", async (req, res) => {
     const userId = req.user.uid;
     const pantryCollection = db.collection("users").doc(userId).collection("pantry");
     const getPantryCollection = await pantryCollection.get();
-    const ingredientsArray = getPantryCollection.docs.map((doc) => {
-      const name = doc.data().name;
-      return typeof name === "string" ? name.trim().toLowerCase() : null;
-    });
+    const ingredientsArray = getPantryCollection.docs
+        .map((doc) => doc.data())
+        .filter((item) => item.name && new Date(`${item.expiryDate}T23:59:59`) >= new Date())
+        .map((item) => item.name.trim().toLowerCase());
     const stringedIngredients = ingredientsArray.join(",+");
     res.status(201).json({Ingredients: stringedIngredients});
   } catch (error) {
