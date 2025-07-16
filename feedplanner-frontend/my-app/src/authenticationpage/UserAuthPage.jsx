@@ -93,7 +93,6 @@ export function UserAuthPage(){
             try{
                 const user = userCredential.user;
                 const token = await user.getIdToken()
-                console.log(token)
                 const response = await fetch(
                     baseUrl,
                     {
