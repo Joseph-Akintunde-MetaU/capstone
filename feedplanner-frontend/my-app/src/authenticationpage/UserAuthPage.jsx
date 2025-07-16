@@ -85,7 +85,7 @@ export function UserAuthPage(){
             try{
                 const user = userCredential.user;
                 const token = await user.getIdToken()
-                 const response = await fetch(
+                const response = await fetch(
                     baseUrl,
                     {
                         method: "GET",

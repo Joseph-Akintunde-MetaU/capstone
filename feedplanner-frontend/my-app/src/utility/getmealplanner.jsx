@@ -1,6 +1,5 @@
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "../config/firebase.config"
-import { useState } from "react"
 export async function getMealPlans(setMealPlans,setGroupedData) {
         const getMeals = onAuthStateChanged(auth, async(user) => {
             try{
@@ -28,8 +27,6 @@ export async function getMealPlans(setMealPlans,setGroupedData) {
                     if (!acc[day][mealType]) acc[day][mealType] = []
                     const isDuplicate = acc[day][mealType].some(
                         existing => 
-                            existing.recipeId === plan.recipeId &&
-                            existing.recipeName === plan.recipeName &&
                             existing.dayOfTheWeek === plan.dayOfTheWeek &&
                             existing.mealType === plan.mealType
                     )
