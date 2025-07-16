@@ -43,12 +43,13 @@ router.get("/ingredients", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const userId = req.user.uid;
-    const {name, quantity, unit} = req.body;
+    const {name, quantity, unit, expiryDate} = req.body;
     const pantryReference = db.collection("users").doc(userId).collection("pantry");
     const addPantryReferences = await pantryReference.add({
       name,
       quantity,
       unit,
+      expiryDate,
       createdAt: new Date(),
     },
     );

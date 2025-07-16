@@ -7,8 +7,9 @@ export function CreatePantryItem({closeModal,getPantry}){
     const [name, setName] = useState('')
     const [quantity, setQuantity] = useState('')
     const [unit, setUnit] = useState('') 
+    const [expiryDate, setExpiryDate] = useState('')
     async function addPantry(){
-        const unsubscribe = onAuthStateChanged(auth, async(user) => {
+        onAuthStateChanged(auth, async(user) => {
             if(user){
                 const token = await user.getIdToken()
                 const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/` ,{
@@ -20,7 +21,8 @@ export function CreatePantryItem({closeModal,getPantry}){
                 body: JSON.stringify({
                     name: name,
                     quantity: quantity,
-                    unit: unit
+                    unit: unit,
+                    expiryDate: expiryDate
                 })
             })
                 const data = await response.json()
@@ -29,7 +31,6 @@ export function CreatePantryItem({closeModal,getPantry}){
                 console.log("user not logged in")
             }
         })
-        return unsubscribe
     }
     return(
         <div className="modal">
@@ -40,6 +41,8 @@ export function CreatePantryItem({closeModal,getPantry}){
                 <input type="text" value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
                 <label htmlFor="unit">Unit</label>
                 <input type="text" value={unit} onChange = {(e) => setUnit(e.target.value)}/>
+                <label htmlFor="expiryDate">Expiry Date</label>
+                <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
                  <button onClick={addPantry}>CREATE</button>
             </form>
             <button onClick={() => closeModal(false)}>CLOSE</button>

@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
   const userId = req.user.uid;
   const bookmarkRef = db.collection("users").doc(userId).collection("bookmarks");
   const getBookmark = await bookmarkRef.get();
-  const bookmark = getBookmark.docs.map((bookmark) => bookmark.id );
+  const bookmark = getBookmark.docs.map((bookmark) => bookmark.id);
   res.status(201).json(bookmark);
 });
 module.exports = router;
