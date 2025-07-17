@@ -2,12 +2,12 @@ import { MdOutlineDelete } from "react-icons/md";
 import "./PantryCard.css"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
-import { useEffect, useState } from "react";
+import { MdEdit } from "react-icons/md";
+import { useState } from "react";
 export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
     const [editedName, setEditedName] = useState(name)
-    useEffect(() => {
-        setEditedName(name)
-    },[name])
+    const [editedExpiryDate, setEditedExpiryDate] = useState(expiryDate)
+    const [isEditingExpiryDate, setIsEditingExpiryDate] = useState(false)
     async function saveField(field, value) {
         const user = auth.currentUser;
         if(user){
@@ -48,7 +48,6 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
     }
     const expiry = new Date(expiryDate);
     const now = new Date();
-
     // Calculate time difference and status
     const { isExpired, absoluteDifference } = calculateTimeDifference(expiry, now);
 
@@ -129,7 +128,15 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
                             <input className = "editable" value={editedName} onChange={(e) => setEditedName(e.target.value)} onBlur={() => saveField('name', editedName)} />
                             <p>{quantity}</p>
                             <p>{unit}</p>
-                            <p style={{ color }}>{expiryMessage}</p>
+                            {isEditingExpiryDate ? (<input type = "datetime-local" value={editedExpiryDate} onChange={(e) => setEditedExpiryDate(e.target.value)} onBlur = {async () => {
+                                await saveField("expiryDate", editedExpiryDate)
+                                setIsEditingExpiryDate(false);
+                            }} autoFocus/>) : 
+                            (<div style = {{display: "flex", alignItems: "center", gap: "0.3rem"}}>
+                                <p style={{ color }}>{expiryMessage}</p>
+                                <MdEdit style={{cursor: "pointer", fontSize: "3em"}} onClick={() => setIsEditingExpiryDate(true)}/>
+                            </div>
+                            )}
                             <button onClick={deletePantry}>
                                 <MdOutlineDelete />
                             </button>
