@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 const express = require("express");
 const app = express();
@@ -9,6 +10,7 @@ const authMiddleware = require("./authMiddleware");
 const pantryRoute = require("./routes/pantry");
 const MealPlannerRoute = require("./routes/mealPlanner");
 const bookmarkRoute = require("./routes/bookmark");
+const { onSchedule } = require("firebase-functions/scheduler");
 const db = admin.firestore();
 app.use(bodyParser.json());
 app.use(authMiddleware);
@@ -40,4 +42,57 @@ exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
     }
   });
 });
+async function runExpiryCheck(){
+   const today = new Date();
+      const millisecondsInADay =  60 * 1000;
+      const getUsers = await db.collection("users").get();
+      for (const userDoc of getUsers.docs) {
+        const userId = userDoc.id;
+        const pantryRef = db.collection("users").doc(userId).collection("pantry");
+        const getpantryRef = await pantryRef.get();
+        const notificationsRef = db.collection("users").doc(userId).collection("notifications");
+        for (const pantryItem of getpantryRef.docs) {
+          const item = pantryItem.data();
+          const itemId = pantryItem.id;
+          const expiry = item.expiryDate && item.expiryDate.toDate?
+          item.expiryDate.toDate() :
+          new Date(item.expiryDate);
+          const daysLeft = expiry-today;
+          let type = null;
+          if (daysLeft<0) {
+             type = "expired";
+          } else if (daysLeft <= millisecondsInADay) {
+             type = "expiring soon";
+          }
+          if (!type) continue;
+          const existingNotification = await notificationsRef
+              .where("itemId", "==", itemId)
+              .where("type", "==", type)
+              .where("read", "==", false)
+              .limit(1)
+              .get();
+          if (!existingNotification.empty) continue;
+          const message =
+          type === "expired" ? `${item.name} has expired` : `${item.name} will expire soon`;
+          await notificationsRef.add({
+            message,
+            itemId,
+            type,
+            read: false,
+            createdAt: new Date(),
+          });
+          if (type === "expired") {
+            await pantryRef.doc(itemId).update({expired: true});
+          }
+        }
+      }
+      return null
+}
+exports.checkExpiryScheduled = onSchedule ("every 2 minutes", async () => {
+      await runExpiryCheck()
+    });
+// exports.testCheckExpiry = functions.https.onRequest(async (req, res) => {
+//     await runExpiryCheck(); // Extract your logic into a shared function
+//     res.send("Manual expiry check complete");
+// });
 exports.api = functions.https.onRequest(app);
