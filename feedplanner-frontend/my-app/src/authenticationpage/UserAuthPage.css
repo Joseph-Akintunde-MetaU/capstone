@@ -3,6 +3,32 @@
   max-width: 600px;
   position: relative;
 }
+/* Hide login form by default */
+.login {
+  display: none;
+}
+
+/* When show-login class is added, hide signup and show login */
+.UserAuthPage.show-login .auth-form:first-of-type {
+  display: none;
+}
+
+.UserAuthPage.show-login .login-section {
+  display: none;
+}
+
+.UserAuthPage.show-login .login {
+  display: block;
+}
+
+/* Make login-section clickable */
+.login-section {
+  cursor: pointer;
+}
+
+.login-section:hover {
+  opacity: 0.8;
+}
 .UserAuthPageBody{
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);

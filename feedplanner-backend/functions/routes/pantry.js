@@ -92,7 +92,8 @@ router.patch("/:pantryId", async (req, res) => {
     res.status(400).json({error: "no valid fields provided"});
   }
   try {
-    const pantryReference = db.collection("users").doc(userId).collection("pantry").doc(pantryId).update(updates);
+    const pantryReference = db.collection("users").doc(userId).collection("pantry").doc(pantryId);
+    await pantryReference.update(updates);
     res.status(200).json({success: true, updates: updates});
   } catch (error) {
     res.status(500).json({error: error});

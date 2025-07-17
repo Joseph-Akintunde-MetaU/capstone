@@ -59,6 +59,17 @@
   transform-origin: bottom center;
   z-index: 1;
 }
+.editable{
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    width: 100%;
+    margin-left: 45px;
+}
+.editable:focus{
+    border-bottom: 1px solid #007bff;
+    background: white;
+}
 /* Hover Animations */
 .pantryCard:hover {
   transform: translateY(-8px) scale(1.05);
