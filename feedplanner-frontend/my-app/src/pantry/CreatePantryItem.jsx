@@ -9,9 +9,14 @@ export function CreatePantryItem({closeModal,getPantry}){
     const [unit, setUnit] = useState('') 
     const [expiryDate, setExpiryDate] = useState('')
     async function addPantry(){
-        onAuthStateChanged(auth, async(user) => {
+       const user = auth.currentUser;
             if(user){
                 const token = await user.getIdToken()
+                const [datePart, timePart] = expiryDate.split("T");
+                const [year, month, day] = datePart.split("-").map(Number);
+                const [hour, minute] = timePart.split(":").map(Number);
+                const localDate = new Date(year, month - 1, day, hour, minute);
+                const expiryDateISO = localDate.toISOString();
                 const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/` ,{
                 method: "POST",
                 headers:{
@@ -22,7 +27,7 @@ export function CreatePantryItem({closeModal,getPantry}){
                     name: name,
                     quantity: quantity,
                     unit: unit,
-                    expiryDate: expiryDate
+                    expiryDate: expiryDateISO
                 })
             })
                 const data = await response.json()
@@ -30,7 +35,6 @@ export function CreatePantryItem({closeModal,getPantry}){
             }else{
                 console.log("user not logged in")
             }
-        })
     }
     return(
         <div className="modal">
@@ -43,7 +47,7 @@ export function CreatePantryItem({closeModal,getPantry}){
                 <input type="text" value={unit} onChange = {(e) => setUnit(e.target.value)}/>
                 <label htmlFor="expiryDate">Expiry Date</label>
                 <input type="datetime-local" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
-                 <button onClick={addPantry}>CREATE</button>
+                <button onClick={addPantry}>CREATE</button>
             </form>
             <button onClick={() => closeModal(false)}>CLOSE</button>
         </div>
