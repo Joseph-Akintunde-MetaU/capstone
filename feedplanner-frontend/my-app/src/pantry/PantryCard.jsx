@@ -3,15 +3,11 @@ import "./PantryCard.css"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
 import { MdEdit } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
     const [editedName, setEditedName] = useState(name)
     const [editedExpiryDate, setEditedExpiryDate] = useState(expiryDate)
     const [isEditingExpiryDate, setIsEditingExpiryDate] = useState(false)
-    useEffect(() => {
-        setEditedName(name)
-        setEditedExpiryDate(expiryDate)
-    },[name, expiryDate])
     async function saveField(field, value) {
         const user = auth.currentUser;
         if(user){
