@@ -2,8 +2,33 @@ import { MdOutlineDelete } from "react-icons/md";
 import "./PantryCard.css"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
+    const [editedName, setEditedName] = useState(name)
+    useEffect(() => {
+        setEditedName(name)
+    },[name])
+    async function saveField(field, value) {
+        const user = auth.currentUser;
+        if(user){
+            try{
+                const token = await user.getIdToken()
+                const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/${id}`, {
+                    method: "PATCH",
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                    'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                       [field]: value
+                    })
+                })
+                getPantry()
+            }catch(error){
+                throw new Error(error)
+            }
+        }
+    }
     async function deletePantry(){  
         // eslint-disable-next-line no-unused-vars
         onAuthStateChanged(auth, async(user) => {
@@ -101,7 +126,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
                 <div className="shelf">
                     <div className="shelf-items">
                         <div className="pantryCard">
-                            <h3>{name}</h3>
+                            <input className = "editable" value={editedName} onChange={(e) => setEditedName(e.target.value)} onBlur={() => saveField('name', editedName)} />
                             <p>{quantity}</p>
                             <p>{unit}</p>
                             <p style={{ color }}>{expiryMessage}</p>
