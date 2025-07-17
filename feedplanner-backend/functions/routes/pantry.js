@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable max-len */
 /* eslint-disable new-cap */
@@ -31,8 +32,12 @@ router.get("/ingredients", async (req, res) => {
         .map((doc) => doc.data())
         .filter((item) => item.name && new Date(`${item.expiryDate}T23:59:59`) >= new Date())
         .map((item) => item.name.trim().toLowerCase());
+    const expiredIngredientsArray = getPantryCollection.docs
+        .map((doc) => doc.data())
+        .filter((item) => item.name && new Date(`${item.expiryDate}T23:59:59`) <= new Date())
+        .map((item) => item.name.trim().toLowerCase());
     const stringedIngredients = ingredientsArray.join(",+");
-    res.status(201).json({Ingredients: stringedIngredients});
+    res.status(201).json({Ingredients: stringedIngredients, ExpiredIngredients: expiredIngredientsArray});
   } catch (error) {
     console.error(error.message);
     res.status(500).json({error: "error"});
@@ -71,6 +76,26 @@ router.delete("/:pantryId", async (req, res) => {
   } catch (error) {
     res.status(501).json({error: "error"});
     console.error(error.message);
+  }
+});
+router.patch("/:pantryId", async (req, res) => {
+  const userId = req.user.uid;
+  const {pantryId} = req.params;
+  const allowedFields = ["name", "quantity", "unit", "expiryDate"];
+  const updates = {};
+  allowedFields.forEach((field) => {
+    if (req.body[field] !== undefined) {
+      updates[field] = req.body[field];
+    }
+  });
+  if (Object.keys(updates).length === 0) {
+    res.status(400).json({error: "no valid fields provided"});
+  }
+  try {
+    const pantryReference = db.collection("users").doc(userId).collection("pantry").doc(pantryId).update(updates);
+    res.status(200).json({success: true, updates: updates});
+  } catch (error) {
+    res.status(500).json({error: error});
   }
 });
 module.exports = router;

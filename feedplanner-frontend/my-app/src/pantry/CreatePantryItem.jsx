@@ -42,7 +42,7 @@ export function CreatePantryItem({closeModal,getPantry}){
                 <label htmlFor="unit">Unit</label>
                 <input type="text" value={unit} onChange = {(e) => setUnit(e.target.value)}/>
                 <label htmlFor="expiryDate">Expiry Date</label>
-                <input type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+                <input type="datetime-local" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
                  <button onClick={addPantry}>CREATE</button>
             </form>
             <button onClick={() => closeModal(false)}>CLOSE</button>
