@@ -40,13 +40,25 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
     }
 
     return(
-        <div className="pantryCard" style={{border: `2px solid ${color}`}}>
-            <h3>{name}</h3>
-            <p>{quantity}</p>
-            <p>{unit}</p>
-            <p style={{color}}>
-                {isExpired ? `Expired ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d and `: ""} ${hoursUntilExpiry}h ago` : `Expires in ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d ` : ""} ${hoursUntilExpiry}h ${minutesUntilExpiry}m`}</p>
-            <button onClick={deletePantry}><MdOutlineDelete/></button>
+        <div className="pantry-container">
+            <div className="pantry-shelves">
+                <div className="shelf">
+                    <div className="shelf-items">
+                        <div className="pantryCard">
+                            <h3>{name}</h3>
+                            <p>{quantity}</p>
+                            <p>{unit}</p>
+                            <p style={{color}}>
+                                {isExpired ? 
+                                `Expired ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d and `: ""} ${hoursUntilExpiry}h ago` 
+                                : 
+                                `Expires in ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d ` : ""} ${hoursUntilExpiry}h ${minutesUntilExpiry}m`}
+                            </p>
+                            <button onClick={deletePantry}><MdOutlineDelete/></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

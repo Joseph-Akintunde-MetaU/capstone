@@ -77,6 +77,7 @@ function App() {
                 <button onClick={handleFavoriteClick}>
                    {darkMode ? <img src = "https://img.icons8.com/?size=100&id=36g5wgnLThGl&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=112373&format=png&color=000000"/> }
                 </button>
+                <button><img src="https://img.icons8.com/?size=100&id=11642&format=png&color=000000" alt="" /></button>
                   </div>
                 </nav>
                 
