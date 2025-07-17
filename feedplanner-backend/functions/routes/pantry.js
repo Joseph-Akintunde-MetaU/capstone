@@ -30,11 +30,11 @@ router.get("/ingredients", async (req, res) => {
     const getPantryCollection = await pantryCollection.get();
     const ingredientsArray = getPantryCollection.docs
         .map((doc) => doc.data())
-        .filter((item) => item.name && new Date(`${item.expiryDate}T23:59:59`) >= new Date())
+        .filter((item) => item.name && new Date(item.expiryDate) >= new Date())
         .map((item) => item.name.trim().toLowerCase());
     const expiredIngredientsArray = getPantryCollection.docs
         .map((doc) => doc.data())
-        .filter((item) => item.name && new Date(`${item.expiryDate}T23:59:59`) <= new Date())
+        .filter((item) => item.name && new Date(item.expiryDate) <= new Date())
         .map((item) => item.name.trim().toLowerCase());
     const stringedIngredients = ingredientsArray.join(",+");
     res.status(201).json({Ingredients: stringedIngredients, ExpiredIngredients: expiredIngredientsArray});
@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
       name,
       quantity,
       unit,
-      expiryDate,
+      expiryDate: new Date(expiryDate).toISOString(),
       createdAt: new Date(),
     },
     );
