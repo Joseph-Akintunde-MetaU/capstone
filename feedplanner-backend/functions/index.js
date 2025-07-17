@@ -44,7 +44,8 @@ exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
 });
 async function runExpiryCheck(){
    const today = new Date();
-      const millisecondsInADay =  60 * 1000;
+   console.log(today)
+      const millisecondsInADay =  24 * 60 * 60 * 1000;
       const getUsers = await db.collection("users").get();
       for (const userDoc of getUsers.docs) {
         const userId = userDoc.id;
@@ -88,11 +89,7 @@ async function runExpiryCheck(){
       }
       return null
 }
-exports.checkExpiryScheduled = onSchedule ("every 2 minutes", async () => {
+exports.checkExpiryScheduled = onSchedule ("every 2 hours", async () => {
       await runExpiryCheck()
     });
-// exports.testCheckExpiry = functions.https.onRequest(async (req, res) => {
-//     await runExpiryCheck(); // Extract your logic into a shared function
-//     res.send("Manual expiry check complete");
-// });
 exports.api = functions.https.onRequest(app);
