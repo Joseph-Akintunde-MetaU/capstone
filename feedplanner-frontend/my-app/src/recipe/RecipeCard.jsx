@@ -15,7 +15,7 @@ export function RecipeCard({id, image, title, duration}){
         try{
             const token = await auth.currentUser.getIdToken()
             const nextFavoritedState = !favoritedRecipe;
-            await fetch("http://localhost:5001/feedplanner/us-central1/api/bookmark",{
+            await fetch("http://localhost:5001/feedplanner/us-central1/api/favorites",{
                 method: "POST",
                 headers:{
                     Authorization: `Bearer ${token}`,

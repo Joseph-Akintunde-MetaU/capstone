@@ -19,7 +19,6 @@ export function UserAuthPage(){
             const googleUserCred = await signInWithPopup(auth, googleProvider)
             const googleUser = googleUserCred.user
             const token = await googleUser.getIdToken()
-            console.log(token)
              // eslint-disable-next-line no-unused-vars
              const response = await fetch(
                     baseUrl,
@@ -86,7 +85,6 @@ export function UserAuthPage(){
             try{
                 const user = userCredential.user;
                 const token = await user.getIdToken()
-                console.log(token)
                  const response = await fetch(
                     baseUrl,
                     {
