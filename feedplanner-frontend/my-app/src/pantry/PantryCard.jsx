@@ -20,24 +20,32 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
             }
         })
     }
-    const daysLeft = Math.ceil(
-        (new Date(expiryDate) - new Date())/(1000*60*60*24)
-    )
+     if(!expiryDate || isNaN(Date.parse(expiryDate))){
+        throw new Error('Invalid Expiry Date')
+    }
+    const daysLeft = (new Date(`${expiryDate}T23:59:59`) - new Date())
+    const isExpired = daysLeft <= 0;
+    const millisecondsInADay = 1000*60*60*24
+    const absoluteDaysLeft = Math.abs(daysLeft)
+    const daysUntilExpiry = Math.floor((absoluteDaysLeft)/(millisecondsInADay))
+    const hoursUntilExpiry = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60*60))
+    const minutesUntilExpiry = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60))%60
     let color = ''
-    if( daysLeft > 5){
+    if( daysUntilExpiry > 5){
         color = 'green'
-    }else if(daysLeft > 2){
+    }else if(daysUntilExpiry > 1){
         color = 'orange'
     }else{
         color = 'red'
     }
+
     return(
         <div className="pantryCard" style={{border: `2px solid ${color}`}}>
             <h3>{name}</h3>
             <p>{quantity}</p>
             <p>{unit}</p>
             <p style={{color}}>
-                {daysLeft > 0 ? `Expires in ${daysLeft} day${daysLeft > 1 ? "s" : ""}` : "Expired"}</p>
+                {isExpired ? `Expired ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d and `: ""} ${hoursUntilExpiry}h ago` : `Expires in ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d ` : ""} ${hoursUntilExpiry}h ${minutesUntilExpiry}m`}</p>
             <button onClick={deletePantry}><MdOutlineDelete/></button>
         </div>
     )
