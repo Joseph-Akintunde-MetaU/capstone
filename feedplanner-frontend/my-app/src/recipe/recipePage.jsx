@@ -9,8 +9,8 @@ import { useEffect } from "react";
 export function RecipePage(){
     const [loading, setLoading] = useState(true)
     const [recipes, setRecipes] = useState ([]);
-    const apiKey = `995c9d32eea04be99d91f6c9dbe6b421`
-        async function getRecipes(){
+    const apiKey = process.env.REACT_APP_API_KEY
+    async function getRecipes(){
         const fetchMatchingRecipe = onAuthStateChanged(auth, async(user) => {
             try{
                 if(user){

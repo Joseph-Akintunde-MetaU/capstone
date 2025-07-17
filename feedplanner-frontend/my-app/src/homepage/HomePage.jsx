@@ -6,17 +6,17 @@ import { useEffect, useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress';
 import { FeaturedRecipeList } from './featuredRecipeList'
 export function HomePage({isSignedOut}){
-    const apiKey = `995c9d32eea04be99d91f6c9dbe6b421`
-    const username = localStorage.getItem("username")
+    const apiKey = process.env.REACT_APP_API_KEY
+    const username = localStorage.getItem('username')
     const [featuredRecipes, setFeaturedRecipes] = useState([])
     // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(true)
     const nav = useNavigate()
     async function HomePageRecipes(){
         try{
-        const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=6`)
-        const data = await response.json()
-        setFeaturedRecipes(data.recipes)
+          const response = await fetch(`https://api.spoonacular.com/recipes/random?apiKey=${apiKey}&number=6`)
+          const data = await response.json()
+          setFeaturedRecipes(data.recipes)
         }catch(error){
             console.error(error)
         }finally{
