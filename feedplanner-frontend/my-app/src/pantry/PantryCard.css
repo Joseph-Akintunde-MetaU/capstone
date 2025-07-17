@@ -41,9 +41,9 @@
 }
 .pantryCard {
   position: relative;
-  width: 100px;
-  height: 140px;
-  border-radius: 12px;
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
   padding: 0.75rem;
   display: flex;
   text-transform: uppercase;
@@ -84,12 +84,11 @@
     rgba(255,255,255,0.4) 0%, 
     rgba(255,255,255,0.1) 50%, 
     transparent 100%);
-  border-radius: 12px 12px 0 0;
-  pointer-events: none;
-   z-index: 1;
+    border-radius: 12px 12px 0 0;
+    pointer-events: none;
+    z-index: 1;
 }
 
-/* Content Styling */
 .pantryCard h3 {
   font-size: 0.75rem;
   font-weight: 600;
@@ -189,13 +188,6 @@
   animation: slideInUp 0.6s ease-out;
 }
 
-.pantryCard:nth-child(1) { animation-delay: 0.1s; }
-.pantryCard:nth-child(2) { animation-delay: 0.2s; }
-.pantryCard:nth-child(3) { animation-delay: 0.3s; }
-.pantryCard:nth-child(4) { animation-delay: 0.4s; }
-.pantryCard:nth-child(5) { animation-delay: 0.5s; }
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .shelf-items {
     gap: 1rem;
@@ -216,7 +208,6 @@
   }
 }
 
-/* Floating Animation for Special Items */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-4px); }
@@ -224,12 +215,4 @@
 
 .pantryCard.premium {
   animation: float 3s ease-in-out infinite;
-}
-
-/* Search Highlight */
-.pantryCard.highlighted {
-  box-shadow: 
-    0 0 0 3px rgba(59, 130, 246, 0.5),
-    0 8px 16px rgba(0,0,0,0.2);
-  transform: scale(1.02);
 }
