@@ -31,7 +31,7 @@ export function FavoritePage({recipes}){
     },[bookmarkedData])
     return(
         <div style = {{padding: "4rem"}}className="favorites-list">
-            <h1>BOOKMARKS</h1>
+            <h1>FAVORITES</h1>
             {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
             <FavoritePageList recipes={bookmarkedRecipeCards}/>}
         </div>

@@ -2,8 +2,9 @@ import { MdOutlineDelete } from "react-icons/md";
 import "./PantryCard.css"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
+import { useState } from "react";
 export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
-    async function deletePantry(){
+    async function deletePantry(){  
         // eslint-disable-next-line no-unused-vars
         onAuthStateChanged(auth, async(user) => {
             if(user){
@@ -20,33 +21,97 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
             }
         })
     }
-     if(!expiryDate || isNaN(Date.parse(expiryDate))){
-        throw new Error('Invalid Expiry Date')
-    }
-    const daysLeft = (new Date(`${expiryDate}T23:59:59`) - new Date())
-    const isExpired = daysLeft <= 0;
-    const millisecondsInADay = 1000*60*60*24
-    const absoluteDaysLeft = Math.abs(daysLeft)
-    const daysUntilExpiry = Math.floor((absoluteDaysLeft)/(millisecondsInADay))
-    const hoursUntilExpiry = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60*60))
-    const minutesUntilExpiry = Math.floor((absoluteDaysLeft % (millisecondsInADay))/(1000*60))%60
-    let color = ''
-    if( daysUntilExpiry > 5){
-        color = 'green'
-    }else if(daysUntilExpiry > 1){
-        color = 'orange'
-    }else{
-        color = 'red'
+    const expiry = new Date(expiryDate);
+    const now = new Date();
+
+    // Calculate time difference and status
+    const { isExpired, absoluteDifference } = calculateTimeDifference(expiry, now);
+
+    // Break down time into readable components
+    const { daysTillExpiry, hoursTillExpiry, minutesTillExpiry } = getTimeBreakdown(absoluteDifference);
+
+    // Determine color based on days left
+    const color = getColorByDaysLeft(isExpired, daysTillExpiry, hoursTillExpiry);
+
+    // Construct the message
+    const expiryMessage = buildExpiryMessage(isExpired, daysTillExpiry, hoursTillExpiry, minutesTillExpiry, expiry);
+    function parseExpiryDate(dateString) {
+    const date = new Date(dateString);
+        if (isNaN(date)) {
+            throw new Error('Invalid Expiry Date');
+        }
+        return date;
     }
 
-    return(
-        <div className="pantryCard" style={{border: `2px solid ${color}`}}>
-            <h3>{name}</h3>
-            <p>{quantity}</p>
-            <p>{unit}</p>
-            <p style={{color}}>
-                {isExpired ? `Expired ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d and `: ""} ${hoursUntilExpiry}h ago` : `Expires in ${daysUntilExpiry > 0 ? `${daysUntilExpiry}d ` : ""} ${hoursUntilExpiry}h ${minutesUntilExpiry}m`}</p>
-            <button onClick={deletePantry}><MdOutlineDelete/></button>
+    function calculateTimeDifference(expiryDate, currentDate) {
+        const difference = expiryDate - currentDate;
+        const isExpired = difference <= 0;
+        const absoluteDifference = Math.abs(difference);
+        return { isExpired, absoluteDifference };
+    }
+
+    function getTimeBreakdown(milliseconds) {
+        const millisecondsInADay = 1000 * 60 * 60 * 24;
+        const millisecondsInAnHour = 1000 * 60 * 60;
+        const millisecondsInAMinute = 1000 * 60;
+        const daysTillExpiry = Math.floor(milliseconds / millisecondsInADay);
+        const hoursTillExpiry = Math.floor((milliseconds % millisecondsInADay) / millisecondsInAnHour);
+        const minutesTillExpiry = Math.floor((milliseconds % millisecondsInAnHour) / millisecondsInAMinute);
+
+        return { daysTillExpiry, hoursTillExpiry, minutesTillExpiry };
+    }
+
+    function getColorByDaysLeft(isExpired, daysTillExpiry, hoursTillExpiry) {
+        if(isExpired){
+            return 'red'
+        }
+        if (daysTillExpiry >= 5) {
+            return 'green';
+        } else if (daysTillExpiry > 1) {
+            return 'orange';
+        } else if (hoursTillExpiry > 4) {
+            return 'coral';
+        } else if (hoursTillExpiry > 1) {
+            return 'crimson';
+        }
+
+    }
+
+    function buildExpiryMessage(isExpired, days, hours, minutes, expiry) {
+        const dayStr = days > 0 ? `${days}d ` : '';
+        const hourStr = ` ${hours}h`;
+        const minuteStr = ` ${minutes}m`;
+
+        const localeString = expiry.toLocaleString(undefined, {
+            weekday: 'short',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+        if (isExpired) {
+            return `Expired ${dayStr}${hourStr}${minuteStr} ago (on ${localeString})`;
+        } else {
+            return `Expires in ${dayStr}${hourStr} ${minuteStr} (at ${localeString})`;
+        }
+    }
+    return (
+        <div className="pantry-container">
+            <div className="pantry-shelves">
+                <div className="shelf">
+                    <div className="shelf-items">
+                        <div className="pantryCard">
+                            <h3>{name}</h3>
+                            <p>{quantity}</p>
+                            <p>{unit}</p>
+                            <p style={{ color }}>{expiryMessage}</p>
+                            <button onClick={deletePantry}>
+                                <MdOutlineDelete />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    )
+    );
 }
