@@ -13,6 +13,7 @@ import { Navigate } from 'react-router-dom'
 import { ProfilePage } from './homepage/ProfilePage'
 import { FavoritePage } from './favorites/FavoritePage'
 import NotificationCenter from './notifications/NotificationCenter'
+import { ToastContainer } from 'react-toastify'
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   function toggleDarkMode(){
@@ -97,6 +98,7 @@ function App() {
         <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage recipes={recipes}/>}/>
       </Routes>
       <NotificationCenter openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} notifications={notifications} setNotifications={setNotifications}/>
+      <ToastContainer position='top-right' autoClose = {5000} closeOnClick pauseOnHover draggable hideProgressBar = {false} theme = {darkMode ? "dark":"light"}/>
     </div>
   );
 }
