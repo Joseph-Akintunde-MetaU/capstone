@@ -32,12 +32,8 @@ router.get("/ingredients", async (req, res) => {
         .map((doc) => doc.data())
         .filter((item) => item.name && new Date(item.expiryDate) >= new Date())
         .map((item) => item.name.trim().toLowerCase());
-    const expiredIngredientsArray = getPantryCollection.docs
-        .map((doc) => doc.data())
-        .filter((item) => item.name && new Date(item.expiryDate) <= new Date())
-        .map((item) => item.name.trim().toLowerCase());
     const stringedIngredients = ingredientsArray.join(",+");
-    res.status(201).json({Ingredients: stringedIngredients, ExpiredIngredients: expiredIngredientsArray});
+    res.status(201).json({Ingredients: stringedIngredients});
   } catch (error) {
     console.error(error.message);
     res.status(500).json({error: "error"});

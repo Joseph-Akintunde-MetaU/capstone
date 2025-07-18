@@ -88,7 +88,7 @@ async function runExpiryCheck(){
       }
       return null
 }
-exports.checkExpiryScheduled = onSchedule ("every 2 hours", async () => {
+exports.checkExpiryScheduled = onSchedule ("every 24 hours", async () => {
       await runExpiryCheck()
     });
 exports.api = functions.https.onRequest(app);
