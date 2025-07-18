@@ -8,7 +8,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect } from "react";
 export function RecipePage({recipes, setRecipes, setExpiredItems}){
     const [loading, setLoading] = useState(true)
-    const [expiredPantryItems, setExpiredPantryItems] = useState([])
     const apiKey = process.env.REACT_APP_API_KEY
         async function getRecipes(){
         const fetchMatchingRecipe = onAuthStateChanged(auth, async(user) => {
@@ -24,7 +23,6 @@ export function RecipePage({recipes, setRecipes, setExpiredItems}){
                 })
                 const ingredients = await response.json()
                 const stringIngredients = ingredients.Ingredients
-                setExpiredPantryItems(ingredients.ExpiredIngredients)
                 const fetchFromApi = await fetch (`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=100`)
                 const data = await fetchFromApi.json()
                 setRecipes(data)

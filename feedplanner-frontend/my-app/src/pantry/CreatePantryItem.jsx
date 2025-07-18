@@ -37,19 +37,22 @@ export function CreatePantryItem({closeModal,getPantry}){
             }
     }
     return(
-        <div className="modal">
-            <form action="" className="modalToAddPantry">
-                <label htmlFor="name">Name</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
-                <label htmlFor="quantity">Quantity</label>
-                <input type="text" value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
-                <label htmlFor="unit">Unit</label>
-                <input type="text" value={unit} onChange = {(e) => setUnit(e.target.value)}/>
-                <label htmlFor="expiryDate">Expiry Date</label>
-                <input type="datetime-local" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
-                <button onClick={addPantry}>CREATE</button>
-            </form>
-            <button onClick={() => closeModal(false)}>CLOSE</button>
+        <div className="modal-overlay">
+            <div className="modal">
+                <form action="" className="modalToAddPantry">
+                    <label htmlFor="name">Name</label>
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
+                    <label htmlFor="quantity">Quantity</label>
+                    <input type="text" value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
+                    <label htmlFor="unit">Unit</label>
+                    <input type="text" value={unit} onChange = {(e) => setUnit(e.target.value)}/>
+                    <label htmlFor="expiryDate">Expiry Date</label>
+                    <input type="datetime-local" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+                    <button onClick={addPantry}>CREATE</button>
+                </form>
+                <button onClick={() => closeModal(false)}>CLOSE</button>
+            </div>
         </div>
+        
     )
 }

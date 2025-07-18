@@ -4,6 +4,7 @@ import { getMealPlans } from "../utility/getmealplanner"
 import {FaStar} from "react-icons/fa"
 import { auth } from "../config/firebase.config"
 import { useState,useEffect } from "react"
+import { ToastContainer } from "react-toastify"
 export function RecipeCard({id, image, title}){
     const [openModal, setOpenModal] = useState(false)
     const [rating, setRating] = useState(null)
@@ -74,6 +75,7 @@ export function RecipeCard({id, image, title}){
                 </div>
             </div>
             {openModal && <AddToMealPlan closeModal={setOpenModal} selectedRecipeId={id} selectedRecipeName={title} getMealPlans={getMealPlans}/>}  
+             <ToastContainer position='top-right' autoClose = {5000} closeOnClick pauseOnHover draggable hideProgressBar = {false} theme = "light"/>
         </div>
     )
 }
