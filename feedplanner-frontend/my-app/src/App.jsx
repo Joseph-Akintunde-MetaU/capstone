@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { ProfilePage } from './homepage/ProfilePage'
 import { FavoritePage } from './favorites/FavoritePage'
+import NotificationCenter from './notifications/NotificationCenter'
+import { ToastContainer } from 'react-toastify'
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   function toggleDarkMode(){
@@ -60,6 +62,9 @@ function App() {
     return () => unsubscribe()
   },[])
   const [recipes, setRecipes] = useState ([]);
+  const [openDrawer, setOpenDrawer] = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const unreadCount = notifications.filter((n) => !n.read).length
   return (
     <div className='home'>
       {location.pathname !== '/' && <header className='header'>
@@ -77,7 +82,7 @@ function App() {
                 <button onClick={handleFavoriteClick}>
                    {darkMode ? <img src = "https://img.icons8.com/?size=100&id=36g5wgnLThGl&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=112373&format=png&color=000000"/> }
                 </button>
-                <button><img src="https://img.icons8.com/?size=100&id=11642&format=png&color=000000" alt="" /></button>
+                <button onClick={() => setOpenDrawer(true)}><img src="https://img.icons8.com/?size=100&id=11642&format=png&color=000000" alt="" />{unreadCount > 0 ? <span>{unreadCount}</span> : ''}</button>
                   </div>
                 </nav>
                 
@@ -92,6 +97,8 @@ function App() {
         <Route path='/profile' element = {isAuthenticated === false ? <Navigate to = "/"/> : <ProfilePage isSignedOut={isSignedOut}/>}/>
         <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage recipes={recipes}/>}/>
       </Routes>
+      <NotificationCenter openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} notifications={notifications} setNotifications={setNotifications}/>
+      <ToastContainer position='top-right' autoClose = {5000} closeOnClick pauseOnHover draggable hideProgressBar = {false} theme = {darkMode ? "dark":"light"}/>
     </div>
   );
 }
