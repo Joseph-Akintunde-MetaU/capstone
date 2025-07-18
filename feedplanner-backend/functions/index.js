@@ -43,7 +43,7 @@ exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
   });
 });
 async function runExpiryCheck(){
-   const today = new Date();
+      const today = new Date();
       const millisecondsInADay =  24 * 60 * 60 * 1000;
       const getUsers = await db.collection("users").get();
       for (const userDoc of getUsers.docs) {
