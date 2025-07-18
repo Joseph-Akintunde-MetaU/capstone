@@ -24,7 +24,7 @@ export default function NotificationCenter({openDrawer, setOpenDrawer, notificat
             const wasNew = !notifications.find((notification) => notification.id
         === latest?.id)
             if(wasNew && latest && !latest.read){
-                toast.info(<div><img src="https://img.icons8.com/?size=100&id=0jVKJX19V7Pe&format=png&color=000000" alt={latest.message} /> <span>{latest.message}</span></div>)
+                toast.info(`${latest.message}`)
             }
             setNotifications(notificationData)
         }
