@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
       quantity,
       unit,
       expiryDate: new Date(expiryDate).toISOString(),
-      createdAt: new Date(),
+      createdAt: new Date()
     },
     );
     res.status(201).json({id: addPantryReferences.id});
