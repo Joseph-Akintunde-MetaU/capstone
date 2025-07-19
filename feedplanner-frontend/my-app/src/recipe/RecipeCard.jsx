@@ -5,19 +5,20 @@ import {FaStar} from "react-icons/fa"
 import { auth } from "../config/firebase.config"
 import { useState,useEffect } from "react"
 import { ToastContainer } from "react-toastify"
-export function RecipeCard({id, image, title}){
+export function RecipeCard({id, image, title, ingredients}){
     const [openModal, setOpenModal] = useState(false)
     const [rating, setRating] = useState(null)
     const [hover, setHover] = useState(null)
     const bookmarked = `bookmarked: ${id}`
+    const apiKey = `09acdb4877f5429e998f19def7cd5028`
     const [bookmarkedRecipe, setBookmarkedRecipe] = useState(false)
+    // const [recipeIngredients, setRecipeIngredients] = useState([])
     useEffect(() => {
         const storedBookmark = localStorage.getItem(bookmarked);
         if (storedBookmark === "true") {
             setBookmarkedRecipe(true);
         }
     }, []);
-
     async function bookMarkingToggle(e){
         e.stopPropagation()
         try{
@@ -37,7 +38,7 @@ export function RecipeCard({id, image, title}){
             setBookmarkedRecipe(nextBookmarkedState)
             
             localStorage.setItem(bookmarked, nextBookmarkedState.toString())
-        }catch(error){
+        }catch(error){ 
             console.error(`failed to bookmark due to ${error}`)
         }
     }
@@ -48,7 +49,7 @@ export function RecipeCard({id, image, title}){
                     <div className="front-recipe-card">
                         <img src={image} alt={title}></img>
                         <p>{title}</p>
-                        
+                        <p>{ingredients}</p>
                    
                     </div>
                         <div className="back-recipe-card">
