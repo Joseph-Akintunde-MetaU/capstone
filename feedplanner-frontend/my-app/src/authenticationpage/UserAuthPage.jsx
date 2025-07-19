@@ -15,7 +15,6 @@ export function UserAuthPage(){
     function toggleAuthMode(){
         setShowLogin((prev) => !prev);
     }
-
     const googleProvider = new GoogleAuthProvider();
     const baseUrl = "/feedplanner/us-central1/validateUserJWTToken"
     async function handleGoogleLogin(){
@@ -30,6 +29,7 @@ export function UserAuthPage(){
                     createdAt: serverTimestamp()
                 })
             const token = await googleUser.getIdToken()
+            console.log(token)
              // eslint-disable-next-line no-unused-vars
              const response = await fetch(
                     baseUrl,
