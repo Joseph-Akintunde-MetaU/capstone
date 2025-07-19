@@ -24,7 +24,7 @@ export function RecipePage({recipes, setRecipes}){
                 })
                 const ingredients = await response.json()
                 const stringIngredients = ingredients.Ingredients
-                const fetchFromApi = await fetch (`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=4`)
+                const fetchFromApi = await fetch (`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=10`)
                 const data = await fetchFromApi.json()
                 setRecipes(data)
                 const recipeIds = data.map(recipe => recipe.id);
