@@ -10,7 +10,6 @@ export function RecipeCard({id, image, title, ingredients}){
     const [rating, setRating] = useState(null)
     const [hover, setHover] = useState(null)
     const bookmarked = `bookmarked: ${id}`
-    const apiKey = process.env.REACT_APP_API_KEY
     const [bookmarkedRecipe, setBookmarkedRecipe] = useState(false)
     useEffect(() => {
         const storedBookmark = localStorage.getItem(bookmarked);
