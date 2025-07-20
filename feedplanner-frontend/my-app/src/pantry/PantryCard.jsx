@@ -24,7 +24,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
                     'content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                       [field]: value
+                        [field]: value
                     })
                 })
                 getPantry()
@@ -34,11 +34,9 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
         }
     }
     async function deletePantry(){  
-        // eslint-disable-next-line no-unused-vars
         onAuthStateChanged(auth, async(user) => {
             if(user){
                 const token = await user.getIdToken()
-                // eslint-disable-next-line no-unused-vars
                 const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/${id}` ,{
                 method: "DELETE",
                 headers:{
