@@ -8,7 +8,7 @@ import { ViewAffectedModal } from "./ViewAffectedModal";
 import { deleteDoc, getDocs, query, collection, orderBy, doc, updateDoc } from "firebase/firestore";
 export default function NotificationCenter({openDrawer, setOpenDrawer, notifications, setNotifications}){
     const [openModal, setOpenModal] = useState(false)
-    const [selectedIngredient, setSelectedIngredient] = useState(null)
+    const [selectedNotification, setSelectedNotification] = useState(null)
     const user = auth.currentUser; 
     useEffect(() => {
         if(!user) return;
@@ -74,7 +74,7 @@ export default function NotificationCenter({openDrawer, setOpenDrawer, notificat
                                 {notification.expiredIngredient && (
                                     <button onClick={() => {
                                         setOpenModal(true)
-                                        setSelectedIngredient(notification.expiredIngredient)
+                                        setSelectedNotification(notification)
                                     }}>
                                         AFFECTED RECIPES
                                     </button>
@@ -83,12 +83,12 @@ export default function NotificationCenter({openDrawer, setOpenDrawer, notificat
                         </div>
                     ))
                 )}
-                {openModal && selectedIngredient && (
+                {openModal && selectedNotification && (
                     <ViewAffectedModal 
-                        ingredient={selectedIngredient} 
+                        notification={selectedNotification} 
                         onClose={() => {
                             setOpenModal(false)
-                            setSelectedIngredient(null)
+                            setSelectedNotification(null)
                         }}
                     />
                 )}

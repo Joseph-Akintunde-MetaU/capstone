@@ -20,7 +20,7 @@ app.use(authMiddleware);
 app.use("/pantry", pantryRoute);
 app.use("/mealPlanner", MealPlannerRoute);
 app.use("/bookmark", bookmarkRoute);
-const apiKey = `39a5dfc9b1c848038cf4874227a4e90d`;
+const apiKey = process.env.REACT_APP_API_KEY;
 // creating a new cloud function that's triggered by an https request.
 exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
@@ -72,6 +72,7 @@ async function nutritionVector(ingredient) {
   const nutrients = data.nutrition.nutrients || [];
   const get = (n) => nutrients.find((item) => item.name === n).amount || 0;
   return [
+    get("Calories"),
     get("Protein"),
     get("Fat"),
     get("Carbohydrates"),
@@ -121,25 +122,19 @@ async function runExpiryCheck() {
         try {
           const originalVector = await nutritionVector(item.name);
           const substitutes = await getSubstitutes(item.name);
-          console.log("original vector for ", item.name, originalVector);
-          console.log(substitutes);
           const scored = await Promise.all(
               substitutes.map(async (sub) => {
                 try {
                   const subVector = await nutritionVector(sub);
-                  console.log(`substitute ${sub}:`, subVector);
-                  console.log(`cosine similarity `, cosineSimilarity(originalVector, subVector));
                   return {
                     name: sub,
                     score: cosineSimilarity(originalVector, subVector),
                   };
                 } catch (error) {
-                  // If fetching nutrition vector fails (e.g., due to name mismatch), try a relaxed match
                   if (
                     item.name.toLowerCase().includes(sub.toLowerCase()) ||
                     sub.toLowerCase().includes(item.name.toLowerCase())
                   ) {
-                    // Consider as a match with high similarity
                     return {
                       name: sub,
                       score: 1,
@@ -154,8 +149,8 @@ async function runExpiryCheck() {
           );
           top2Substitutes = scored.sort
           ((a, b) => b.score - a.score)
-              .slice(0, 3)
-              .map((s) => s.name);
+              .slice(0, 2)
+              .map((s) => s.name.split("=")[1]);
         } catch (error) {
           console.error("substitution error");
         }

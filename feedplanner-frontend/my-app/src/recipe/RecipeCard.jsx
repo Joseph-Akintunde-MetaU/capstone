@@ -48,7 +48,6 @@ export function RecipeCard({id, image, title, ingredients}){
                         <img src={image} alt={title}></img>
                         <p>{title}</p>
                         <p>Ingredients used: {ingredients}</p>
-                   
                     </div>
                         <div className="back-recipe-card">
                             <div className="ratings">

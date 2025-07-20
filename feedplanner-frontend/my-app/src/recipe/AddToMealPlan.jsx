@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRecipeName, getMealPlans}){
     const [selectedDay, setSelectedDay] = useState('')
     const [selectedMealType, setSelectedMealType] = useState('')
+    const apiKey = process.env.REACT_APP_API_KEY
     const nav = useNavigate()
     function getDateOfSelectedWeekday(WeekStart, day){
         const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
@@ -60,7 +61,7 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
         const token = await user.getIdToken()
                 if(user){
                     try{
-                        const ingredientsResponse = await fetch (`https://api.spoonacular.com/recipes/${selectedRecipeId}/ingredientWidget.json?apiKey=99ef92bd289d40adad70faaf03409ec2`)
+                        const ingredientsResponse = await fetch (`https://api.spoonacular.com/recipes/${selectedRecipeId}/ingredientWidget.json?apiKey=${apiKey}`)
                         const ingredientData = await ingredientsResponse.json()
                         const ingredients = ingredientData.ingredients.map((ingredient) => ingredient.name.toLowerCase())
                         const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/mealPlanner/` ,{
