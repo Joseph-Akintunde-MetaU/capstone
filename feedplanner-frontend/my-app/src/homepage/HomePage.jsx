@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress';
 import { FeaturedRecipeList } from './featuredRecipeList'
 export function HomePage({isSignedOut}){
-    const apiKey = process.env.REACT_APP_API_KEY
+    const apiKey = "9f5f77e215114d69a36f595a90794930"
     const username = localStorage.getItem("username")
     const [featuredRecipes, setFeaturedRecipes] = useState([])
     // eslint-disable-next-line no-unused-vars

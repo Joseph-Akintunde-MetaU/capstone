@@ -47,7 +47,7 @@ export function RecipeCard({id, image, title, ingredients}){
                     <div className="front-recipe-card">
                         <img src={image} alt={title}></img>
                         <p>{title}</p>
-                        <p>{ingredients}</p>
+                        <p>Ingredients used: {ingredients}</p>
                    
                     </div>
                         <div className="back-recipe-card">
