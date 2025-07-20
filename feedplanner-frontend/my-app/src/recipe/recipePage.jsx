@@ -24,7 +24,6 @@ export function RecipePage({recipes, setRecipes}){
                 })
                 const ingredients = await response.json()
                 const stringIngredients = ingredients.Ingredients
-                console.log(stringIngredients)
                 const fetchFromApi = await fetch (`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=10`)
                 const data = await fetchFromApi.json()
                 setRecipes(data)
