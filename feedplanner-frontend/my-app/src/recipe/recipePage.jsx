@@ -9,7 +9,7 @@ import { useEffect } from "react";
 export function RecipePage({recipes, setRecipes}){
     const [loading, setLoading] = useState(true)
     const [recipeIngredients,  setRecipeIngredients] = useState({})
-    const apiKey = process.env.REACT_APP_API_KEY
+    const apiKey = "99ef92bd289d40adad70faaf03409ec2"
         async function getRecipes(){
         const fetchMatchingRecipe = onAuthStateChanged(auth, async(user) => {
             try{
@@ -24,6 +24,7 @@ export function RecipePage({recipes, setRecipes}){
                 })
                 const ingredients = await response.json()
                 const stringIngredients = ingredients.Ingredients
+                console.log(stringIngredients)
                 const fetchFromApi = await fetch (`https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=10`)
                 const data = await fetchFromApi.json()
                 setRecipes(data)
