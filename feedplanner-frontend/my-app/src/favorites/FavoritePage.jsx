@@ -3,23 +3,23 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { GetBookmarks } from "../utility/getBookmarks";
 import  FavoritePageList  from "./FavoritesPageList";
 export function FavoritePage({scoredRecipes}){
-    const [bookmarkedData, setBookmarkedData] = useState([])
+    const [favoritedData, setFavoritedData] = useState([])
     const apiKey = process.env.REACT_APP_API_KEY
     const [loading, setLoading] = useState(true)
-    const [bookmarkedRecipeCards, setBookmarkedRecipeCards] = useState([])
+    const [favoritedRecipeCards, setFavoritedRecipeCards] = useState([])
     useEffect(() => {
-         GetBookmarks(setBookmarkedData, setLoading)
+         GetBookmarks(setFavoritedData, setLoading)
     },[]) 
-    async function getBookmarkedRecipes(){
+    async function getFavoritedRecipes(){
         try{
             
-            const fetches = bookmarkedData.map(async(id) => {
+            const fetches = favoritedData.map(async(id) => {
                 const response = await fetch (`https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`)
                 const data = await response.json()
                 return data
             })
             const results = await Promise.all(fetches)
-            setBookmarkedRecipeCards(results)
+            setFavoritedRecipeCards(results)
         }catch(error){
             console.error(error)
         }finally{
@@ -27,13 +27,13 @@ export function FavoritePage({scoredRecipes}){
         }
     }
     useEffect(() => {
-        getBookmarkedRecipes()
-    },[bookmarkedData])
+        getFavoritedRecipes()
+    },[favoritedData])
     return(
         <div style = {{padding: "4rem"}}className="favorites-list">
             <h1>FAVORITES</h1>
             {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
-            <FavoritePageList recipes={bookmarkedRecipeCards}/>}
+            <FavoritePageList recipes={favoritedRecipeCards}/>}
         </div>
     )
 }
