@@ -41,7 +41,7 @@ export function RecipeCard({id, image, name,score,ingredients}){
             setBookmarkedRecipe(nextBookmarkedState)
             localStorage.setItem(bookmarked, nextBookmarkedState.toString())
         }catch(error){
-            console.error(error)
+            throw new Error(error)
         }
     }
     return(

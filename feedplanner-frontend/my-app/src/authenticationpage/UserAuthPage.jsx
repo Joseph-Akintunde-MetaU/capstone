@@ -29,9 +29,8 @@ export function UserAuthPage(){
                     createdAt: serverTimestamp()
                 })
             const token = await googleUser.getIdToken()
-            console.log(token)
              // eslint-disable-next-line no-unused-vars
-             const response = await fetch(
+            const response = await fetch(
                     baseUrl,
                     {
                         method: "GET",
