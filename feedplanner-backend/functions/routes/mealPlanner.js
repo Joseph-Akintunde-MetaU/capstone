@@ -35,7 +35,6 @@ router.post("/", async (req, res) => {
     const existing = await mealPlannerRef.where("dayOfTheWeek", "==", dayOfTheWeek).where("mealType", "==", mealType).where("weekOf", "==", weekOf).get();
     if (!existing.empty) {
       res.status(409).json({"error": "You have already a meal for that slot"});
-      return;
     }
     const getMealPlannerRef = await mealPlannerRef.add({
       recipeId,
@@ -48,7 +47,7 @@ router.post("/", async (req, res) => {
     });
     res.status(201).json({id: getMealPlannerRef.id});
   } catch (error) {
-    res.status(500).json({error: "error"});
+    res.status(501).json({errror: "error"});
     console.error(error);
   }
 });
@@ -60,7 +59,7 @@ router.delete("/:mealPlannerId", async (req, res) => {
     const deleteMealPlannerRef = await mealPlannerRef.delete();
     res.status(200).json({"message": `entry ${mealPlannerId} deleted`});
   } catch (error) {
-    res.status(500).json({error: "error"});
+    res.status(501).json({error: "error"});
   }
 });
 module.exports = router;
