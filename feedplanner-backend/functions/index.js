@@ -12,14 +12,14 @@ const cors = require("cors")({origin: true});
 const authMiddleware = require("./authMiddleware");
 const pantryRoute = require("./routes/pantry");
 const MealPlannerRoute = require("./routes/mealPlanner");
-const bookmarkRoute = require("./routes/bookmark");
+const favoriteRoute = require("./routes/favorites");
 const {onSchedule} = require("firebase-functions/scheduler");
 const db = admin.firestore();
 app.use(bodyParser.json());
 app.use(authMiddleware);
 app.use("/pantry", pantryRoute);
 app.use("/mealPlanner", MealPlannerRoute);
-app.use("/bookmark", bookmarkRoute);
+app.use("/favorites", favoriteRoute);
 const apiKey = process.env.REACT_APP_API_KEY;
 // creating a new cloud function that's triggered by an https request.
 exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
@@ -78,6 +78,12 @@ async function nutritionVector(ingredient) {
     get("Carbohydrates"),
     get("Sugar"),
     get("Fiber"),
+    get("Sodium"),
+    get("Vitamin C"),
+    get("Magnesium"),
+    get("Potassium"),
+    get("Vitamin E"),
+    get("Vitamin A"),
   ];
 }
 async function getSubstitutes(ingredient) {

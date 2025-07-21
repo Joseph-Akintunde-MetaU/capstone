@@ -5,7 +5,7 @@ export async function GetBookmarks(setBookmarkedData, setLoading){
             try{
                 if(user){
                     const token = await user.getIdToken()
-                    const fetchBookmarkedIds = await fetch ("http://localhost:5001/feedplanner/us-central1/api/bookmark" , {
+                    const fetchBookmarkedIds = await fetch ("http://localhost:5001/feedplanner/us-central1/api/favorites" , {
                         method: "GET",
                         headers:{
                             Authorization: `Bearer ${token}`,
