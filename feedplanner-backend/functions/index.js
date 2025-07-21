@@ -183,13 +183,9 @@ async function runExpiryCheck() {
   return null;
 }
 exports.checkExpiryScheduled = onSchedule({
-  schedule: "every 1 minutes",
+  schedule: "every 2 hours",
   timeZone: "America/Los_Angeles",
 }, async () => {
   await runExpiryCheck();
-});
-exports.testRunExpiry = functions.https.onRequest(async (req, res) => {
-  await runExpiryCheck();
-  res.status(200).send("run expiry check!");
 });
 exports.api = functions.https.onRequest(app);
