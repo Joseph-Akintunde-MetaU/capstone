@@ -90,7 +90,7 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
                         closeModal(false)
                         nav("/mealPlanner")
                     }catch(error){
-                        console.log(error);
+                        throw new Error(error)
                 }
         }
     }
