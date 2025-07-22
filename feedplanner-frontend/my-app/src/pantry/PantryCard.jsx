@@ -105,7 +105,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
 
     function buildExpiryMessage(isExpired, days, hours, minutes, expiry) {
         const dayStr = days > 0 ? `${days}d ` : '';
-        const hourStr = hours > 0 ? ` ${hours}h` : '';
+        const hourStr = ` ${hours}h`;
         const minuteStr = ` ${minutes}m`;
 
         const localeString = expiry.toLocaleString(undefined, {
