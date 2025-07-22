@@ -56,7 +56,7 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
 
             return { recipesInformationForScoring, ingredientsMap };
         } catch (error) {
-            console.error(error.message);
+            throw new Error(error)
             return { recipesInformationForScoring: [], ingredientsMap: {} };
         }
     }
