@@ -19,7 +19,7 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
                 `http://localhost:5001/feedplanner/us-central1/api/pantry/ingredients`,
                 {
                     method: "GET",
-                    headers:{
+                    headers: {
                         Authorization: `Bearer ${token}`,
                         "content-type": "application/json",
                     },
@@ -57,7 +57,6 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
             return { recipesInformationForScoring, ingredientsMap };
         } catch (error) {
             throw new Error(error)
-            return { recipesInformationForScoring: [], ingredientsMap: {} };
         }
     }
 
