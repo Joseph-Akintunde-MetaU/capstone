@@ -78,6 +78,12 @@ async function nutritionVector(ingredient) {
     get("Carbohydrates"),
     get("Sugar"),
     get("Fiber"),
+    get("Sodium"),
+    get("Vitamin C"),
+    get("Magnesium"),
+    get("Potassium"),
+    get("Vitamin E"),
+    get("Vitamin A"),
   ];
 }
 async function getSubstitutes(ingredient) {
@@ -85,6 +91,128 @@ async function getSubstitutes(ingredient) {
   const data = await response.json();
   return data.substitutes || [];
 }
+async function getExpiryType(expiry, today, millisecondsInADay) {
+  const daysLeft = expiry - today;
+  if (daysLeft < 0) return "expired";
+  if (daysLeft <= millisecondsInADay) return "expiring soon";
+  return null;
+}
+
+async function getExistingNotification(notificationsRef, itemId, type) {
+  return await notificationsRef
+    .where("itemId", "==", itemId)
+    .where("type", "==", type)
+    .where("read", "==", false)
+    .limit(1)
+    .get();
+}
+
+async function getTop2Substitutes(item) {
+  try {
+    const originalVector = await nutritionVector(item.name);
+    const substitutes = await getSubstitutes(item.name);
+    const scored = await Promise.all(
+      substitutes.map(async (sub) => {
+        try {
+          const subVector = await nutritionVector(sub);
+          return {
+            name: sub,
+            score: cosineSimilarity(originalVector, subVector),
+          };
+        } catch (error) {
+          if (
+            item.name.toLowerCase().includes(sub.toLowerCase()) ||
+            sub.toLowerCase().includes(item.name.toLowerCase())
+          ) {
+            return {
+              name: sub,
+              score: 1,
+            };
+          }
+          return {
+            name: sub,
+            score: 0,
+          };
+        }
+      }),
+    );
+    return scored
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 2)
+      .map((s) => s.name.split("=")[1]);
+  } catch (error) {
+    console.error("substitution error");
+    return [];
+  }
+}
+
+async function getAffectedRecipes(db, userId, itemName) {
+  const getMealPlan = await db
+    .collection("users")
+    .doc(userId)
+    .collection("mealPlan")
+    .where("ingredients", "array-contains", itemName)
+    .get();
+  return getMealPlan.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+}
+
+async function processPantryItem({
+  pantryItem,
+  pantryRef,
+  notificationsRef,
+  today,
+  millisecondsInADay,
+  db,
+  userId,
+}) {
+  const item = pantryItem.data();
+  const itemId = pantryItem.id;
+  const expiry =
+    item.expiryDate && item.expiryDate.toDate
+      ? item.expiryDate.toDate()
+      : new Date(item.expiryDate);
+
+  const type = await getExpiryType(expiry, today, millisecondsInADay);
+  if (!type) return;
+
+  const existingNotification = await getExistingNotification(
+    notificationsRef,
+    itemId,
+    type,
+  );
+  if (!existingNotification.empty) return;
+
+  const message =
+    type === "expired"
+      ? `${item.name} has expired`
+      : `${item.name} will expire soon`;
+
+  let top2Substitutes = [];
+  if (type === "expired") {
+    top2Substitutes = await getTop2Substitutes(item);
+  }
+
+  const affectedRecipes = await getAffectedRecipes(db, userId, item.name);
+
+  await notificationsRef.add({
+    message,
+    itemId,
+    type,
+    read: false,
+    createdAt: new Date(),
+    expiredIngredient: item.name,
+    substitutes: top2Substitutes,
+    affectedRecipes: affectedRecipes,
+  });
+
+  if (type === "expired") {
+    await pantryRef.doc(itemId).update({ expired: true });
+  }
+}
+
 async function runExpiryCheck() {
   const today = new Date();
   const millisecondsInADay = 24 * 60 * 60 * 1000;
@@ -95,93 +223,20 @@ async function runExpiryCheck() {
     const getpantryRef = await pantryRef.get();
     const notificationsRef = db.collection("users").doc(userId).collection("notifications");
     for (const pantryItem of getpantryRef.docs) {
-      const item = pantryItem.data();
-      const itemId = pantryItem.id;
-      const expiry = item.expiryDate && item.expiryDate.toDate?
-          item.expiryDate.toDate() :
-          new Date(item.expiryDate);
-      const daysLeft = expiry-today;
-      let type = null;
-      if (daysLeft<0) {
-        type = "expired";
-      } else if (daysLeft <= millisecondsInADay) {
-        type = "expiring soon";
-      }
-      if (!type) continue;
-      const existingNotification = await notificationsRef
-          .where("itemId", "==", itemId)
-          .where("type", "==", type)
-          .where("read", "==", false)
-          .limit(1)
-          .get();
-      if (!existingNotification.empty) continue;
-      const message =
-          type === "expired" ? `${item.name} has expired` : `${item.name} will expire soon`;
-      let top2Substitutes = [];
-      if (type === "expired") {
-        try {
-          const originalVector = await nutritionVector(item.name);
-          const substitutes = await getSubstitutes(item.name);
-          const scored = await Promise.all(
-              substitutes.map(async (sub) => {
-                try {
-                  const subVector = await nutritionVector(sub);
-                  return {
-                    name: sub,
-                    score: cosineSimilarity(originalVector, subVector),
-                  };
-                } catch (error) {
-                  if (
-                    item.name.toLowerCase().includes(sub.toLowerCase()) ||
-                    sub.toLowerCase().includes(item.name.toLowerCase())
-                  ) {
-                    return {
-                      name: sub,
-                      score: 1,
-                    };
-                  }
-                  return {
-                    name: sub,
-                    score: 0,
-                  };
-                }
-              }),
-          );
-          top2Substitutes = scored.sort
-          ((a, b) => b.score - a.score)
-              .slice(0, 2)
-              .map((s) => s.name.split("=")[1]);
-        } catch (error) {
-          console.error("substitution error");
-        }
-      }
-      const getMealPlan = await db
-          .collection("users")
-          .doc(userId)
-          .collection("mealPlan")
-          .where("ingredients", "array-contains", item.name)
-          .get();
-      const affectedRecipes = getMealPlan.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      await notificationsRef.add({
-        message,
-        itemId,
-        type,
-        read: false,
-        createdAt: new Date(),
-        expiredIngredient: item.name,
-        substitutes: top2Substitutes,
-        affectedRecipes: affectedRecipes,
+      await processPantryItem({
+        pantryItem,
+        pantryRef,
+        notificationsRef,
+        today,
+        millisecondsInADay,
+        db,
+        userId,
       });
-      if (type === "expired") {
-        await pantryRef.doc(itemId).update({expired: true});
-      }
     }
   }
   return null;
 }
+
 exports.checkExpiryScheduled = onSchedule({
   schedule: "every 2 hours",
   timeZone: "America/Los_Angeles",
