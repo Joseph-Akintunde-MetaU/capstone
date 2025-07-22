@@ -9,14 +9,14 @@ export function ChangePassword({close, isSignedOut}){
             console.log("Password Reset Successful")
             isSignedOut()
         }).catch((error) => {
-            console.error(error)
+            throw new Error(error)
         })
     }
     return(
         <div>
             <form>
                 <label>New Password</label>
-                <input type="text" value={newPassword} onChange={(e) => setNewPassword(e.target.value)}/>
+                <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)}/>
                 <button onClick={handleChangePassword}>SUBMIT</button>
             </form>
             <button onClick={() => close(false)}>CLOSE</button>
