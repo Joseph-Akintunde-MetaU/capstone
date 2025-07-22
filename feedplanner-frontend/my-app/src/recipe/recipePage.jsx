@@ -5,7 +5,7 @@ import { auth } from "../config/firebase.config";
 import { onAuthStateChanged } from "firebase/auth";
 import CircularProgress from "@mui/material/CircularProgress";
 import { db } from "../config/firebase.config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs,getDoc, doc} from "firebase/firestore";
 import { ScoreRecommendationForRecipes } from "../utility/scoreRecommendationForRecipes";
 
 export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipes }) {
@@ -72,6 +72,19 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
         return snapshot.docs.map((doc) => doc.data());
     }
 
+    async function getMedianRating(recipeIds){
+        const ratings = await Promise.all(
+            recipeIds.map(async (recipeId) => {
+                const recipeIdDoc = await getDoc(doc(collection(db, "recipeRatings"), recipeId.toString()));
+                const data = recipeIdDoc.data();
+                return {
+                    id: recipeId,
+                    medianRating: data ? data.medianRating : null,
+                };
+            })
+        );
+        return ratings;
+    }
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -80,15 +93,18 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
                 const favoritesList = await getFavorites(user);
                 const { recipesInformationForScoring, ingredientsMap } = await getRecipes(token);
                 setRecipeIngredients(ingredientsMap);
-
+                const recipeIds = recipesInformationForScoring.map(r => r.id);
+                const ratingsList = await getMedianRating(recipeIds);
                 if (
                     pantryList &&
                     favoritesList &&
+                    ratingsList &&
                     recipesInformationForScoring.length > 0
                 ) {
                     const sortedRecommendations = ScoreRecommendationForRecipes(
                         pantryList,
                         favoritesList,
+                        ratingsList,
                         recipesInformationForScoring
                     );
                     setScoredRecipes(sortedRecommendations);
