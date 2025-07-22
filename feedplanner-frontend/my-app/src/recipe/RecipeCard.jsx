@@ -21,28 +21,24 @@ export function RecipeCard({id, image, name,score,ingredients}){
 
     async function bookMarkingToggle(e){
         e.stopPropagation()
-        try{
-            const token = await auth.currentUser.getIdToken()
-            const nextBookmarkedState = !bookmarkedRecipe;
-            await fetch("http://localhost:5001/feedplanner/us-central1/api/favorites", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    recipeId: id,
-                    recipeName: name,
-                    imageUrl: image,
-                    isFavorited: nextBookmarkedState,
-                    ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(",").map(i => i.trim())
-                }),
-            });
-            setBookmarkedRecipe(nextBookmarkedState)
-            localStorage.setItem(bookmarked, nextBookmarkedState.toString())
-        }catch(error){
-            throw new Error(error)
-        }
+        const token = await auth.currentUser.getIdToken()
+        const nextBookmarkedState = !bookmarkedRecipe;
+        await fetch("http://localhost:5001/feedplanner/us-central1/api/favorites", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                recipeId: id,
+                recipeName: name,
+                imageUrl: image,
+                isFavorited: nextBookmarkedState,
+                ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(",").map(i => i.trim())
+            }),
+        });
+        setBookmarkedRecipe(nextBookmarkedState)
+        localStorage.setItem(bookmarked, nextBookmarkedState.toString())
     }
     return(
         <div>

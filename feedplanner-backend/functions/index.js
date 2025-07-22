@@ -78,6 +78,12 @@ async function nutritionVector(ingredient) {
     get("Carbohydrates"),
     get("Sugar"),
     get("Fiber"),
+    get("Sodium"),
+    get("Vitamin C"),
+    get("Magnesium"),
+    get("Potassium"),
+    get("Vitamin E"),
+    get("Vitamin A"),
   ];
 }
 async function getSubstitutes(ingredient) {
