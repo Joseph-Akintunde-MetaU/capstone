@@ -8,16 +8,17 @@ export function CreatePantryItem({closeModal,getPantry}){
     const [quantity, setQuantity] = useState('')
     const [unit, setUnit] = useState('') 
     const [expiryDate, setExpiryDate] = useState('')
-    async function addPantry(){
-       const user = auth.currentUser;
-            if(user){
-                const token = await user.getIdToken()
-                const [datePart, timePart] = expiryDate.split("T");
-                const [year, month, day] = datePart.split("-").map(Number);
-                const [hour, minute] = timePart.split(":").map(Number);
-                const localDate = new Date(year, month - 1, day, hour, minute);
-                const expiryDateISO = localDate.toISOString();
-                const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/` ,{
+    async function addPantry(e){
+        e.preventDefault();
+        const user = auth.currentUser;
+        if(user){
+            const token = await user.getIdToken();
+            const [datePart, timePart] = expiryDate.split("T");
+            const [year, month, day] = datePart.split("-").map(Number);
+            const [hour, minute] = timePart.split(":").map(Number);
+            const localDate = new Date(year, month - 1, day, hour, minute);
+            const expiryDateISO = localDate.toISOString();
+            const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/` ,{
                 method: "POST",
                 headers:{
                     Authorization: `Bearer ${token}`,
@@ -29,17 +30,28 @@ export function CreatePantryItem({closeModal,getPantry}){
                     unit: unit,
                     expiryDate: expiryDateISO
                 })
-            })
-                const data = await response.json()
-                getPantry()
-            }else{
-                console.log("user not logged in")
-            }
+            });
+            const data = await response.json();
+            getPantry();
+            setName('');
+            setQuantity('');
+            setUnit('');
+            setExpiryDate('');
+        }else{
+            console.log("user not logged in");
+        }
     }
     return(
         <div className="modal-overlay">
             <div className="modal">
-                <form action="" className="modalToAddPantry">
+                <form
+                    action=""
+                    className="modalToAddPantry"
+                    onSubmit={async (e) => {
+                        await addPantry(e);
+                        closeModal(false);
+                    }}
+                >
                     <label htmlFor="name">Name</label>
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
                     <label htmlFor="quantity">Quantity</label>
@@ -48,11 +60,10 @@ export function CreatePantryItem({closeModal,getPantry}){
                     <input type="text" value={unit} onChange = {(e) => setUnit(e.target.value)}/>
                     <label htmlFor="expiryDate">Expiry Date</label>
                     <input type="datetime-local" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
-                    <button onClick={addPantry}>CREATE</button>
+                    <button type="submit">CREATE</button>
                 </form>
                 <button onClick={() => closeModal(false)}>CLOSE</button>
             </div>
         </div>
-        
     )
 }

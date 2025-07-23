@@ -4,10 +4,12 @@ import {toast} from 'react-toastify'
 import { MdClose } from "react-icons/md";
 import { db } from "../config/firebase.config";
 import "./NotificationCenter.css"
+import { ViewAffectedModal } from "./ViewAffectedModal";
 import { deleteDoc, getDocs, query, collection, orderBy, doc, updateDoc } from "firebase/firestore";
-
 export default function NotificationCenter({openDrawer, setOpenDrawer, notifications, setNotifications}){
-    const user = auth.currentUser;
+    const [openModal, setOpenModal] = useState(false)
+    const [selectedNotification, setSelectedNotification] = useState(null)
+    const user = auth.currentUser; 
     useEffect(() => {
         if(!user) return;
         async function fetchNotification(){
@@ -32,13 +34,23 @@ export default function NotificationCenter({openDrawer, setOpenDrawer, notificat
     }, [user])
     
     async function deleteNotification(id){
-        await deleteDoc(doc(db, "users", user.uid, "notifications", id))
+        await deleteDoc(doc(db, "users", user.uid, "notifications", id));
+        setNotifications(notifications.filter(notification => notification.id !== id));
     }
     async function markAsRead(id) {
         await updateDoc(doc(db, "users", user.uid, "notifications", id), {
             read: true
         })
-        fetchNotification()
+        const getEarliestToLatestNotifications = query(
+            collection(db, "users", user.uid, "notifications"), 
+            orderBy("createdAt", "desc")
+        );
+        const getNotifications = await getDocs(getEarliestToLatestNotifications);
+        const notificationData = getNotifications.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        setNotifications(notificationData);
     }
     return(
         <div>
@@ -59,11 +71,27 @@ export default function NotificationCenter({openDrawer, setOpenDrawer, notificat
                             <div className="notif-acions">
                                 {!notification.read && <button onClick = {() => markAsRead(notification.id)}>DISMISS</button>}
                                 <button onClick={() => deleteNotification(notification.id)}>DELETE</button>
+                                {notification.expiredIngredient && (
+                                    <button onClick={() => {
+                                        setOpenModal(true)
+                                        setSelectedNotification(notification)
+                                    }}>
+                                        AFFECTED RECIPES
+                                    </button>
+                                )} 
                             </div>
                         </div>
                     ))
-                )
-            }
+                )}
+                {openModal && selectedNotification && (
+                    <ViewAffectedModal 
+                        notification={selectedNotification} 
+                        onClose={() => {
+                            setOpenModal(false)
+                            setSelectedNotification(null)
+                        }}
+                    />
+                )}
             </div>
         </div>
     )

@@ -30,7 +30,7 @@ export function UserAuthPage(){
                 })
             const token = await googleUser.getIdToken()
              // eslint-disable-next-line no-unused-vars
-             const response = await fetch(
+            const response = await fetch(
                     baseUrl,
                     {
                         method: "GET",
