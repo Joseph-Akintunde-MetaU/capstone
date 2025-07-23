@@ -20,7 +20,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
                     'content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                       [field]: value
+                        [field]: value
                     })
                 })
                 getPantry()
@@ -30,11 +30,9 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
         }
     }
     async function deletePantry(){  
-        // eslint-disable-next-line no-unused-vars
         onAuthStateChanged(auth, async(user) => {
             if(user){
                 const token = await user.getIdToken()
-                // eslint-disable-next-line no-unused-vars
                 const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/pantry/${id}` ,{
                 method: "DELETE",
                 headers:{
@@ -55,7 +53,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
     const { daysTillExpiry, hoursTillExpiry, minutesTillExpiry } = getTimeBreakdown(absoluteDifference);
 
     // Determine color based on days left
-    const color = getColorByDaysLeft(isExpired, daysTillExpiry, hoursTillExpiry);
+    const color = getColorByDaysLeft(isExpired, daysTillExpiry, hoursTillExpiry,minutesTillExpiry);
 
     // Construct the message
     const expiryMessage = buildExpiryMessage(isExpired, daysTillExpiry, hoursTillExpiry, minutesTillExpiry, expiry);
@@ -85,7 +83,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
         return { daysTillExpiry, hoursTillExpiry, minutesTillExpiry };
     }
 
-    function getColorByDaysLeft(isExpired, daysTillExpiry, hoursTillExpiry) {
+    function getColorByDaysLeft(isExpired, daysTillExpiry, hoursTillExpiry, minutesTillExpiry) {
         if(isExpired){
             return 'red'
         }
@@ -95,7 +93,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
             return 'orange';
         } else if (hoursTillExpiry > 4) {
             return 'coral';
-        } else if (hoursTillExpiry > 1) {
+        } else if (hoursTillExpiry > 1 || minutesTillExpiry > 0) {
             return 'crimson';
         }
 
@@ -112,6 +110,7 @@ export function PantryCard({id, name, quantity, unit, expiryDate, getPantry}){
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
+            hour12: false
         });
         if (isExpired) {
             return `Expired ${dayStr}${hourStr}${minuteStr} ago (on ${localeString})`;
