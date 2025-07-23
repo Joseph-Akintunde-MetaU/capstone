@@ -64,6 +64,7 @@ function App() {
   const [recipes, setRecipes] = useState ([]);
   const [openDrawer, setOpenDrawer] = useState(false)
   const [notifications, setNotifications] = useState([])
+  const [scoredRecipes, setScoredRecipes] = useState([]);
   const unreadCount = notifications.filter((n) => !n.read).length
   return (
     <div className='home'>
@@ -92,10 +93,10 @@ function App() {
         <Route path='/home' element={ isAuthenticated === false ? <Navigate to="/"/> : <HomePage isSignedOut={isSignedOut}/>} />
         <Route path='/errorpage' element={ isAuthenticated === false ? <Navigate to="/"/> : <ErrorPage/>} />
         <Route path='/pantry' element = {isAuthenticated === false ? <Navigate to="/"/> : <PantryManager/>}/>
-        <Route path = "/recipes" element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes={recipes} setRecipes={setRecipes}/>}/>
+        <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes={recipes} setRecipes={setRecipes} scoredRecipes={scoredRecipes} setScoredRecipes={setScoredRecipes}/>}/>
         <Route path='/mealplanner' element = {isAuthenticated === false ? <Navigate to="/"/> : <MealPlannerPage/>}/>
         <Route path='/profile' element = {isAuthenticated === false ? <Navigate to = "/"/> : <ProfilePage isSignedOut={isSignedOut}/>}/>
-        <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage recipes={recipes}/>}/>
+        <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage scoredRecipes={scoredRecipes}/>}/>
       </Routes>
       <NotificationCenter openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} notifications={notifications} setNotifications={setNotifications}/>
       <ToastContainer position='top-right' autoClose = {5000} closeOnClick pauseOnHover draggable hideProgressBar = {false} theme = {darkMode ? "dark":"light"}/>
