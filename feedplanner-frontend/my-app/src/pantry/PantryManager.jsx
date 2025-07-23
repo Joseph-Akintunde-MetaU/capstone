@@ -19,6 +19,8 @@ export function PantryManager(){
             })
                 const data = await response.json()
                 setPantry(data)
+            }else{
+                console.log("user not logged in")
             }
         })
     }
@@ -33,6 +35,5 @@ export function PantryManager(){
                 <AllPantry pantry={pantry} getPantry={getPantry}/>
                 {openModal && <CreatePantryItem closeModal={setOpenModal} getPantry={getPantry}/>}
             </div>
-        </div>
         )
 }

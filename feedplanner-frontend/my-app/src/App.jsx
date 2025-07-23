@@ -85,8 +85,7 @@ function App() {
                 </button>
                 <button onClick={() => setOpenDrawer(true)}><img src="https://img.icons8.com/?size=100&id=11642&format=png&color=000000" alt="" />{unreadCount > 0 ? <span>{unreadCount}</span> : ''}</button>
                   </div>
-                </nav>
-                
+                </nav>           
         </header>}
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
