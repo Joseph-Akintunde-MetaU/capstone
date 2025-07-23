@@ -8,7 +8,7 @@ import { db } from "../config/firebase.config";
 import { collection, getDocs,getDoc, doc} from "firebase/firestore";
 import { ScoreRecommendationForRecipes } from "../utility/scoreRecommendationForRecipes";
 
-export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipes }) {
+export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipes}) {
     const [loading, setLoading] = useState(true);
     const [recipeIngredients, setRecipeIngredients] = useState({});
     const apiKey = process.env.REACT_APP_API_KEY;
@@ -85,6 +85,21 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
         );
         return ratings;
     }
+    async function getPantryNameAndExpiry(user) {
+        const pantryRef = collection(db, "users", user.uid, "pantry");
+        const snapshot = await getDocs(pantryRef);
+        return snapshot.docs
+            .map((doc) => ({
+            name: doc.data().name ? doc.data().name.toLowerCase().trim() : "",
+            expiry: doc.data().expiryDate || null
+            }))
+            .filter(item => {
+            if (!item.expiry) return true;
+            const expiryDate = new Date(item.expiry);
+            const now = new Date();
+            return expiryDate >= now;
+            });
+    }
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -95,16 +110,19 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
                 setRecipeIngredients(ingredientsMap);
                 const recipeIds = recipesInformationForScoring.map(r => r.id);
                 const ratingsList = await getMedianRating(recipeIds);
+                const urgencyList = await getPantryNameAndExpiry(user)
                 if (
                     pantryList &&
                     favoritesList &&
                     ratingsList &&
+                    urgencyList &&
                     recipesInformationForScoring.length > 0
                 ) {
                     const sortedRecommendations = ScoreRecommendationForRecipes(
                         pantryList,
                         favoritesList,
                         ratingsList,
+                        urgencyList,
                         recipesInformationForScoring
                     );
                     setScoredRecipes(sortedRecommendations);
@@ -116,7 +134,6 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
                 setLoading(false);
             }
         });
-
         return () => unsubscribe();
     }, []);
     return (
