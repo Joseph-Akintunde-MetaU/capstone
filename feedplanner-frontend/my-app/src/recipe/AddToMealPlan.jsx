@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRecipeName, getMealPlans}){
     const [selectedDay, setSelectedDay] = useState('')
     const [selectedMealType, setSelectedMealType] = useState('')
+    const apiKey = process.env.REACT_APP_API_KEY
     const nav = useNavigate()
     function getDateOfSelectedWeekday(WeekStart, day){
         const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
@@ -55,14 +56,14 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
         const startOfWeek =new Date(today.getFullYear(), today.getMonth(), diff)
         startOfWeek.setHours(0,0,0,0)
         const weekOf = startOfWeek.toISOString().split("T")[0]
-        const expiredIngredients = await handleAlertingForExpiredItemsBeforeMealPlanning(weekOf,selectedDay)
-                if (expiredIngredients.length > 0){
-                    return;
-                } 
+        const warnForExpiredIngredients = await handleAlertingForExpiredItemsBeforeMealPlanning(weekOf, selectedDay)
         const user = auth.currentUser;
         const token = await user.getIdToken()
                 if(user){
                     try{
+                        const ingredientsResponse = await fetch (`https://api.spoonacular.com/recipes/${selectedRecipeId}/ingredientWidget.json?apiKey=${apiKey}`)
+                        const ingredientData = await ingredientsResponse.json()
+                        const ingredients = ingredientData.ingredients.map((ingredient) => ingredient.name.toLowerCase())
                         const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/mealPlanner/` ,{
                             method: "POST",
                             headers:{
@@ -74,7 +75,8 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
                                 recipeId: selectedRecipeId,
                                 dayOfTheWeek: selectedDay,
                                 mealType: selectedMealType,
-                                weekOf: weekOf
+                                weekOf: weekOf,
+                                ingredients: ingredients
                             })
                         })
                         if(response.status === 409){

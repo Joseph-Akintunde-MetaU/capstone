@@ -39,7 +39,6 @@ router.get("/ingredients", async (req, res) => {
     res.status(500).json({error: "error"});
   }
 });
-
 // add to pantry items
 router.post("/", async (req, res) => {
   try {
@@ -51,7 +50,7 @@ router.post("/", async (req, res) => {
       quantity,
       unit,
       expiryDate: new Date(expiryDate).toISOString(),
-      createdAt: new Date()
+      createdAt: new Date(),
     },
     );
     res.status(201).json({id: addPantryReferences.id});
