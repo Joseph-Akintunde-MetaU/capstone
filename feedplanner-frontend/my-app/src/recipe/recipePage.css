@@ -1,0 +1,10 @@
+.recipes{
+    display: grid;
+}
+.recipePage{
+    padding: 5em;
+}
+.recipeList{
+    width: 100%;
+    display: grid;
+}
