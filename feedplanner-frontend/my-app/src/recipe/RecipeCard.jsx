@@ -43,7 +43,7 @@ export function RecipeCard({id, image, name,score,ingredients}){
         setUserRating(value)
         const ratingSnap = await getDoc(doc(db, "recipeRatings", id.toString()))
         if(ratingSnap.exists()){
-            setAverageRating(ratingSnap.data().averageRatingOfAllUsers || 0)
+            setMedianRating(ratingSnap.data().medianRating || 0)
         }
     }
     async function bookMarkingToggle(e){
