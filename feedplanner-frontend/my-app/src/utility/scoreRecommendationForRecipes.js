@@ -1,5 +1,6 @@
 export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, recipeRatings, recipes){
     const frequencyMap = {}
+    //create a key value pair of objects that stores the number of times an ingredient in the recipe is found in the favorited recipes.
     recipes.forEach((recipe) => {
         recipe.ingredients.forEach((ingredient) => {
                 const key = ingredient.toLowerCase().trim()
@@ -15,25 +16,27 @@ export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, reci
         const ratingObj = recipeRatings.find(r => r.id.toString().trim() === key);
         ratingMap[key] = ratingObj ? ratingObj.medianRating : null;
     });
+      //create a key value pair of objects that stores the time in milliseconds of when ingredients in favoriteRecipes dataset was created. if no existing time for that value or time > greater than that value it stores the value as time.
     const recencyMap = {}
     favoriteRecipes.forEach((fav) => {
         fav.ingredients.forEach((ingredient) => {
             const key = ingredient.toLowerCase().trim()
             const time = fav.timestamp
-            if(!recencyMap[fav] || time > recencyMap[key]){
+            if(!recencyMap[key] || time > recencyMap[key]){
                 recencyMap[key] = time
             }
         })
     })
-
+    //creating a set for favorite recipes ingredient just to avoid duplicates of ingredients
     const favoriteIngredientSet = new Set()
     favoriteRecipes.forEach(fav => {
         fav.ingredients.forEach((ing) => favoriteIngredientSet.add
         (ing.toLowerCase().trim()))
     })
-    
+    //creating a set for pantry items to avoid duplicates as well so ingredients would be counted squarely.
     const pantrySet = new Set(pantryItems.map
         ((ing) => ing.toLowerCase().trim()))
+    const combinedSet = new Set ([...pantrySet, ...favoriteIngredientSet])
     const scoredRecipes = []
     const date = Date.now()
     recipes.forEach(recipe => {
@@ -43,7 +46,7 @@ export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, reci
         let rating = ratingMap[recipe.id.toString().trim()]
         recipe.ingredients.forEach((ingredient) => {
             const key = ingredient.toLowerCase().trim();
-            if (pantrySet.has(key)){
+            if (combinedSet.has(key)){
                 match += 1
             }
             if(frequencyMap[key]){
@@ -94,6 +97,8 @@ export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, reci
             ratings: normalizeScore(rating, ratingMin, ratingMax),
         }
     })
+    //since generating recipes that contains ingredients in user's pantry is the most important thing when
+    //generating recipes, i made match have a higher score. also to take note of user's preference, i made the frequency at which it appears in his favorites the second highest and how recent it did, the third. ratings would be the lowest as one user's taste might not suite another
     const weights = {
         match: 0.4,
         frequency: 0.3,
