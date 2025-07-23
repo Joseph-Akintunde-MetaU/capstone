@@ -64,7 +64,6 @@
     background: transparent;
     font-size: 1rem;
     width: 100%;
-    margin-left: 45px;
 }
 .editable:focus{
     border-bottom: 1px solid #007bff;
@@ -205,8 +204,8 @@
   }
   
   .pantryCard {
-    width: 80px;
-    height: 120px;
+    width: 100px;
+    height: 190px;
     padding: 0.5rem;
   }
   

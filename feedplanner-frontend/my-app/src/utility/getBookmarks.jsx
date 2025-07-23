@@ -1,19 +1,19 @@
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "../config/firebase.config"
-export async function GetBookmarks(setBookmarkedData, setLoading){
+export async function GetBookmarks(setFavoritedData, setLoading){
         onAuthStateChanged(auth, async(user) => {
             try{
                 if(user){
                     const token = await user.getIdToken()
-                    const fetchBookmarkedIds = await fetch ("http://localhost:5001/feedplanner/us-central1/api/bookmark" , {
+                    const fetchFavoriteIds = await fetch ("http://localhost:5001/feedplanner/us-central1/api/favorites" , {
                         method: "GET",
                         headers:{
                             Authorization: `Bearer ${token}`,
                             'content-type': 'application/json'
                         }
                     })
-                    const bookmarkedIds = await fetchBookmarkedIds.json()
-                    setBookmarkedData(bookmarkedIds)
+                    const favoritedIds = await fetchFavoriteIds.json()
+                    setFavoritedData(favoritedIds)
                 }else{
                     throw new Error
                 }

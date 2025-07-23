@@ -1,0 +1,12 @@
+.affected-modal-overlay{
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 60%;
+    background: whitesmoke;
+    overflow-y: auto;
+    z-index: 1000;
+    border: 2px solid black;
+    padding: 20px;
+}
