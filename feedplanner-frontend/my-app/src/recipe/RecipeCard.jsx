@@ -15,7 +15,7 @@ export function RecipeCard({id, image, name,score,ingredients}){
     const bookmarked = `bookmarked: ${id}`
     const [bookmarkedRecipe, setBookmarkedRecipe] = useState(false)
     const [userRating, setUserRating] = useState(null)
-    const [medianRating, setMedianAveraging] = useState(null)
+    const [medianRating, setMedianRating] = useState(null)
     const user = auth.currentUser
     useEffect(() => {
         const storedBookmark = localStorage.getItem(bookmarked);
@@ -27,7 +27,7 @@ export function RecipeCard({id, image, name,score,ingredients}){
         async function fetchRatings(){
         const ratingSnap = await getDoc(doc(db, "recipeRatings", id.toString()))
         if(ratingSnap.exists()){
-            setMedianAveraging(ratingSnap.data().medianRating || 0)
+            setMedianRating(ratingSnap.data().medianRating || 0)
         }
         if(user.uid){
             const userSnap = await getDoc(doc(db, "recipeRatings", id.toString(), "userRatings", user.uid))
