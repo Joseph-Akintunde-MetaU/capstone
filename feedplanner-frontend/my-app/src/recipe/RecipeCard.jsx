@@ -25,7 +25,7 @@ export function RecipeCard({id, image, name,score,ingredients}){
         const nextBookmarkedState = !bookmarkedRecipe;
         await fetch("http://localhost:5001/feedplanner/us-central1/api/favorites", {
             method: "POST",
-            headers: {
+            headers:{
                 Authorization: `Bearer ${token}`,
                 'content-type': 'application/json'
             },

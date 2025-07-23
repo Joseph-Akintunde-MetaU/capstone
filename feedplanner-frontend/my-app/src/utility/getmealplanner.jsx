@@ -20,7 +20,7 @@ export async function getMealPlans(setMealPlans,setGroupedData) {
                 })
                 const data = await response.json();
                 setMealPlans(data)
-                const groupedTheMealPlannerArrayInOrderByDayAndMealType = data.reduce((acc, plan) => {
+                const groupedByDayAndMeal = data.reduce((acc, plan) => {
                     const day = plan.dayOfTheWeek
                     const mealType = plan.mealType
                     if (!acc[day]) acc[day] = {}
@@ -35,7 +35,7 @@ export async function getMealPlans(setMealPlans,setGroupedData) {
                     }
                     return acc
                 }, {})
-                setGroupedData(groupedTheMealPlannerArrayInOrderByDayAndMealType)
+                setGroupedData(groupedByDayAndMeal)
             }
             }catch(error){
                 console.error(error)
