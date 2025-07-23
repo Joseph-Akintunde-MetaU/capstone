@@ -4,12 +4,14 @@ import { getMealPlans } from "../utility/getmealplanner"
 import {FaStar} from "react-icons/fa"
 import { auth } from "../config/firebase.config"
 import { useState,useEffect } from "react"
-export function RecipeCard({id, image, title}){
+import { ToastContainer } from "react-toastify"
+export function RecipeCard({id, image, name,score,ingredients}){
     const [openModal, setOpenModal] = useState(false)
     const [rating, setRating] = useState(null)
     const [hover, setHover] = useState(null)
     const bookmarked = `bookmarked: ${id}`
     const [bookmarkedRecipe, setBookmarkedRecipe] = useState(false)
+
     useEffect(() => {
         const storedBookmark = localStorage.getItem(bookmarked);
         if (storedBookmark === "true") {
@@ -19,34 +21,34 @@ export function RecipeCard({id, image, title}){
 
     async function bookMarkingToggle(e){
         e.stopPropagation()
-        try{
-            const token = await auth.currentUser.getIdToken()
-            const nextBookmarkedState = !bookmarkedRecipe;
-            await fetch("http://localhost:5001/feedplanner/us-central1/api/bookmark",{
-                method: "POST",
-                headers:{
-                    Authorization: `Bearer ${token}`,
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    recipeId: id,
-                    isBookmarked: nextBookmarkedState,
-                }),
-            });
-            setBookmarkedRecipe(nextBookmarkedState)
-            
-            localStorage.setItem(bookmarked, nextBookmarkedState.toString())
-        }catch(error){
-            console.error(`failed to bookmark due to ${error}`)
-        }
+        const token = await auth.currentUser.getIdToken()
+        const nextBookmarkedState = !bookmarkedRecipe;
+        await fetch("http://localhost:5001/feedplanner/us-central1/api/favorites", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                recipeId: id,
+                recipeName: name,
+                imageUrl: image,
+                isFavorited: nextBookmarkedState,
+                ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(",").map(i => i.trim())
+            }),
+        });
+        setBookmarkedRecipe(nextBookmarkedState)
+        localStorage.setItem(bookmarked, nextBookmarkedState.toString())
     }
-     return(
+    return(
         <div>
             <div className="recipeCard">
                 <div className="card-inner">
                     <div className="front-recipe-card">
-                        <img src={image} alt={title}></img>
-                        <p>{title}</p>
+                        <img src={image} alt={name}></img>
+                        <p>{name}</p>
+                        <p>{score}</p>
+                        <p>Ingredients used: {ingredients}</p>
                     </div>
                         <div className="back-recipe-card">
                             <div className="ratings">
@@ -72,6 +74,7 @@ export function RecipeCard({id, image, title}){
                 </div>
             </div>
             {openModal && <AddToMealPlan closeModal={setOpenModal} selectedRecipeId={id} selectedRecipeName={title} getMealPlans={getMealPlans}/>}  
+             <ToastContainer position='top-right' autoClose = {5000} closeOnClick pauseOnHover draggable hideProgressBar = {false} theme = "light"/>
         </div>
     )
 }

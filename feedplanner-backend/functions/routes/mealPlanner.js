@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const userId = req.user.uid;
-    const {recipeId, recipeName, dayOfTheWeek, mealType} = req.body;
+    const {recipeId, recipeName, dayOfTheWeek, mealType, ingredients} = req.body;
     const today = new Date();
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - today.getDay());
@@ -49,6 +49,7 @@ router.post("/", async (req, res) => {
       dayOfTheWeek,
       mealType,
       weekOf,
+      ingredients,
       createdAt: new Date(),
     });
     res.status(201).json({id: getMealPlannerRef.id});

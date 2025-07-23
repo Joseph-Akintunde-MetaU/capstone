@@ -11,6 +11,10 @@ export function UserAuthPage(){
     const [loginEmail, setLoginEmail] = useState('')
     const [loginPassword, setLoginPassword] = useState('')
     const [username, setUsername] = useState('')
+    const [showLogin, setShowLogin] = useState(false);
+    function toggleAuthMode(){
+        setShowLogin((prev) => !prev);
+    }
     const googleProvider = new GoogleAuthProvider();
     const baseUrl = "/feedplanner/us-central1/validateUserJWTToken"
     async function handleGoogleLogin(){
@@ -26,7 +30,7 @@ export function UserAuthPage(){
                 })
             const token = await googleUser.getIdToken()
              // eslint-disable-next-line no-unused-vars
-             const response = await fetch(
+            const response = await fetch(
                     baseUrl,
                     {
                         method: "GET",
@@ -115,10 +119,11 @@ export function UserAuthPage(){
                         <img className="logo-icon" src="img/logo3.png" alt="2025 FeedPlanner &copy;" />
                     </div>
                     <h2 className="welcome">WELCOME !</h2>
-                    <h2 className="auth-mode">SIGN UP</h2>
+                    <h2 className="auth-mode">{showLogin ? "LOGIN" : "SIGN UP"}</h2>
                 </div>
-                <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleEmailCreate(); }}> 
-                    <div className="form-group">
+                {!showLogin ? (
+                    <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleEmailCreate(); }}> 
+                        <div className="form-group">
                         <label className = "form-label" htmlFor="username">E-mail: </label>
                         <div className="input-container">
                             <img className="input-icon" src="https://img.icons8.com/?size=100&id=tiHbAqWU3ZCQ&format=png&color=000000"/>
@@ -131,7 +136,7 @@ export function UserAuthPage(){
                             />
                         </div>
                     </div>
-                     <div className="form-group">
+                    <div className="form-group">
                         <label className = "form-label" htmlFor="username">Username: </label>
                         <div className="input-container">
                             <img className="input-icon" src = "https://img.icons8.com/?size=100&id=11779&format=png&color=000000"/>
@@ -157,28 +162,22 @@ export function UserAuthPage(){
                             />
                         </div>
                     </div>
-                    {<button type="submit" className="btn">
-                        Sign up
-                    </button>}
-                </form>
-                <div className="login-section">
-                    <p id="toggleText" className="welcome">ALREADY HAVE AN ACCOUNT?</p>
-                    <p className="auth-mode">LOGIN</p>
-                </div>
-                <div className="login">
-                <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleEmailSignIn()}}> 
-                    <div className="form-group">
-                        <label className = "form-label" htmlFor="username">E-mail: </label>
-                        <div className="input-container">
-                            <img className="input-icon" src="https://img.icons8.com/?size=100&id=tiHbAqWU3ZCQ&format=png&color=000000"/>
-                            <input
-                                type="email"
-                                className="form-input"
-                                placeholder="Enter your e-mail address"
-                                value={loginEmail}
-                                onChange={(e) => setLoginEmail(e.target.value)}
-                            />
-                        </div>
+                        <button type="submit" className="btn">Sign up</button>
+                    </form>
+                ) : (
+                    <form className="auth-form" onSubmit={(e) => { e.preventDefault(); handleEmailSignIn()}}> 
+                        <div className="form-group">
+                            <label className = "form-label" htmlFor="username">E-mail: </label>
+                            <div className="input-container">
+                                <img className="input-icon" src="https://img.icons8.com/?size=100&id=tiHbAqWU3ZCQ&format=png&color=000000"/>
+                                <input
+                                    type="email"
+                                    className="form-input"
+                                    placeholder="Enter your e-mail address"
+                                    value={loginEmail}
+                                    onChange={(e) => setLoginEmail(e.target.value)}
+                                />
+                            </div>
                     </div>
                     <div className="form-group">
                         <label className = "form-label" htmlFor="password">Password: </label>
@@ -193,16 +192,25 @@ export function UserAuthPage(){
                             />
                         </div>
                     </div>
-                    {<button type="submit" className="btn">Login
-                    </button>}
-                </form>
-            </div>
-            <div className="divider">
-                <span className="dividerText">OR</span>
-            </div>
-            <button onClick={handleGoogleLogin} className="btn">
-                <FcGoogle /> Sign in with Google
-            </button>
+                        <button type="submit" className="btn">Login</button>
+                    </form>
+                )}
+                {!showLogin ? (
+                    <div className="login-section" onClick={toggleAuthMode}>
+                        <p id="toggleText" className="welcome">ALREADY HAVE AN ACCOUNT?</p>
+                        <p className="auth-mode">LOGIN</p>
+                    </div>
+                ) : (
+                    <div className="login-section" onClick={toggleAuthMode}>
+                        <p className="auth-mode">Back to Sign Up</p>
+                    </div>
+                )}
+                <div className="divider">
+                    <span className="dividerText">OR</span>
+                </div>
+                <button onClick={handleGoogleLogin} className="btn">
+                    <FcGoogle /> Sign in with Google
+                </button>
             </div>     
         </div>
     )

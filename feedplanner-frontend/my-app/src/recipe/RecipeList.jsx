@@ -1,7 +1,7 @@
 import { RecipeCard } from "./RecipeCard"
-export function RecipeList({recipes}){
+export function RecipeList({recipes, recipeIngredients}){
     return( recipes.map((recipe) => (
-            <RecipeCard id = {recipe.id} title = {recipe.title} image = {recipe.image} duration = {recipe.duration}/>
+            <RecipeCard key = {recipe.id} id = {recipe.id} name = {recipe.name} score = {recipe.finalScore.toFixed(2)} image = {recipe.image} ingredients = {recipeIngredients[recipe.id]}/>
         ))
     )
 }

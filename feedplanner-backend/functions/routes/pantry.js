@@ -32,18 +32,13 @@ router.get("/ingredients", async (req, res) => {
         .map((doc) => doc.data())
         .filter((item) => item.name && new Date(item.expiryDate) >= new Date())
         .map((item) => item.name.trim().toLowerCase());
-    const expiredIngredientsArray = getPantryCollection.docs
-        .map((doc) => doc.data())
-        .filter((item) => item.name && new Date(item.expiryDate) <= new Date())
-        .map((item) => item.name.trim().toLowerCase());
     const stringedIngredients = ingredientsArray.join(",+");
-    res.status(201).json({Ingredients: stringedIngredients, ExpiredIngredients: expiredIngredientsArray});
+    res.status(201).json({Ingredients: stringedIngredients});
   } catch (error) {
     console.error(error.message);
     res.status(500).json({error: "error"});
   }
 });
-
 // add to pantry items
 router.post("/", async (req, res) => {
   try {
@@ -92,7 +87,8 @@ router.patch("/:pantryId", async (req, res) => {
     res.status(400).json({error: "no valid fields provided"});
   }
   try {
-    const pantryReference = db.collection("users").doc(userId).collection("pantry").doc(pantryId).update(updates);
+    const pantryReference = db.collection("users").doc(userId).collection("pantry").doc(pantryId);
+    await pantryReference.update(updates);
     res.status(200).json({success: true, updates: updates});
   } catch (error) {
     res.status(500).json({error: error});
