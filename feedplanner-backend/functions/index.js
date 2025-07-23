@@ -12,14 +12,14 @@ const cors = require("cors")({origin: true});
 const authMiddleware = require("./authMiddleware");
 const pantryRoute = require("./routes/pantry");
 const MealPlannerRoute = require("./routes/mealPlanner");
-const favoriteRoute = require("./routes/favorites");
+const bookmarkRoute = require("./routes/bookmark");
 const {onSchedule} = require("firebase-functions/scheduler");
 const db = admin.firestore();
 app.use(bodyParser.json());
 app.use(authMiddleware);
 app.use("/pantry", pantryRoute);
 app.use("/mealPlanner", MealPlannerRoute);
-app.use("/favorites", favoriteRoute);
+app.use("/bookmark", bookmarkRoute);
 const apiKey = process.env.REACT_APP_API_KEY;
 // creating a new cloud function that's triggered by an https request.
 exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
