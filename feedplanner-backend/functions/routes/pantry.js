@@ -32,18 +32,13 @@ router.get("/ingredients", async (req, res) => {
         .map((doc) => doc.data())
         .filter((item) => item.name && new Date(item.expiryDate) >= new Date())
         .map((item) => item.name.trim().toLowerCase());
-    const expiredIngredientsArray = getPantryCollection.docs
-        .map((doc) => doc.data())
-        .filter((item) => item.name && new Date(item.expiryDate) <= new Date())
-        .map((item) => item.name.trim().toLowerCase());
     const stringedIngredients = ingredientsArray.join(",+");
-    res.status(201).json({Ingredients: stringedIngredients, ExpiredIngredients: expiredIngredientsArray});
+    res.status(201).json({Ingredients: stringedIngredients});
   } catch (error) {
     console.error(error.message);
     res.status(500).json({error: "error"});
   }
 });
-
 // add to pantry items
 router.post("/", async (req, res) => {
   try {
@@ -55,7 +50,7 @@ router.post("/", async (req, res) => {
       quantity,
       unit,
       expiryDate: new Date(expiryDate).toISOString(),
-      createdAt: new Date()
+      createdAt: new Date(),
     },
     );
     res.status(201).json({id: addPantryReferences.id});
