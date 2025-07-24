@@ -71,8 +71,7 @@ export function UserAuthPage(){
                     username: username,
                     userId: user.uid,
                     createdAt: serverTimestamp()
-                })
-                 
+                })                
                 const token = await user.getIdToken()
                 const response = await fetch(
                     baseUrl,

@@ -38,7 +38,7 @@ export async function getMealPlans(setMealPlans,setGroupedData) {
                 setGroupedData(groupedByDayAndMeal)
             }
             }catch(error){
-                console.error(error)
+                throw new Error(error)
             }
     })
 }
