@@ -8,11 +8,9 @@ import { db } from "../config/firebase.config";
 import { collection, getDocs,getDoc, doc} from "firebase/firestore";
 import { ScoreRecommendationForRecipes } from "../utility/scoreRecommendationForRecipes";
 
-export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipes}) {
+export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipes, recipeIngredients, setRecipeIngredients}) {
     const [loading, setLoading] = useState(true);
-    const [recipeIngredients, setRecipeIngredients] = useState({});
     const apiKey = process.env.REACT_APP_API_KEY;
-
     async function getRecipes(token) {
         try {
             const response = await fetch(
@@ -44,7 +42,7 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
             iddata.forEach((recipe) => {
                 ingredientsMap[recipe.id] = recipe.extendedIngredients
                     .map((ing) => ing.nameClean)
-                    .join(", ");
+                    .join(",");
             });
 
             const recipesInformationForScoring = iddata.map((recipe) => ({
@@ -85,6 +83,7 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
         );
         return ratings;
     }
+
     async function getPantryNameAndExpiry(user) {
         const pantryRef = collection(db, "users", user.uid, "pantry");
         const snapshot = await getDocs(pantryRef);
@@ -112,25 +111,25 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
                 const ratingsList = await getMedianRating(recipeIds);
                 const urgencyList = await getPantryNameAndExpiry(user)
                 if (
-                    pantryList &&
-                    favoritesList &&
-                    ratingsList &&
-                    urgencyList &&
-                    recipesInformationForScoring.length > 0
-                ) {
-                    const sortedRecommendations = ScoreRecommendationForRecipes(
+                    pantryList.length &&
+                    favoritesList.length &&
+                    ratingsList.length &&
+                    urgencyList.length &&
+                    recipesInformationForScoring.length
+                )
+                {
+                    const sortedRecommendations = await ScoreRecommendationForRecipes(
                         pantryList,
                         favoritesList,
                         ratingsList,
                         urgencyList,
-                        recipesInformationForScoring
+                        recipesInformationForScoring,
+                        user.uid
                     );
                     setScoredRecipes(sortedRecommendations);
                 }
-
                 setLoading(false);
             } else {
-                console.log("User not logged in");
                 setLoading(false);
             }
         });

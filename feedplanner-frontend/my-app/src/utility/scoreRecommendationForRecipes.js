@@ -1,4 +1,6 @@
-export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, recipeRatings, pantryNamesAndExpiry, recipes){
+import { doc, getDoc } from "firebase/firestore"
+import { db } from "../config/firebase.config.js"
+export async function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, recipeRatings, pantryNamesAndExpiry, recipes, userId){
     const millisecondsInADay = 24 * 60 * 60 * 1000
     const frequencyMap = {}
     recipes.forEach((recipe) => {
@@ -21,29 +23,33 @@ export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, reci
             }
         }
     })
+
     const ratingMap = {};
     recipes.forEach((recipe) => {
         const key = recipe.id.toString().trim();
         const ratingObj = recipeRatings.find(r => r.id.toString().trim() === key);
         ratingMap[key] = ratingObj ? ratingObj.medianRating : null;
     });
+
     const recencyMap = {}
     favoriteRecipes.forEach((fav) => {
         fav.ingredients.forEach((ingredient) => {
             const key = ingredient.toLowerCase().trim()
             const time = fav.timestamp
-            if(!recencyMap[fav] || time > recencyMap[key]){
-                recencyMap[key] = time
-            }
+                recencyMap[key] = Math.max(recencyMap[key] || 0, time || 0)
         })
     })
+
     const favoriteIngredientSet = new Set()
     favoriteRecipes.forEach(fav => {
         fav.ingredients.forEach((ing) => favoriteIngredientSet.add
         (ing.toLowerCase().trim()))
     })
+
     const pantrySet = new Set(pantryItems.map
-        ((ing) => ing.toLowerCase().trim()))
+        ((ing) => ing.toLowerCase().trim())
+    )
+    
     const scoredRecipes = []
     const date = Date.now()
     recipes.forEach(recipe => {
@@ -54,16 +60,23 @@ export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, reci
         let urgency = 0
         recipe.ingredients.forEach((ingredient) => {
             const key = ingredient.toLowerCase().trim();
-            if (pantrySet.has(key)){
-                match += 1
+
+            for (const pantryItem of pantrySet) {
+                if (key.includes(pantryItem)) {
+                    match += 1;
+                    break;
+                }
             }
+
             if(frequencyMap[key]){
                 frequency += frequencyMap[key]
             }
+
             if(recencyMap[key]){
                 const daysAgo = (date - recencyMap[key]) / millisecondsInADay
                 recency += 1 / (daysAgo + 1)
             }
+
             if(key in urgencyMap){
                 const daysTillExpiry = (urgencyMap[key])
                 urgency += 1 / (daysTillExpiry + 1)
@@ -72,11 +85,11 @@ export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, reci
         scoredRecipes.push({
             ...recipe,
             scores: {
-                match,
-                frequency,
-                recency,
-                rating,
-                urgency
+                match: match,
+                frequency: frequency,
+                recency: recency,
+                rating: rating,
+                urgency: urgency
             }
         })
     })
@@ -100,8 +113,17 @@ export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, reci
     const recencyMax = Math.max(...recencyScores)
     const ratingMin = Math.min(...ratings)
     const ratingMax = Math.max(...ratings)
-    const urgencyMin = Math.min(...ratings)
-    const urgencyMax = Math.max(...ratings)
+    const urgencyMin = Math.min(...urgencyScores)
+    const urgencyMax = Math.max(...urgencyScores)
+    const interactionRef = doc(db, "users", userId, "preferences", "weights")
+    const getInteractionRef = await getDoc(interactionRef)
+    const data = getInteractionRef.exists() ? getInteractionRef.data() : null
+    const weights = {match: 0, frequency: 0, recency: 0, rating: 0, urgency: 0}
+    if(data && data.total > 0){
+        for (const weight in weights){
+            weights[weight] = (data[weight] || 0)/data.total
+        }
+    }
     scoredRecipes.forEach((recipe) => {
         const {match, frequency, recency, rating, urgency} = recipe.scores
         recipe.normalizedScores = {
@@ -112,13 +134,6 @@ export function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes, reci
             urgencyScore: normalizeScore(urgency, urgencyMin, urgencyMax),
         }
     })
-    const weights = {
-        match: 0.3,
-        urgency: 0.2,
-        frequency: 0.2,
-        recency: 0.2,
-        rating: 0.1
-    }
     scoredRecipes.forEach((recipe) => {
         const normalizedScoresForRecipe = recipe.normalizedScores;
         recipe.finalScore = 

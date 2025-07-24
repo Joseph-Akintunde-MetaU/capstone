@@ -1,12 +1,23 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { auth } from "../config/firebase.config"
 import { useNavigate } from "react-router-dom"
+import { db } from "../config/firebase.config"
+import { collection,getDocs } from "firebase/firestore"
 import { toast } from "react-toastify"
-export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRecipeName, getMealPlans}){
+import { logUserInteraction } from "../utility/logUserInteraction.js"
+import { getExpiringIngredients } from "../utility/getExpiringIngredients.js"
+export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRecipeName, recipes, getMealPlans}){
     const [selectedDay, setSelectedDay] = useState('')
     const [selectedMealType, setSelectedMealType] = useState('')
     const apiKey = process.env.REACT_APP_API_KEY
     const nav = useNavigate()
+
+    async function getPantry(uid) {
+        const pantryRef = collection(db, "users", uid, "pantry");
+        const snapshot = await getDocs(pantryRef);
+        return snapshot.docs.map((doc) => doc.data().name.toLowerCase().trim());
+    }
+
     function getDateOfSelectedWeekday(WeekStart, day){
         const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
         const weekStartDate = new Date(WeekStart)
@@ -58,6 +69,9 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
         const weekOf = startOfWeek.toISOString().split("T")[0]
         const warnForExpiredIngredients = await handleAlertingForExpiredItemsBeforeMealPlanning(weekOf, selectedDay)
         const user = auth.currentUser;
+        const pantry = await getPantry(user.uid)
+        const expiredIngredients = getExpiringIngredients(pantry, 3)
+        const recipeIngredients = recipes?.ingredients?.map((ingredient) => ingredient.toLowerCase().trim()) || []
         const token = await user.getIdToken()
                 if(user){
                     try{
@@ -79,6 +93,22 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
                                 ingredients: ingredients
                             })
                         })
+                        const hasMatch = ingredientData.ingredients.some((ingredient) => 
+                            pantry.map(p => p.toLowerCase().trim().includes(ingredient.name.toLowerCase().trim())
+                        ))
+                        console.log(hasMatch)
+                        if(hasMatch){
+                            await logUserInteraction(user.uid, "match")
+                        }                 
+                        console.log(expiredIngredients)
+                        console.log(ingredients)      
+                        const hasUrgency = ingredientData.ingredients.some((ing) => 
+                            expiredIngredients.map(exp => exp.toLowerCase().trim().includes(ing.name.toLowerCase().trim())
+                        ))
+                        console.log(hasUrgency)
+                        if(hasUrgency){
+                            await logUserInteraction(user.uid, "urgency")
+                        }
                         if(response.status === 409){
                             alert("You have already added a recipe for this slot")
                             return;
@@ -86,7 +116,8 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
                         if(!response.ok){
                             alert("something went wrong")
                             return;
-                        }
+                        } 
+                        toast.success("Recipe successfully added!")
                         const data = await response.json()
                         getMealPlans()
                         closeModal(false)

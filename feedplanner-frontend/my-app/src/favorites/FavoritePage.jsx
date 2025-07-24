@@ -2,11 +2,10 @@ import { useEffect, useState } from "react"
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetBookmarks } from "../utility/getBookmarks";
 import  FavoritePageList  from "./FavoritesPageList";
-export function FavoritePage({scoredRecipes}){
+export function FavoritePage({scoredRecipes, recipeIngredients, setRecipeIngredients, favoritedRecipeCards, setFavoritedRecipeCards}){
     const [favoritedData, setFavoritedData] = useState([])
     const apiKey = process.env.REACT_APP_API_KEY
     const [loading, setLoading] = useState(true)
-    const [favoritedRecipeCards, setFavoritedRecipeCards] = useState([])
     useEffect(() => {
          GetBookmarks(setFavoritedData, setLoading)
     },[]) 
@@ -20,6 +19,13 @@ export function FavoritePage({scoredRecipes}){
             })
             const results = await Promise.all(fetches)
             setFavoritedRecipeCards(results)
+            const ingredientsMap = {};
+            results.forEach((recipe) => {
+                ingredientsMap[recipe.id] = recipe.extendedIngredients
+                    .map((ing) => ing.nameClean)
+                    .join(", ");
+            });
+            setRecipeIngredients(ingredientsMap)
         }catch(error){
             console.error(error)
         }finally{
@@ -33,7 +39,7 @@ export function FavoritePage({scoredRecipes}){
         <div style = {{padding: "4rem"}}className="favorites-list">
             <h1>FAVORITES</h1>
             {loading ? (<div className='loader'><CircularProgress color = "success"/> <br />Loading..</div>) : 
-            <FavoritePageList recipes={favoritedRecipeCards}/>}
+            <FavoritePageList recipes={favoritedRecipeCards} recipeIngredients = {recipeIngredients}/>}
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import { db } from "../config/firebase.config.js";
 import { doc, collection,getDocs, updateDoc,runTransaction } from "firebase/firestore";
-export async function RecipeRatings(recipeId, userId, newRatingValue){
+export async function RecipeRatings(recipeId, recipeName, userId, newRatingValue){
     const recipeRef = doc(db, "recipeRatings", recipeId.toString())
     const userRatingRef = doc(db, "recipeRatings", recipeId.toString(), "userRatings", userId)
     
@@ -26,6 +26,7 @@ export async function RecipeRatings(recipeId, userId, newRatingValue){
             updatedAt: Date.now()
         });
         rating.set(recipeRef, {
+            recipeName,
             ratingTotal,
             ratingCount,
             averageRatingOfAllUsers,

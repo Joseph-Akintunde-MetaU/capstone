@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+ 
 import {initializeApp, getApp, getApps} from 'firebase/app' 
 import {getAuth} from 'firebase/auth'
 import {getFirestore} from "firebase/firestore"
