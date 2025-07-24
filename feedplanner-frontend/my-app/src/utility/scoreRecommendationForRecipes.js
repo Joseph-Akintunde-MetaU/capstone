@@ -133,7 +133,6 @@ export async function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes
             }
         }
     }
-    console.log(weights)
     scoredRecipes.forEach((recipe) => {
         const {match, frequency, recency, rating, urgency} = recipe.scores
         recipe.normalizedScores = {
