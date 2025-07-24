@@ -118,12 +118,22 @@ export async function ScoreRecommendationForRecipes(pantryItems, favoriteRecipes
     const interactionRef = doc(db, "users", userId, "preferences", "weights")
     const getInteractionRef = await getDoc(interactionRef)
     const data = getInteractionRef.exists() ? getInteractionRef.data() : null
+    const ratingCount = data.ratingCount || data.rating || 0
+    const ratingSum = data.ratingSum || 0
+    const maxRating = 5 * (ratingCount || 1)
+    const averageNorm = ratingCount > 0 ? (ratingSum/maxRating) : 0
+    const ratingWeight = (ratingCount/data.total) * averageNorm
     const weights = {match: 0, frequency: 0, recency: 0, rating: 0, urgency: 0}
     if(data && data.total > 0){
         for (const weight in weights){
-            weights[weight] = (data[weight] || 0)/data.total
+            if (weight === "rating" && typeof data.rating === "number") {
+                weights.rating = ratingWeight
+            } else {
+                weights[weight] = (data[weight] || 0)/data.total
+            }
         }
     }
+    console.log(weights)
     scoredRecipes.forEach((recipe) => {
         const {match, frequency, recency, rating, urgency} = recipe.scores
         recipe.normalizedScores = {
