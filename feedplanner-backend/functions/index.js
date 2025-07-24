@@ -189,3 +189,4 @@ exports.checkExpiryScheduled = onSchedule({
   await runExpiryCheck();
 });
 exports.api = functions.https.onRequest(app);
+

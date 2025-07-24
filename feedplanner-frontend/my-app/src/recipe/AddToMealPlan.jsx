@@ -105,7 +105,6 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
                         const hasUrgency = ingredientData.ingredients.some((ing) => 
                             expiredIngredients.map(exp => exp.toLowerCase().trim().includes(ing.name.toLowerCase().trim())
                         ))
-                        console.log(hasUrgency)
                         if(hasUrgency){
                             await logUserInteraction(user.uid, "urgency")
                         }
