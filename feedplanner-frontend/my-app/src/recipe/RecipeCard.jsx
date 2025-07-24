@@ -5,20 +5,47 @@ import {FaStar} from "react-icons/fa"
 import { auth } from "../config/firebase.config"
 import { useState,useEffect } from "react"
 import { ToastContainer } from "react-toastify"
+import { RecipeRatings } from "../utility/recipeRatings"
+import { doc, getDoc } from "firebase/firestore"
+import { db } from "../config/firebase.config"
 export function RecipeCard({id, image, name,score,ingredients}){
     const [openModal, setOpenModal] = useState(false)
     const [rating, setRating] = useState(null)
     const [hover, setHover] = useState(null)
     const bookmarked = `bookmarked: ${id}`
     const [bookmarkedRecipe, setBookmarkedRecipe] = useState(false)
-
+    const [userRating, setUserRating] = useState(null)
+    const [medianRating, setMedianRating] = useState(null)
+    const user = auth.currentUser
     useEffect(() => {
         const storedBookmark = localStorage.getItem(bookmarked);
         if (storedBookmark === "true") {
             setBookmarkedRecipe(true);
         }
     }, []);
-
+    useEffect(() => {
+        async function fetchRatings(){
+        const ratingSnap = await getDoc(doc(db, "recipeRatings", id.toString()))
+        if(ratingSnap.exists()){
+            setMedianRating(ratingSnap.data().medianRating || 0)
+        }
+        if(user.uid){
+            const userSnap = await getDoc(doc(db, "recipeRatings", id.toString(), "userRatings", user.uid))
+            if(userSnap.exists()){
+                setUserRating(userSnap.data().value)
+        }
+    }
+    }
+        fetchRatings()
+    }, [id, user.uid])
+    async function handleRatings(value){
+        await RecipeRatings(id.toString(), user.uid, value)
+        setUserRating(value)
+        const ratingSnap = await getDoc(doc(db, "recipeRatings", id.toString()))
+        if(ratingSnap.exists()){
+            setMedianRating(ratingSnap.data().medianRating || null)
+        }
+    }
     async function bookMarkingToggle(e){
         e.stopPropagation()
         const token = await auth.currentUser.getIdToken()
@@ -48,6 +75,8 @@ export function RecipeCard({id, image, name,score,ingredients}){
                         <img src={image} alt={name}></img>
                         <p>{name}</p>
                         <p>{score}</p>
+                        <p>your rating: {userRating || 0}</p>
+                        <p>median average: {medianRating ? medianRating : null}</p>
                         <p>Ingredients used: {ingredients}</p>
                     </div>
                         <div className="back-recipe-card">
@@ -55,8 +84,8 @@ export function RecipeCard({id, image, name,score,ingredients}){
                                 {[...Array(5)].map((star, i) => {
                                     const ratingNumber = i+1;
                                     return  (
-                                        <label>
-                                            <input type="radio" name="" id="radio" value={ratingNumber} onClick={() => setRating(ratingNumber)}/>
+                                        <label key={ratingNumber}>
+                                            <input type="radio" name="" id="radio" value={ratingNumber} onClick={() => handleRatings(ratingNumber)}/>
                                             <FaStar className = "star" color = {ratingNumber <= (hover ||rating) ? "var(--text-primary)" : "white"} size={30} onMouseEnter={() => setHover(ratingNumber)} onMouseLeave={() => setHover}/>
                                         </label>
                                     )

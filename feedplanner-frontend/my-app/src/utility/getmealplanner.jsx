@@ -41,4 +41,4 @@ export async function getMealPlans(setMealPlans,setGroupedData) {
                 console.error(error)
             }
     })
-    }
+}
