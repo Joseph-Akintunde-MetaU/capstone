@@ -1,5 +1,6 @@
 import { db } from "../config/firebase.config.js";
 import { doc, collection,getDocs, updateDoc,runTransaction } from "firebase/firestore";
+import { getMedian } from "./getMedian.js";
 export async function RecipeRatings(recipeId, userId, newRatingValue){
     const recipeRef = doc(db, "recipeRatings", recipeId.toString())
     const userRatingRef = doc(db, "recipeRatings", recipeId.toString(), "userRatings", userId)
@@ -37,15 +38,6 @@ export async function RecipeRatings(recipeId, userId, newRatingValue){
     userRatingsSnap.forEach(doc => {
     allRatings.push(doc.data().value);
     });
-    allRatings.sort((a, b) => a - b);
-    let medianRating = null;
-    const len = allRatings.length;
-    if (len === 0) {
-        medianRating = 0;
-    } else if (len % 2 === 1) {
-        medianRating = allRatings[Math.floor(len / 2)];
-    } else {
-        medianRating = (allRatings[len / 2 - 1] + allRatings[len / 2]) / 2;
-    }
+    let medianRating = getMedian(allRatings);
     await updateDoc(recipeRef, { medianRating });
 }

@@ -43,7 +43,7 @@ export function RecipeCard({id, image, name,score,ingredients}){
         setUserRating(value)
         const ratingSnap = await getDoc(doc(db, "recipeRatings", id.toString()))
         if(ratingSnap.exists()){
-            setMedianRating(ratingSnap.data().medianRating || 0)
+            setMedianRating(ratingSnap.data().medianRating || null)
         }
     }
     async function bookMarkingToggle(e){
@@ -76,7 +76,7 @@ export function RecipeCard({id, image, name,score,ingredients}){
                         <p>{name}</p>
                         <p>{score}</p>
                         <p>your rating: {userRating || 0}</p>
-                        <p>median average: {medianRating}</p>
+                        <p>median average: {medianRating ? medianRating : null}</p>
                         <p>Ingredients used: {ingredients}</p>
                     </div>
                         <div className="back-recipe-card">
