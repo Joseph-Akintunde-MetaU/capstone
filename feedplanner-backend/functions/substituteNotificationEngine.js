@@ -1,23 +1,21 @@
-const admin = require("./firebaseAdmin");
-const fetch = require("node-fetch");
-const pLimit = require("p-limit");
-const NodeCache = require("node-cache");
+const admin = require('./firebaseAdmin');
+const fetch = require('node-fetch');
+const pLimit = require('p-limit');
+const NodeCache = require('node-cache');
 
-const {
-    retryWithBackoff,
-} = require("./substitutionsUtil");
+const { retryWithBackoff } = require('./substitutionsUtil');
 
 // Initialize Firestore and cache
 const db = admin.firestore();
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 120 });
 const limit = pLimit(5); // Limit concurrent async operations
-const spoonacularKey = "09acdb4877f5429e998f19def7cd5028";
-const weights = "config/substituteWeights";
+const spoonacularKey = '09acdb4877f5429e998f19def7cd5028';
+const weights = 'config/substituteWeights';
 
 // Nutrition scoring plugin
 const nutritionPlugin = {
-    name: "NutritionDistance",
-    weightKey: "nutrition",
+    name: 'NutritionDistance',
+    weightKey: 'nutrition',
     /**
      * Scores a candidate ingredient against an expired ingredient based on nutrition distance.
      * Fetches nutrition info from Spoonacular API, caches results, and computes distance.
@@ -53,15 +51,15 @@ const nutritionPlugin = {
             const map = {};
             for (const n of js.nutrition.nutrients) {
                 const name = n.name.toLowerCase();
-                if (name.includes("calories")) map.calories = n.amount;
-                if (name.includes("protein")) map.protein = n.amount;
-                if (name.includes("fat")) map.fat = n.amount;
-                if (name.includes("carbohydrates")) map.carbohydrates = n.amount;
-                if (name.includes("fiber")) map.fiber = n.amount;
-                if (name.includes("sodium")) map.sodium = n.amount;
-                if (name.includes("sugar")) map.sugar = n.amount;
-                if (name.includes("iron")) map.iron = n.amount;
-                if (name.includes("calcium")) map.calcium = n.amount;
+                if (name.includes('calories')) map.calories = n.amount;
+                if (name.includes('protein')) map.protein = n.amount;
+                if (name.includes('fat')) map.fat = n.amount;
+                if (name.includes('carbohydrates')) map.carbohydrates = n.amount;
+                if (name.includes('fiber')) map.fiber = n.amount;
+                if (name.includes('sodium')) map.sodium = n.amount;
+                if (name.includes('sugar')) map.sugar = n.amount;
+                if (name.includes('iron')) map.iron = n.amount;
+                if (name.includes('calcium')) map.calcium = n.amount;
             }
 
             cache.set(key, map);
@@ -79,15 +77,15 @@ const nutritionPlugin = {
 
         // Nutrition fields to compare
         const fields = [
-            "calories",
-            "protein",
-            "fat",
-            "carbohydrates",
-            "fiber",
-            "sodium",
-            "sugar",
-            "iron",
-            "calcium"
+            'calories',
+            'protein',
+            'fat',
+            'carbohydrates',
+            'fiber',
+            'sodium',
+            'sugar',
+            'iron',
+            'calcium'
         ];
 
         // Calculate nutrition distance
@@ -122,7 +120,7 @@ const nutritionPlugin = {
         // Normalize each score
         return scores.map(s => {
             const distance = allDistances.find(d => {
-                return s.breakdown && typeof s.breakdown.nutrition === "number" &&
+                return s.breakdown && typeof s.breakdown.nutrition === 'number' &&
                     1 / (1 + d) === s.breakdown.nutrition;
             }) ?? max;
 
@@ -142,7 +140,7 @@ const plugins = [
 ];
 
 // Main substitution engine class
-class SubstitionNutritionEngine {
+class SubstitutionNutritionEngine {
     /**
      * Gets user-specific weights for plugins from Firestore.
      * If not found, defaults to weight 1 for all plugins.
@@ -153,7 +151,7 @@ class SubstitionNutritionEngine {
             const user = snapshot.data();
             return plugins.reduce((o, p) => {
                 const k = p.weightKey;
-                o[k] = (typeof user[k] === "number" && user[k] > 0) ? user[k] : 1;
+                o[k] = (typeof user[k] === 'number' && user[k] > 0) ? user[k] : 1;
                 return o;
             }, {});
         }
@@ -189,7 +187,7 @@ class SubstitionNutritionEngine {
 
         // Score each candidate using nutrition plugin
         const scored = await Promise.all(
-            candidates.map((name) =>
+            candidates.map(name =>
                 limit(async () => {
                     const cid = await this.fetchIngredientId(name);
                     if (!cid) {
@@ -245,12 +243,12 @@ class SubstitionNutritionEngine {
         }
 
         // Normalize scores using min-max normalization
-        const rawValues = valid.map((s) => s.raw);
+        const rawValues = valid.map(s => s.raw);
         const min = Math.min(...rawValues);
         const max = Math.max(...rawValues);
         const range = max - min || 1;
 
-        const normalized = valid.map((s) => ({
+        const normalized = valid.map(s => ({
             name: s.name,
             score: 1 - ((s.raw - min) / range),
             breakdown: {
@@ -305,11 +303,11 @@ class SubstitionNutritionEngine {
 
         // Build set of units for filtering ingredient names
         const unitSet = new Set([
-            "cup", "cups", "tsp", "tbsp", "tablespoon", "teaspoon", "ounce", "oz",
-            "ml", "liter", "l", "g", "gram", "grams", "kg", "and"
+            'cup', 'cups', 'tsp', 'tbsp', 'tablespoon', 'teaspoon', 'ounce', 'oz',
+            'ml', 'liter', 'l', 'g', 'gram', 'grams', 'kg', 'and'
         ]);
 
-        //dynamic set of units from the API
+        // dynamic set of units from the API
         try {
             const info = await retryWithBackoff(async () => {
                 const response = await fetch(
@@ -321,7 +319,7 @@ class SubstitionNutritionEngine {
             // Add units from possibleUnits array if available
             if (Array.isArray(info.possibleUnits)) {
                 for (const unit of info.possibleUnits) {
-                    const cleaned = unit.toLowerCase().replace(/[^a-z]/gi, "");
+                    const cleaned = unit.toLowerCase().replace(/[^a-z]/gi, '');
                     if (cleaned) unitSet.add(cleaned);
                 }
             }
@@ -330,7 +328,7 @@ class SubstitionNutritionEngine {
             if (info.nutrition?.nutrients) {
                 for (const n of info.nutrition.nutrients) {
                     if (n.unit) {
-                        const cleaned = n.unit.toLowerCase().replace(/[^a-z]/gi, "");
+                        const cleaned = n.unit.toLowerCase().replace(/[^a-z]/gi, '');
                         if (cleaned) unitSet.add(cleaned);
                     }
                 }
@@ -338,7 +336,7 @@ class SubstitionNutritionEngine {
 
             // Add unit from info.unit
             if (info.unit) {
-                const cleaned = info.unit.toLowerCase().replace(/[^a-z]/gi, "");
+                const cleaned = info.unit.toLowerCase().replace(/[^a-z]/gi, '');
                 if (cleaned) unitSet.add(cleaned);
             }
         } catch (err) {
@@ -350,21 +348,21 @@ class SubstitionNutritionEngine {
          */
         function extractIngredientName(str) {
             const parts = str.split(/[=+]/);
-            const candidates = parts.map((p) =>
+            const candidates = parts.map(p =>
                 p
-                    .replace(/[\d/]+/g, "")            // Remove numbers/fractions
-                    .replace(/[^a-zA-Z\s]/g, "")       // Remove punctuation
+                    .replace(/[\d/]+/g, '')            // Remove numbers/fractions
+                    .replace(/[^a-zA-Z\s]/g, '')       // Remove punctuation
                     .trim()
                     .toLowerCase()
             );
 
             for (const c of candidates) {
-                const words = c.split(" ").filter(Boolean);
+                const words = c.split(' ').filter(Boolean);
                 const nonUnitWords = words.filter(w =>
-                    !unitSet.has(w) && !unitSet.has(w.endsWith("s") ? w.slice(0, -1) : w)
+                    !unitSet.has(w) && !unitSet.has(w.endsWith('s') ? w.slice(0, -1) : w)
                 );
-                const final = nonUnitWords.join(" ").trim();
-                if (final.length > 2 && final !== "") return final;
+                const final = nonUnitWords.join(' ').trim();
+                if (final.length > 2 && final !== '') return final;
             }
 
             return null;
@@ -372,7 +370,7 @@ class SubstitionNutritionEngine {
 
         // Clean and filter candidate substitute names
         const list = rawSubs
-            .map((r) => extractIngredientName(r))
+            .map(r => extractIngredientName(r))
             .filter(Boolean);
 
         cache.set(key, list);
@@ -381,4 +379,4 @@ class SubstitionNutritionEngine {
 }
 
 // Export the engine class
-module.exports = SubstitionNutritionEngine;
+module.exports = SubstitutionNutritionEngine;

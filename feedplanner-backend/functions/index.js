@@ -1,9 +1,3 @@
-/* eslint-disable no-const-assign */
-/* eslint-disable require-jsdoc */
-/* eslint-disable func-call-spacing */
-/* eslint-disable no-unexpected-multiline */
-/* eslint-disable no-unused-vars */
-/* eslint-disable max-len */
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -22,16 +16,13 @@ app.use(authMiddleware);
 app.use("/pantry", pantryRoute);
 app.use("/mealPlanner", MealPlannerRoute);
 app.use("/favorites", favoriteRoute);
-// creating a new cloud function that's triggered by an https request.
+
 exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
-    // authorization - bearer token to ensure authentication
     const authorizationHeader = req.get("Authorization");
     const token = authorizationHeader.split("Bearer ")[1];
     try {
-      // verify the token
       const decodedToken = await admin.auth().verifyIdToken(token);
-      // and after that, retrieves user data with unique uid. if the user doesnt exist, this adds the token and its details to a collection called users in my database.
       if (decodedToken) {
         const docReference = db.collection("users").doc(decodedToken.uid);
         const doc = await docReference.get();
@@ -42,11 +33,11 @@ exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
         return res.status(200).json({success: true, user: decodedToken});
       }
     } catch (error) {
-      console.log("Error on validating: ", error);
       return res.status(402).json({error: error.message, status: "un-Authorized"});
     }
   });
 });
+
 app.post("/substitutes", async (req, res) => {
   try {
     const userId = req.user.uid;
@@ -59,10 +50,10 @@ app.post("/substitutes", async (req, res) => {
     );
     return res.status(200).json(subs);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({error: error.message});
   }
 });
+
 async function runExpiryCheck() {
   const today = new Date();
   const millisecondsInADay = 24 * 60 * 60 * 1000;
@@ -107,9 +98,7 @@ async function runExpiryCheck() {
               ,2
           );
           top2Substitutes = subs.map((s) => s.name);
-        } catch (error) {
-          console.error("substitution error", error);
-        }
+        } catch (error) {}
       }
       const getMealPlan = await db
         .collection("users")
@@ -121,7 +110,6 @@ async function runExpiryCheck() {
         id: doc.id,
         ...doc.data(),
       }));
-      // Add substitutes to notification only if type is expired
       const notificationData = {
         message,
         itemId,
@@ -140,19 +128,12 @@ async function runExpiryCheck() {
   }
   return null;
 }
+
 exports.checkExpiryScheduled = onSchedule({
-  schedule: "every 2 hours",
+  schedule: "every 24 hours",
   timeZone: "America/Los_Angeles",
 }, async () => {
   await runExpiryCheck();
 });
-exports.checkExpiry = functions.https.onRequest(async (req, res) => {
-  try {
-    await runExpiryCheck();
-    res.status(200).json({success: true, message: "Expiry check completed"});
-  } catch (error) {
-    console.error("Error running expiry check:", error);
-    res.status(500).json({success: false, error: error.message});
-  }
-});
+
 exports.api = functions.https.onRequest(app);

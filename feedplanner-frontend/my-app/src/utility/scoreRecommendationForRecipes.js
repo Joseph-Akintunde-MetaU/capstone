@@ -1,11 +1,15 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase.config.js";
 
+/**
+ * Builds a frequency map of ingredient usage in favorite recipes.
+ */
 function getFrequencyMap(recipes, favoriteRecipes) {
     const frequencyMap = {};
     recipes.forEach(recipe => {
         recipe.ingredients.forEach(ingredient => {
             const key = ingredient.toLowerCase().trim();
+            // Count how many favorite recipes contain this ingredient
             const count = favoriteRecipes.filter(fav =>
                 fav.ingredients.map(i => i.toLowerCase().trim()).includes(key)
             ).length;
@@ -15,6 +19,9 @@ function getFrequencyMap(recipes, favoriteRecipes) {
     return frequencyMap;
 }
 
+/**
+ * Builds a map of ingredient urgency based on expiry dates.
+ */
 function getUrgencyMap(pantryNamesAndExpiry, millisecondsInADay) {
     const urgencyMap = {};
     const now = Date.now();
@@ -30,6 +37,9 @@ function getUrgencyMap(pantryNamesAndExpiry, millisecondsInADay) {
     return urgencyMap;
 }
 
+/**
+ * Builds a map of recipe ratings.
+ */
 function getRatingMap(recipes, recipeRatings) {
     const ratingMap = {};
     recipes.forEach(recipe => {
@@ -40,44 +50,52 @@ function getRatingMap(recipes, recipeRatings) {
     return ratingMap;
 }
 
+/**
+ * Builds a map of ingredient recency based on favorite recipe timestamps.
+ */
 function getRecencyMap(favoriteRecipes) {
     const recencyMap = {};
     favoriteRecipes.forEach(fav => {
         fav.ingredients.forEach(ingredient => {
             const key = ingredient.toLowerCase().trim();
             const time = fav.timestamp;
+            // Store the most recent timestamp for each ingredient
             recencyMap[key] = Math.max(recencyMap[key] || 0, time || 0);
         });
     });
     return recencyMap;
 }
 
+/**
+ * Creates sets for pantry items, favorite ingredients, and their union.
+ */
 function getSets(pantryItems, favoriteRecipes) {
     const pantrySet = new Set(pantryItems.map(ing => ing.toLowerCase().trim()));
     const favoriteIngredientSet = new Set();
     favoriteRecipes.forEach(fav => {
         fav.ingredients.forEach(ing => favoriteIngredientSet.add(ing.toLowerCase().trim()));
     });
-    const combinedSet = new Set ([...pantrySet, ...favoriteIngredientSet])
+    const combinedSet = new Set([...pantrySet, ...favoriteIngredientSet]);
     return { pantrySet, favoriteIngredientSet, combinedSet };
 }
 
+/**
+ * Normalizes a score between min and max.
+ */
 function normalizeScore(score, min, max) {
     return max === min ? 0 : (score - min) / (max - min);
 }
 
+/**
+ * Calculates user-specific weights for scoring.
+ */
 function getWeights(data) {
     const weights = { match: 0, frequency: 0, recency: 0, rating: 0, urgency: 0 };
     if (data && data.total > 0) {
-        //number of times user rates a recipe
         const ratingCount = data.ratingCount || data.rating || 0;
-        //sum of all his ratings (i.e if he rates 5 star, 5 star and 3 star it'd be 13)
         const ratingSum = data.ratingSum || 0;
-        //max rating is highest number of possible rating (5) * the number of times he rates
         const maxRating = 5 * (ratingCount || 1);
-        //average rating is the max rating divided by user's summed ratings. keeps scale within 0-1
         const averageNorm = ratingCount > 0 ? (ratingSum / maxRating) : 0;
-        //relates their weighting value to the weight (i.e recipe with average of 3/15 would have less weight than recipe with average of 12/15)
         const ratingWeight = (ratingCount / data.total) * averageNorm;
         for (const weight in weights) {
             if (weight === "rating" && typeof data.rating === "number") {
@@ -90,22 +108,29 @@ function getWeights(data) {
     return weights;
 }
 
+/**
+ * Scores a single recipe based on pantry, favorites, urgency, etc.
+ */
 function scoreRecipe(recipe, sets, maps, now, millisecondsInADay) {
     let match = 0, frequency = 0, recency = 0, urgency = 0;
     const rating = maps.ratingMap[recipe.id.toString().trim()];
     recipe.ingredients.forEach(ingredient => {
         const key = ingredient.toLowerCase().trim();
+        // Ingredient matches pantry or favorites
         for (const item of sets.combinedSet) {
             if (key.includes(item)) {
                 match += 1;
                 break;
             }
         }
+        // Frequency in favorites
         if (maps.frequencyMap[key]) frequency += maps.frequencyMap[key];
+        // Recency: more recent = higher score
         if (maps.recencyMap[key]) {
             const daysAgo = (now - maps.recencyMap[key]) / millisecondsInADay;
             recency += 1 / (daysAgo + 1);
         }
+        // Urgency: closer to expiry = higher score
         if (key in maps.urgencyMap) {
             const daysTillExpiry = maps.urgencyMap[key];
             urgency += 1 / (daysTillExpiry + 1);
@@ -114,6 +139,9 @@ function scoreRecipe(recipe, sets, maps, now, millisecondsInADay) {
     return { match, frequency, recency, rating, urgency };
 }
 
+/**
+ * Main function to score and rank recipes for recommendation.
+ */
 export async function ScoreRecommendationForRecipes(
     pantryItems,
     favoriteRecipes,
@@ -125,6 +153,7 @@ export async function ScoreRecommendationForRecipes(
     const millisecondsInADay = 24 * 60 * 60 * 1000;
     const now = Date.now();
 
+    // Build maps and sets for scoring
     const frequencyMap = getFrequencyMap(recipes, favoriteRecipes);
     const urgencyMap = getUrgencyMap(pantryNamesAndExpiry, millisecondsInADay);
     const ratingMap = getRatingMap(recipes, recipeRatings);
@@ -133,12 +162,13 @@ export async function ScoreRecommendationForRecipes(
 
     const maps = { frequencyMap, urgencyMap, ratingMap, recencyMap };
 
+    // Score each recipe
     const scoredRecipes = recipes.map(recipe => ({
         ...recipe,
         scores: scoreRecipe(recipe, sets, maps, now, millisecondsInADay)
     }));
 
-    // Gather score arrays for normalization
+    // Prepare arrays for normalization
     const scoreArrays = {
         match: scoredRecipes.map(r => r.scores.match),
         frequency: scoredRecipes.map(r => r.scores.frequency),
@@ -147,7 +177,7 @@ export async function ScoreRecommendationForRecipes(
         urgency: scoredRecipes.map(r => r.scores.urgency)
     };
 
-    // Min/max for normalization
+    // Find min/max for each score type
     const mins = {};
     const maxs = {};
     for (const key in scoreArrays) {
@@ -155,13 +185,13 @@ export async function ScoreRecommendationForRecipes(
         maxs[key] = Math.max(...scoreArrays[key]);
     }
 
-    // Get user weights
+    // Fetch user weights from Firestore
     const interactionRef = doc(db, "users", userId, "preferences", "weights");
     const getInteractionRef = await getDoc(interactionRef);
     const data = getInteractionRef.exists() ? getInteractionRef.data() : null;
     const weights = getWeights(data);
 
-    // Normalize and calculate final score
+    // Normalize scores and calculate final weighted score
     scoredRecipes.forEach(recipe => {
         const { match, frequency, recency, rating, urgency } = recipe.scores;
         recipe.normalizedScores = {
@@ -179,5 +209,6 @@ export async function ScoreRecommendationForRecipes(
             (recipe.normalizedScores.urgencyScore * weights.urgency);
     });
 
+    // Return recipes sorted by final score (descending)
     return scoredRecipes.sort((a, b) => b.finalScore - a.finalScore);
 }

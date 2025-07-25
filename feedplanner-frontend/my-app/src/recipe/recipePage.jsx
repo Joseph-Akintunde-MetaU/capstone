@@ -1,24 +1,30 @@
+import { useState, useEffect } from "react";
 import { RecipeList } from "./RecipeList";
 import "./recipePage.css";
-import { useState, useEffect } from "react";
-import { auth } from "../config/firebase.config";
-import { fetchSubstitutes } from "../utility/getSubstitutes";
+import { auth, db } from "../config/firebase.config";
 import { onAuthStateChanged } from "firebase/auth";
 import CircularProgress from "@mui/material/CircularProgress";
-import { db } from "../config/firebase.config";
-import { collection, getDocs,getDoc, doc} from "firebase/firestore";
+import { collection, getDocs, getDoc, doc } from "firebase/firestore";
 import { ScoreRecommendationForRecipes } from "../utility/scoreRecommendationForRecipes";
 
-export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipes, recipeIngredients, setRecipeIngredients}) {
+export function RecipePage({
+    recipes,
+    setRecipes,
+    scoredRecipes,
+    setScoredRecipes,
+    recipeIngredients,
+    setRecipeIngredients,
+}) {
     const [loading, setLoading] = useState(true);
     const apiKey = process.env.REACT_APP_API_KEY;
+
     async function getRecipes(token) {
         try {
             const response = await fetch(
-                `http://localhost:5001/feedplanner/us-central1/api/pantry/ingredients`,
+                "http://localhost:5001/feedplanner/us-central1/api/pantry/ingredients",
                 {
                     method: "GET",
-                    headers:{
+                    headers: {
                         Authorization: `Bearer ${token}`,
                         "content-type": "application/json",
                     },
@@ -55,7 +61,7 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
 
             return { recipesInformationForScoring, ingredientsMap };
         } catch (error) {
-            throw new Error(error)
+            throw new Error(error);
         }
     }
 
@@ -71,7 +77,7 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
         return snapshot.docs.map((doc) => doc.data());
     }
 
-    async function getMedianRating(recipeIds){
+    async function getMedianRating(recipeIds) {
         const ratings = await Promise.all(
             recipeIds.map(async (recipeId) => {
                 const recipeIdDoc = await getDoc(doc(collection(db, "recipeRatings"), recipeId.toString()));
@@ -90,16 +96,17 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
         const snapshot = await getDocs(pantryRef);
         return snapshot.docs
             .map((doc) => ({
-            name: doc.data().name ? doc.data().name.toLowerCase().trim() : "",
-            expiry: doc.data().expiryDate || null
+                name: doc.data().name ? doc.data().name.toLowerCase().trim() : "",
+                expiry: doc.data().expiryDate || null,
             }))
-            .filter(item => {
-            if (!item.expiry) return true;
-            const expiryDate = new Date(item.expiry);
-            const now = new Date();
-            return expiryDate >= now;
+            .filter((item) => {
+                if (!item.expiry) return true;
+                const expiryDate = new Date(item.expiry);
+                const now = new Date();
+                return expiryDate >= now;
             });
     }
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -108,17 +115,17 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
                 const favoritesList = await getFavorites(user);
                 const { recipesInformationForScoring, ingredientsMap } = await getRecipes(token);
                 setRecipeIngredients(ingredientsMap);
-                const recipeIds = recipesInformationForScoring.map(r => r.id);
+                const recipeIds = recipesInformationForScoring.map((r) => r.id);
                 const ratingsList = await getMedianRating(recipeIds);
-                const urgencyList = await getPantryNameAndExpiry(user)
+                const urgencyList = await getPantryNameAndExpiry(user);
+
                 if (
                     pantryList.length &&
                     favoritesList.length &&
                     ratingsList.length &&
                     urgencyList.length &&
                     recipesInformationForScoring.length
-                )
-                {
+                ) {
                     const sortedRecommendations = await ScoreRecommendationForRecipes(
                         pantryList,
                         favoritesList,
@@ -136,6 +143,7 @@ export function RecipePage({ recipes, setRecipes, scoredRecipes, setScoredRecipe
         });
         return () => unsubscribe();
     }, []);
+
     return (
         <div className="recipePage">
             <h1>RECIPES</h1>
