@@ -65,6 +65,8 @@ function App() {
   const [openDrawer, setOpenDrawer] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [scoredRecipes, setScoredRecipes] = useState([]);
+  const [recipeIngredients, setRecipeIngredients] = useState({});
+  const [favoritedRecipeCards, setFavoritedRecipeCards] = useState([])
   const unreadCount = notifications.filter((n) => !n.read).length
   return (
     <div className='home'>
@@ -81,7 +83,7 @@ function App() {
                   {darkMode ? <img src = "https://img.icons8.com/?size=100&id=H3yHeysB1dxv&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=45475&format=png&color=000000"/>}
                 </button>
                 <button onClick={handleFavoriteClick}>
-                   {darkMode ? <img src = "https://img.icons8.com/?size=100&id=36g5wgnLThGl&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=112373&format=png&color=000000"/> }
+                  {darkMode ? <img src = "https://img.icons8.com/?size=100&id=36g5wgnLThGl&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=112373&format=png&color=000000"/> }
                 </button>
                 <button onClick={() => setOpenDrawer(true)}><img src="https://img.icons8.com/?size=100&id=11642&format=png&color=000000" alt="" />{unreadCount > 0 ? <span>{unreadCount}</span> : ''}</button>
                   </div>
@@ -93,10 +95,10 @@ function App() {
         <Route path='/home' element={ isAuthenticated === false ? <Navigate to="/"/> : <HomePage isSignedOut={isSignedOut}/>} />
         <Route path='/errorpage' element={ isAuthenticated === false ? <Navigate to="/"/> : <ErrorPage/>} />
         <Route path='/pantry' element = {isAuthenticated === false ? <Navigate to="/"/> : <PantryManager/>}/>
-        <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes={recipes} setRecipes={setRecipes} scoredRecipes={scoredRecipes} setScoredRecipes={setScoredRecipes}/>}/>
+        <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage setRecipes={setRecipes} scoredRecipes={scoredRecipes} setScoredRecipes={setScoredRecipes} recipeIngredients={recipeIngredients} setRecipeIngredients={setRecipeIngredients} favoriteRecipes={favoritedRecipeCards}/>}/>
         <Route path='/mealplanner' element = {isAuthenticated === false ? <Navigate to="/"/> : <MealPlannerPage/>}/>
         <Route path='/profile' element = {isAuthenticated === false ? <Navigate to = "/"/> : <ProfilePage isSignedOut={isSignedOut}/>}/>
-        <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage scoredRecipes={scoredRecipes}/>}/>
+        <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage scoredRecipes={scoredRecipes} recipeIngredients={recipeIngredients} setRecipeIngredients={setRecipeIngredients} favoritedRecipeCards={favoritedRecipeCards} setFavoritedRecipeCards={setFavoritedRecipeCards}/>}/>
       </Routes>
       <NotificationCenter openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} notifications={notifications} setNotifications={setNotifications}/>
       <ToastContainer position='top-right' autoClose = {5000} closeOnClick pauseOnHover draggable hideProgressBar = {false} theme = {darkMode ? "dark":"light"}/>
