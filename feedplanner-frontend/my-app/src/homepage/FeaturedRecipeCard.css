@@ -1,4 +1,7 @@
 .recipeCard{
     border: 2px solid black;
-   display: flex;
+    border-radius: var(--border-radius);
+}
+.cardContainer{
+    display: flex;
 }
