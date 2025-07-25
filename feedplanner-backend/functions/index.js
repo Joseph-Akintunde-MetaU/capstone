@@ -1,3 +1,4 @@
+/* eslint-disable no-const-assign */
 /* eslint-disable require-jsdoc */
 /* eslint-disable func-call-spacing */
 /* eslint-disable no-unexpected-multiline */
@@ -7,20 +8,20 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+const admin = require("./firebaseAdmin");
 const cors = require("cors")({origin: true});
 const authMiddleware = require("./authMiddleware");
 const pantryRoute = require("./routes/pantry");
 const MealPlannerRoute = require("./routes/mealPlanner");
 const favoriteRoute = require("./routes/favorites");
 const {onSchedule} = require("firebase-functions/scheduler");
+const SubstitionNutritionEngine = require("./substituteNotificationEngine");
 const db = admin.firestore();
 app.use(bodyParser.json());
 app.use(authMiddleware);
 app.use("/pantry", pantryRoute);
 app.use("/mealPlanner", MealPlannerRoute);
 app.use("/favorites", favoriteRoute);
-const apiKey = process.env.REACT_APP_API_KEY;
 // creating a new cloud function that's triggered by an https request.
 exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
@@ -46,45 +47,22 @@ exports.validateUserJWTToken = functions.https.onRequest(async (req, res) => {
     }
   });
 });
-function dot(a, b) {
-  return a.reduce((sum, val, i) => sum + val * b[i], 0);
-}
-function magnitude(v) {
-  return Math.sqrt(v.reduce((sum, val) => sum + val * val, 0));
-}
-function cosineSimilarity(vecA, vecB) {
-  if (!vecA || !vecB || vecA.length !== vecB.length) return 0;
-  const magA = magnitude(vecA);
-  const magB = magnitude(vecB);
-  if (magA === 0 || magB === 0) return 0;
-  return dot(vecA, vecB) / (magA * magB);
-}
-async function fecthIngredientId(ingredient) {
-  const response = await fetch(`https://api.spoonacular.com/food/ingredients/search?apiKey=${apiKey}&query=${encodeURIComponent(ingredient)}&number=1`);
-  const data = await response.json();
-  return data.results[0].id;
-}
-async function nutritionVector(ingredient) {
-  const id = await fecthIngredientId(ingredient);
-  if (!id) throw new Error("ID not found");
-  const tasteResponse = await fetch(`https://api.spoonacular.com/food/ingredients/${id}/information?apiKey=${apiKey}&amount=100&unit=gram`);
-  const data = await tasteResponse.json();
-  const nutrients = data.nutrition.nutrients || [];
-  const get = (n) => nutrients.find((item) => item.name === n).amount || 0;
-  return [
-    get("Calories"),
-    get("Protein"),
-    get("Fat"),
-    get("Carbohydrates"),
-    get("Sugar"),
-    get("Fiber"),
-  ];
-}
-async function getSubstitutes(ingredient) {
-  const response = await fetch(`https://api.spoonacular.com/food/ingredients/substitutes?apiKey=${apiKey}&ingredientName=${encodeURIComponent(ingredient)}`);
-  const data = await response.json();
-  return data.substitutes || [];
-}
+app.post("/substitutes", async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const {expiredName, topSubs = 2, weights} = req.body;
+    const subs = await SubstitionNutritionEngine.findTopSubstitutes(
+        expiredName,
+        userId,
+        topSubs,
+        weights ? {overrideWeights: weights} : {},
+    );
+    return res.status(200).json(subs);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({error: error.message});
+  }
+});
 async function runExpiryCheck() {
   const today = new Date();
   const millisecondsInADay = 24 * 60 * 60 * 1000;
@@ -107,74 +85,54 @@ async function runExpiryCheck() {
       } else if (daysLeft <= millisecondsInADay) {
         type = "expiring soon";
       }
-      if (!type) continue;
+      if (!type) {
+        continue;
+      }
       const existingNotification = await notificationsRef
           .where("itemId", "==", itemId)
           .where("type", "==", type)
           .where("read", "==", false)
           .limit(1)
           .get();
-      if (!existingNotification.empty) continue;
+      if (!existingNotification.empty) {
+        continue;
+      }
       const message =
           type === "expired" ? `${item.name} has expired` : `${item.name} will expire soon`;
       let top2Substitutes = [];
       if (type === "expired") {
         try {
-          const originalVector = await nutritionVector(item.name);
-          const substitutes = await getSubstitutes(item.name);
-          const scored = await Promise.all(
-              substitutes.map(async (sub) => {
-                try {
-                  const subVector = await nutritionVector(sub);
-                  return {
-                    name: sub,
-                    score: cosineSimilarity(originalVector, subVector),
-                  };
-                } catch (error) {
-                  if (
-                    item.name.toLowerCase().includes(sub.toLowerCase()) ||
-                    sub.toLowerCase().includes(item.name.toLowerCase())
-                  ) {
-                    return {
-                      name: sub,
-                      score: 1,
-                    };
-                  }
-                  return {
-                    name: sub,
-                    score: 0,
-                  };
-                }
-              }),
+          const subs = await SubstitionNutritionEngine.findTopSubstitutes(
+              item.name
+              ,2
           );
-          top2Substitutes = scored.sort
-          ((a, b) => b.score - a.score)
-              .slice(0, 2)
-              .map((s) => s.name.split("=")[1]);
+          top2Substitutes = subs.map((s) => s.name);
         } catch (error) {
-          console.error("substitution error");
+          console.error("substitution error", error);
         }
       }
       const getMealPlan = await db
-          .collection("users")
-          .doc(userId)
-          .collection("mealPlan")
-          .where("ingredients", "array-contains", item.name)
-          .get();
+        .collection("users")
+        .doc(userId)
+        .collection("mealPlan")
+        .where("ingredients", "array-contains", item.name)
+        .get();
       const affectedRecipes = getMealPlan.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      await notificationsRef.add({
+      // Add substitutes to notification only if type is expired
+      const notificationData = {
         message,
         itemId,
         type,
         read: false,
         createdAt: new Date(),
         expiredIngredient: item.name,
-        substitutes: top2Substitutes,
         affectedRecipes: affectedRecipes,
-      });
+        substitutes: type === "expired" ? top2Substitutes : [],
+      };
+      await notificationsRef.add(notificationData);
       if (type === "expired") {
         await pantryRef.doc(itemId).update({expired: true});
       }
@@ -187,5 +145,14 @@ exports.checkExpiryScheduled = onSchedule({
   timeZone: "America/Los_Angeles",
 }, async () => {
   await runExpiryCheck();
+});
+exports.checkExpiry = functions.https.onRequest(async (req, res) => {
+  try {
+    await runExpiryCheck();
+    res.status(200).json({success: true, message: "Expiry check completed"});
+  } catch (error) {
+    console.error("Error running expiry check:", error);
+    res.status(500).json({success: false, error: error.message});
+  }
 });
 exports.api = functions.https.onRequest(app);

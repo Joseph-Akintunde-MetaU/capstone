@@ -2,6 +2,7 @@ import { RecipeList } from "./RecipeList";
 import "./recipePage.css";
 import { useState, useEffect } from "react";
 import { auth } from "../config/firebase.config";
+import { fetchSubstitutes } from "../utility/getSubstitutes";
 import { onAuthStateChanged } from "firebase/auth";
 import CircularProgress from "@mui/material/CircularProgress";
 import { db } from "../config/firebase.config";

@@ -4,8 +4,7 @@
 /* eslint-disable new-cap */
 const express = require("express");
 const router = express.Router();
-const admin = require("firebase-admin");
-admin.initializeApp();
+const admin = require("../firebaseAdmin");
 const db = admin.firestore();
 // get all pantry items
 router.get("/", async (req, res) => {
@@ -33,7 +32,7 @@ router.get("/ingredients", async (req, res) => {
         .filter((item) => item.name && new Date(item.expiryDate) >= new Date())
         .map((item) => item.name.trim().toLowerCase());
     const stringedIngredients = ingredientsArray.join(",+");
-    res.status(201).json({Ingredients: stringedIngredients});
+    res.status(200).json({Ingredients: stringedIngredients});
   } catch (error) {
     console.error(error.message);
     res.status(500).json({error: "error"});
