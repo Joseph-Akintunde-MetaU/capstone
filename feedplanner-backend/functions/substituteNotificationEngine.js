@@ -9,7 +9,7 @@ const { retryWithBackoff } = require('./substitutionsUtil');
 const db = admin.firestore();
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 120 });
 const limit = pLimit(5); // Limit concurrent async operations
-const spoonacularKey = '09acdb4877f5429e998f19def7cd5028';
+const spoonacularKey = process.env.SPOONACULAR_API_KEY;
 const weights = 'config/substituteWeights';
 
 // Nutrition scoring plugin

@@ -5,7 +5,7 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable no-unused-vars */
 const fetch = require("node-fetch");
-const apiKey = "AIzaSyDHkg0Q0FrJpacC_5qm5ZFTOrycr66MYos";
+const apiKey = process.env.SPOONACULAR_API_KEY;
 async function retryWithBackoff(fn, retries = 3, delay = 500) {
     let attempt = 0;
     while (true) {
