@@ -5,33 +5,40 @@ import { MdClose } from "react-icons/md";
 import { db } from "../config/firebase.config";
 import "./NotificationCenter.css"
 import { ViewAffectedModal } from "./ViewAffectedModal";
+import { fetchSubstitutes } from "../utility/getSubstitutes";
 import { deleteDoc, getDocs, query, collection, orderBy, doc, updateDoc } from "firebase/firestore";
 export default function NotificationCenter({openDrawer, setOpenDrawer, notifications, setNotifications}){
     const [openModal, setOpenModal] = useState(false)
     const [selectedNotification, setSelectedNotification] = useState(null)
     const user = auth.currentUser; 
     useEffect(() => {
-        if(!user) return;
-        async function fetchNotification(){
+        if (!user) return;
+        async function fetchNotification() {
             const getEarliestToLatestNotifications = query(
-                collection(db, "users", user.uid, "notifications"), 
+                collection(db, "users", user.uid, "notifications"),
                 orderBy("createdAt", "desc")
-            )
-            const getNotifications = await getDocs(getEarliestToLatestNotifications)
+            );
+            const getNotifications = await getDocs(getEarliestToLatestNotifications);
             const notificationData = getNotifications.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data()
-            }))
-            const latest = notificationData[0]
-            const wasNew = !notifications.find((notification) => notification.id
-        === latest?.id)
-            if(wasNew && latest && !latest.read){
-                toast.info(`${latest.message}`)
-            }
-            setNotifications(notificationData)
+            }));
+            // Show toast only for notifications that are new and unread since last fetch
+            const newUnreadNotifications = notificationData.filter(
+                (notif) => !notif.read
+            );
+            // Avoid duplicate toasts by keeping track of shown notification IDs
+            const shownNotis = new Set();
+            newUnreadNotifications.forEach((notif) => {
+                if (!shownNotis.has(notif.id)) {
+                    toast.info(`${notif.message}`);
+                    shownNotis.add(notif.id);
+                }
+            });
+            setNotifications(notificationData);
         }
-        fetchNotification()
-    }, [user])
+        fetchNotification();
+    }, [user]);
     
     async function deleteNotification(id){
         await deleteDoc(doc(db, "users", user.uid, "notifications", id));
@@ -66,12 +73,22 @@ export default function NotificationCenter({openDrawer, setOpenDrawer, notificat
                     <p className="empty-state">No Notifications</p>
                 ):(
                     notifications.map((notification) => (
-                        <div key={notification.id} className = {`notif-item ${notification.read ? "read" : "unread"}`}>
-                            <p>{notification.message}</p>
+                        <div 
+                            key={notification.id} 
+                            className = {`notif-item ${notification.read ? "read" : "unread"}`}
+                        >
+                            <p>
+                                {notification.message
+                                    ?? (notification.type === 'expired'
+                                        ? `${notification.expiredIngredient} has expired` 
+                                        : `${notification.expiredIngredient} is expiring soon`
+                                    )
+                                }
+                            </p>
                             <div className="notif-acions">
                                 {!notification.read && <button onClick = {() => markAsRead(notification.id)}>DISMISS</button>}
                                 <button onClick={() => deleteNotification(notification.id)}>DELETE</button>
-                                {notification.expiredIngredient && (
+                                {notification.expiredIngredient && notification.affectedRecipes.length > 0 && (
                                     <button onClick={() => {
                                         setOpenModal(true)
                                         setSelectedNotification(notification)

@@ -11,17 +11,20 @@ export function MealPlannerPage(){
         onAuthStateChanged(auth, async(user) => {
             const token = await user.getIdToken()
             if(user){
-                try{
-                    const response = await fetch (`http://localhost:5001/feedplanner/us-central1/api/mealplanner/${id}`,{
+                try {
+                    setLoading(true)
+                    const response = await fetch(`http://localhost:5001/feedplanner/us-central1/api/mealplanner/${id}`, {
                         method: 'DELETE',
                         headers: {
                             Authorization: `Bearer ${token}`,
                             'content-type': 'application/json'
                         }
                     })
-                    getMealPlans(setMealPlans,setGroupedData)
-                }catch(error){
+                    await getMealPlans(setMealPlans, setGroupedData)
+                } catch (error) {
                     console.error(error)
+                } finally {
+                    setLoading(false)
                 }
             }
         })

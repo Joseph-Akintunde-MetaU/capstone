@@ -2,7 +2,7 @@
 /* eslint-disable new-cap */
 const express = require("express");
 const router = express.Router();
-const admin = require("firebase-admin");
+const admin = require("../firebaseAdmin");
 const db = admin.firestore();
 router.post("/", async (req, res) => {
   const {recipeId, recipeName, ingredients, imageUrl, isFavorited} = req.body;
