@@ -96,12 +96,9 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
                         const hasMatch = ingredientData.ingredients.some((ingredient) => 
                             pantry.map(p => p.toLowerCase().trim().includes(ingredient.name.toLowerCase().trim())
                         ))
-                        console.log(hasMatch)
                         if(hasMatch){
                             await logUserInteraction(user.uid, "match")
-                        }                 
-                        console.log(expiredIngredients)
-                        console.log(ingredients)      
+                        }                       
                         const hasUrgency = ingredientData.ingredients.some((ing) => 
                             expiredIngredients.map(exp => exp.toLowerCase().trim().includes(ing.name.toLowerCase().trim())
                         ))
@@ -122,7 +119,7 @@ export default function AddToMealPlan({closeModal, selectedRecipeId, selectedRec
                         closeModal(false)
                         nav("/mealPlanner")
                     }catch(error){
-                        console.log(error);
+                        throw new Error(error)
                 }
         }
     }
