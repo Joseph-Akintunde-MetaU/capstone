@@ -3,7 +3,7 @@ import "./UserAuthPage.css"
 import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
 import { useState } from "react";
 import {auth, db} from "../config/firebase.config"
-import { setDoc,doc,serverTimestamp } from "firebase/firestore";
+import { setDoc,doc,serverTimestamp,getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 export function UserAuthPage(){
     const [email, setEmail] = useState('')
@@ -22,14 +22,18 @@ export function UserAuthPage(){
             // For Google sign-in
             const googleUserCred = await signInWithPopup(auth, googleProvider)
             const googleUser = googleUserCred.user
-            await setDoc(doc(db, "users", googleUser.uid),{
+            // Only create user doc if it doesn't exist (don't overwrite createdAt on login)
+            const userDocRef = doc(db, "users", googleUser.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            if (!userDocSnap.exists()) {
+                await setDoc(userDocRef, {
                     email: googleUser.email,
                     username: googleUser.displayName,
                     userId: googleUser.uid,
                     createdAt: serverTimestamp()
-                })
+                });
+            }
             const token = await googleUser.getIdToken()
-             // eslint-disable-next-line no-unused-vars
             const response = await fetch(
                     baseUrl,
                     {
@@ -40,8 +44,28 @@ export function UserAuthPage(){
                     }
                 )
             isLoggedIn()
+            if (userDocSnap.exists()) {
+                const userData = userDocSnap.data();
+                // Convert Firestore Timestamp to JS Date
+                const createdAt = userData.createdAt?.toDate
+                    ? userData.createdAt.toDate()
+                    : new Date();
+                // Format as you like:
+                const formatted = createdAt.toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false,
+                    timeZoneName: "short"
+                });
+                localStorage.setItem("dateJoined", formatted);
+            }
             localStorage.setItem("username", googleUser.displayName) 
             localStorage.setItem("email", googleUser.email) 
+            localStorage.setItem("loginMethod", "google")
         }catch(error){
             console.log(error)
         }
@@ -86,9 +110,10 @@ export function UserAuthPage(){
                 isLoggedIn()
                 localStorage.setItem("username", username) 
                 localStorage.setItem("email", user.email) 
+                localStorage.setItem("dateJoined", serverTimestamp())
+                localStorage.setItem("loginMethod", "email")
             }catch(error){
-                const errorMessage = error.message;
-                console.log(errorMessage)
+                throw new Error(error)
             };
     }
     async function handleEmailSignIn(){
@@ -113,6 +138,20 @@ export function UserAuthPage(){
     }
     return(
         <div className="UserAuthPage">
+            {/* Add these elements to your UserAuthPage component */}
+            <div className="food-animation food-1"><img src="https://img.icons8.com/?size=100&id=AdSgGRnON0R9&format=png&color=000000"/></div>
+            <div className="food-animation food-2"><img src="https://img.icons8.com/?size=100&id=119923&format=png&color=000000"/></div>
+            <div className="food-animation food-3"><img src="https://img.icons8.com/?size=100&id=120148&format=png&color=000000"/></div>
+            <div className="food-animation food-4"><img src="https://img.icons8.com/?size=100&id=120092&format=png&color=000000" alt="" /></div>
+            <div className="food-animation food-5"><img src="https://img.icons8.com/?size=100&id=120103&format=png&color=000000" alt="" /></div>
+            <div className="food-animation food-6"><img src="https://img.icons8.com/?size=100&id=121571&format=png&color=000000" alt="" /></div>
+            <div className="food-animation food-7"><img src="https://img.icons8.com/?size=100&id=XULgt0zG41wA&format=png&color=000000" alt="" /></div>
+            
+
+            <div className="trash-can trash-1"><img src="https://img.icons8.com/?size=100&id=737&format=png&color=000000" alt="" /></div>
+            <div className="trash-can trash-2"><img src="https://img.icons8.com/?size=100&id=zJJqvhIgeWKO&format=png&color=000000" alt="" /></div>
+
+            <div className="no-waste-message">No Food Waste! </div>
             <div className="UserAuthPageBody">
                 <div className="AuthHeader">
                     <div className="logo">

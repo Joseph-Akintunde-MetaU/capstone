@@ -39,8 +39,7 @@ body {
   margin: 0;
   background-color: rgb(241, 243, 243);
   padding: 0;
-  min-width: fit-content;
-  
+  width: 100%; /* Add this */
 }
 
 h1 {

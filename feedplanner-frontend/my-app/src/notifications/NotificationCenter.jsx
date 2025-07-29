@@ -5,11 +5,11 @@ import { MdClose } from "react-icons/md";
 import { db } from "../config/firebase.config";
 import "./NotificationCenter.css"
 import { ViewAffectedModal } from "./ViewAffectedModal";
-import { fetchSubstitutes } from "../utility/getSubstitutes";
-import { deleteDoc, getDocs, query, collection, orderBy, doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, getDocs, query, collection, orderBy, doc, updateDoc, addDoc } from "firebase/firestore";
 export default function NotificationCenter({openDrawer, setOpenDrawer, notifications, setNotifications}){
     const [openModal, setOpenModal] = useState(false)
     const [selectedNotification, setSelectedNotification] = useState(null)
+    const [addToCartButton, setAddToCartButton] = useState(false)
     const user = auth.currentUser; 
     useEffect(() => {
         if (!user) return;
@@ -59,6 +59,21 @@ export default function NotificationCenter({openDrawer, setOpenDrawer, notificat
         }));
         setNotifications(notificationData);
     }
+    async function handleAddToCart(notification) {
+        try{
+            await addDoc(collection(db, "users", user.uid, "groceryList"), {
+                name: notification.expiredIngredient,
+                addedAt: new Date(),
+                source: "notification"
+            })
+            const notiRef = doc(db, "users", user.uid, "notifications", notification.id)
+            await updateDoc(notiRef, {addedToCart: true})
+            setAddToCartButton(true)
+            toast.success(`${notification.expiredIngredient} added to cart`)
+        }catch(error){
+            toast.error("Failed to Add to Cart")
+        }
+    }
     return(
         <div>
             {openDrawer && <div className="drawer-overlay" onClick={() => setOpenDrawer(false)}></div>}
@@ -96,6 +111,7 @@ export default function NotificationCenter({openDrawer, setOpenDrawer, notificat
                                         AFFECTED RECIPES
                                     </button>
                                 )} 
+                                {!notification.addedToCart && !addToCartButton && <button onClick={() => handleAddToCart(notification)}>ADD TO YOUR CART</button>}                
                             </div>
                         </div>
                     ))
