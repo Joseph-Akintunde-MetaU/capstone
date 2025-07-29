@@ -37,7 +37,7 @@ body.dark-mode .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem; /* Add horizontal padding instead of max-width */
+  padding: 1rem 2rem; /* Added horizontal padding instead of max-width */
   width: 100%; /* Full width. mine was stretching due to having a max width defined number*/
 }
 .nav-fp-logo {
