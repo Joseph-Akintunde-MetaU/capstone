@@ -4,49 +4,56 @@ import { db } from "../config/firebase.config"
 import { collection, getDocs } from "firebase/firestore"
 import "./ViewAffectedModal.css"
 export function ViewAffectedModal({notification, onClose}){
-    const [recipes, setRecipes] = useState([])
+    const recipes = notification.affectedRecipes || []
     const substitutes = notification.substitutes || []
     const expiredIngredient = notification.expiredIngredient
-    const apiKey = process.env.REACT_APP_API_KEY
-    const user = auth.currentUser
-    const userId = user.uid
-    async function fetchRecipesFromMealPlanner() {
-        const reference = collection(db,"users",userId,"mealPlan")
-        const getReference = await getDocs(reference)
-        const MealPlannerData = getReference.docs.map((doc) => doc.data())
-        const MealPlannedeRecipesWithExpiredIngredient = MealPlannerData.filter((recipe) => 
-            Array.isArray(recipe.ingredients) &&
-            recipe.ingredients.some(ing => 
-            typeof ing === "string" &&
-            ing.toLowerCase().includes(expiredIngredient?.toLowerCase() || "")
-            )
-        );
-        setRecipes(MealPlannedeRecipesWithExpiredIngredient)
-    }
+    const [fetchedSubstitutes, setFetchedSubstitutes] = useState([]);
+
     useEffect(() => {
-        fetchRecipesFromMealPlanner()
-    }, [expiredIngredient, userId])
+        async function fetchSubstitutes() {
+            if (!expiredIngredient) return;
+            try {
+            const substitutesRef = collection(db, "substitutes");
+            const snapshot = await getDocs(substitutesRef);
+            const subs = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.ingredient === expiredIngredient && Array.isArray(data.substitutes)) {
+                subs.push(...data.substitutes);
+                }
+            });
+            setFetchedSubstitutes(subs);
+            } catch (error) {
+            setFetchedSubstitutes([]);
+            }
+        }
+        fetchSubstitutes();
+    }, [expiredIngredient]);
     return (
         <div className="affected-modal-overlay">
             <div className="modal-box">
-                <h3>Recipes using {expiredIngredient}</h3>
+                <h3>Recipes using "{expiredIngredient}"</h3>
                 {recipes.length > 0 ? (
                     <ul>
                         {recipes.map((recipe, i) => (
                             <li key={i}>
-                                <h3><strong>{recipe.recipeName} ({recipe.dayOfTheWeek}, {recipe.mealType})</strong></h3>
-                                <div>
+                                <h3>
+                                    <strong>
+                                        {recipe.recipeName} ({recipe.dayOfTheWeek}, {recipe.mealType})
+                                    </strong>
+                                </h3>
+                                <ul>
                                     <strong>Substitutes for {expiredIngredient} in {recipe.recipeName}:</strong>
                                     {substitutes.length > 0 ? (
-                                        <ul>
+                                        <p>
                                             {substitutes.map((sub, j) => (
                                                 <li key={j}>{sub}</li>
                                             ))}
-                                        </ul>
+                                        </p>
                                     ) : (
                                         <p>Oops! No substitutes found!</p>
                                     )}
-                                </div>
+                                </ul>
                             </li>
                         ))}
                     </ul>
