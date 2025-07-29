@@ -208,7 +208,6 @@ export async function ScoreRecommendationForRecipes(
             (recipe.normalizedScores.ratings * weights.rating) +
             (recipe.normalizedScores.urgencyScore * weights.urgency);
     });
-    
     // Return recipes sorted by final score (descending)
     return scoredRecipes.sort((a, b) => b.finalScore - a.finalScore);
 }

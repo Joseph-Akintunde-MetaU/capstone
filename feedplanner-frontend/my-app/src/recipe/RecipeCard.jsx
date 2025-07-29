@@ -103,7 +103,6 @@ export function RecipeCard({ id, image, name, score, ingredients, recipes }) {
                     <div className="front-recipe-card">
                         <img src={image} alt={name} />
                         <p>{name}</p>
-                        <p>{score}</p>
                         <p>
                             Ingredients used: {
                                 Array.isArray(ingredients)
