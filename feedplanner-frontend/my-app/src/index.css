@@ -22,15 +22,6 @@
   font-style: normal;
   
 }
-/* a {
-  font-weight: 500;
-  color: var(--primary-color);
-  text-decoration: inherit;
-}
-a:hover {
-  color: var(--primary-hover);
-} */
-
 body {
   background: var(--background-gradient);
   min-height: 100vh;
@@ -39,7 +30,7 @@ body {
   margin: 0;
   background-color: rgb(241, 243, 243);
   padding: 0;
-  width: 100%; /* Add this */
+  width: 100%;
 }
 
 h1 {
