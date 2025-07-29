@@ -135,4 +135,5 @@ exports.checkExpiryScheduled = onSchedule({
 }, async () => {
   await runExpiryCheck();
 });
+
 exports.api = functions.https.onRequest(app);
