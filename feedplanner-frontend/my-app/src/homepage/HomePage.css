@@ -348,6 +348,31 @@
 .dark-mode .food-trivia p {
     color: #cbd5e0;
 }
+.Footer{
+    background: rgb(244, 243, 243);
+    box-shadow: 5px 4px 15px rgba(16, 185, 129, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    line-height: 5em;
+    color: var(--text-primary);
+}
+.dark-mode .Footer{
+    background-color: black;
+    color: white;
+}
+.socials{
+    mix-blend-mode: multiply;
+    display: flex;
+    justify-content: space-evenly;
+}
+.dark-mode .socials{
+    justify-content: space-evenly;
+    mix-blend-mode: normal;
+}
+.socials a:hover{
+    transform: scale(1.1);
+}
 
 /* Responsive design */
 @media (max-width: 768px) {

@@ -51,7 +51,7 @@ export function HomePage({isSignedOut, darkMode}){
         return () => clearInterval(timer)
     },[])
     return(
-        <div className='homeWrap'>x
+        <div className='homeWrap'>
             <main className='mainContent'>
                 <section className='greeting'>
                     <div className="greeting-time">{getGreeting()}, {username}!</div>
@@ -89,6 +89,43 @@ export function HomePage({isSignedOut, darkMode}){
                 </section>
             </div>
             </main>
+            <footer className="Footer">
+                <p>
+                &copy; The 2AJ Food and Waste Prevention Company LLC 2030. All Rights
+                Reserved
+                </p>
+                <div className="socials">
+                    <a href="https://www.instagram.com/jausephh/?hl=en">
+                        <img
+                        width="50px"
+                        src={darkMode ? "img/hd-square-white-instagram-logo-icon-png-701751695118869dhkjddwaed.png" : "img/instagram.png"}
+                        alt="instagram"
+                        />
+                    </a>
+                    <a href="mailto:jakintunde@claflin.edu">
+                        <img
+                        width="50px"
+                        src="img/mail.jpg"
+                        alt="mail"
+                        />
+                    </a>
+                    <a href="https://www.linkedin.com/in/joseph-akintunde-4a1492288/">
+                        <img
+                        width="40px"
+                        src={darkMode ? "img/white-in.png" : "img/linkedin.png"}
+                        alt="linkedin"
+                        />
+                    </a>
+                    <a href="https://github.com/joseph-akintunde/flixster-starter">
+                        <img 
+                        className="git" 
+                        width="40px" 
+                        src="img/imagesgit.png" 
+                        alt='github'
+                        />
+                    </a>
+                </div>
+            </footer>
         </div>
     )
 }
