@@ -51,7 +51,7 @@ export function HomePage({isSignedOut, darkMode}){
         return () => clearInterval(timer)
     },[])
     return(
-        <div className='homeWrap'>
+        <div className='homeWrap'>x
             <main className='mainContent'>
                 <section className='greeting'>
                     <div className="greeting-time">{getGreeting()}, {username}!</div>
