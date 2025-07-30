@@ -107,12 +107,12 @@ export function UserAuthPage(){
                 )
                 isLoggedIn()
             }catch(error){
-            const errorMessage = error.message;
-            console.log(errorMessage)
-        };
+                throw new Error(error)
+            };
     }
     return(
         <div className="UserAuthPage">
+            <div className="no-waste-message">No Food Waste! </div>
             <div className="UserAuthPageBody">
                 <div className="AuthHeader">
                     <div className="logo">
