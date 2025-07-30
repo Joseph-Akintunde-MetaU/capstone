@@ -98,7 +98,7 @@ function App() {
         </header>}
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
-        <Route path='/home' element={ isAuthenticated === false ? <Navigate to="/"/> : <HomePage isSignedOut={isSignedOut}/>} />
+        <Route path='/home' element={ isAuthenticated === false ? <Navigate to="/"/> : <HomePage isSignedOut={isSignedOut} darkMode={darkMode}/>} />
         <Route path='/errorpage' element={ isAuthenticated === false ? <Navigate to="/"/> : <ErrorPage/>} />
         <Route path='/pantry' element = {isAuthenticated === false ? <Navigate to="/"/> : <PantryManager pantry={pantry} setPantry={setPantry}/>}/>
         <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes = {recipes} setRecipes={setRecipes} scoredRecipes={scoredRecipes} setScoredRecipes={setScoredRecipes} recipeIngredients={recipeIngredients} setRecipeIngredients={setRecipeIngredients} favoriteRecipes={favoritedRecipeCards}/>}/>
