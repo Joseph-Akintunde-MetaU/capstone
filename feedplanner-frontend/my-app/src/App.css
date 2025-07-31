@@ -139,7 +139,7 @@ body.dark-mode .links a {
 }
 
 /* Responsive design */
-@media (max-width: 1150px) {
+@media (max-width: 1365px) {
   .nav-bar {
     padding: 1rem;
     flex-direction: column;

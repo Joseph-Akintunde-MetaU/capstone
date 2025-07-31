@@ -34,7 +34,7 @@ export function RecipePage({
             const stringIngredients = ingredients.Ingredients;
 
             const fetchFromApi = await fetch(
-                `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=5`
+                `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=10`
             );
             const data = await fetchFromApi.json();
             setRecipes(data);
