@@ -21,6 +21,7 @@
   color: var(--text-primary);
   font-size: 2em;
 }
+
 .dark-mode .planner-header h2{
     color: white;
 }
@@ -116,13 +117,17 @@
   background-color: #f9f9f9;
   min-height: 500px;
 }
-
+.dark-mode .day-column{
+    background-color: black;
+}
 .day-column.today {
   border-color: var(--accent-color);
   background-color: #f0f8f0;
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
-
+.dark-mode .day-column.today{
+    background-color: black;
+}
 .day-header {
   text-align: center;
   margin-bottom: 20px;
@@ -132,18 +137,22 @@
 
 .day-name {
   margin: 0 0 5px 0;
-  color: #333;
+  color: var(--text-primary);
   text-transform: capitalize;
   font-size: 1.1em;
   font-weight: 600;
 }
-
+.dark-mode .day-name{
+    color: white;
+}
 .day-date {
-  color: #666;
+  color: var(--text-primary);
   font-size: 0.9em;
   font-weight: 500;
 }
-
+.dark-mode .day-date{
+    color: white;
+}
 .today .day-name {
   color: #4caf50;
 }
@@ -161,7 +170,7 @@
 
 .meal-type {
   font-weight: bold;
-  color: #666;
+  color: var(--text-primary);
   margin-bottom: 10px;
   text-transform: capitalize;
   font-size: 0.9em;
@@ -170,7 +179,10 @@
   border-radius: 6px;
   text-align: center;
 }
-
+.dark-mode .meal-type{
+    background-color: black;
+    color: white;
+}
 .recipes-container {
   min-height: 50px;
 }
@@ -186,7 +198,9 @@
   margin-bottom: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-
+.dark-mode .recipe-name{
+    background-color: black;
+}
 .recipe-name:hover {
   transform: translateY(-1px);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
@@ -196,10 +210,12 @@
 .recipe-text {
   flex: 1;
   font-size: 0.85em;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 500;
 }
-
+.dark-mode .recipe-text{
+    color: white;
+}
 .delete-btn {
   background: none;
   border: none;
@@ -213,6 +229,14 @@
   justify-content: center;
 }
 
+.no-meals{
+    color: var(--text-primary);
+}
+
+.dark-mode .no-meals{
+    color: white;
+}
+
 .delete-btn:hover {
   background-color: #ff4444;
   color: white;
@@ -221,12 +245,16 @@
 
 .empty-slot {
   text-align: center;
-  color: #999;
+  color: var(--text-primary);
   font-style: italic;
   padding: 15px;
   border: 1px dashed #ccc;
   border-radius: 6px;
   background-color: #fafafa;
+}
+.dark-mode .empty-slot{
+    background-color: black;
+    color: white;
 }
 
 .empty-slot p {
