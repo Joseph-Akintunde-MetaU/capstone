@@ -41,29 +41,85 @@ export function CreatePantryItem({closeModal,getPantry}){
             console.log("user not logged in");
         }
     }
-    return(
-        <div className="modal-overlay">
-            <div className="modal">
-                <form
-                    action=""
-                    className="modalToAddPantry"
-                    onSubmit={async (e) => {
-                        await addPantry(e);
-                        closeModal(false);
-                    }}
-                >
-                    <label htmlFor="name">Name</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
-                    <label htmlFor="quantity">Quantity</label>
-                    <input type="text" value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
-                    <label htmlFor="unit">Unit</label>
-                    <input type="text" value={unit} onChange = {(e) => setUnit(e.target.value)}/>
-                    <label htmlFor="expiryDate">Expiry Date</label>
-                    <input type="datetime-local" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
-                    <button type="submit">CREATE</button>
-                </form>
-                <button onClick={() => closeModal(false)}>CLOSE</button>
-            </div>
+    return (
+    <div className="modal-overlay">
+      <div className="modal">
+        <div className="modal-header">
+          <h2 className="modal-title">Add Pantry Item</h2>
+          <button className="close-button" onClick={() => closeModal(false)}>
+            ×
+          </button>
         </div>
-    )
+
+        <form
+          action=""
+          className="modalToAddPantry"
+          onSubmit={async (e) => {
+            await addPantry(e)
+            closeModal(false)
+          }}
+        >
+          <div className="form-group">
+            <label htmlFor="name">Item Name</label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Organic Tomatoes, Rice, Cabbages"
+              required
+            />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="quantity">Quantity</label>
+              <input
+                type="number"
+                id="quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder="5"
+                min="0"
+                step="0.1"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="unit">Unit</label>
+              <input
+                type="text"
+                id="unit"
+                value={unit}
+                onChange={(e) => setUnit(e.target.value)}
+                placeholder="tbsp, kg, lbs"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="expiryDate">Expiry Date</label>
+            <input
+              type="datetime-local"
+              id="expiryDate"
+              value={expiryDate}
+              onChange={(e) => setExpiryDate(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="button-group">
+            <button type="submit" className="btn-primary">
+              Add to Pantry
+            </button>
+            <button type="button" className="btn-secondary" onClick={() => closeModal(false)}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
 }

@@ -135,5 +135,12 @@ exports.checkExpiryScheduled = onSchedule({
 }, async () => {
   await runExpiryCheck();
 });
-
+exports.runExpiryCheck = functions.https.onRequest(async (req, res) => {
+  try {
+    await runExpiryCheck();
+    res.status(200).json({ message: "Expiry check completed successfully." });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 exports.api = functions.https.onRequest(app);
