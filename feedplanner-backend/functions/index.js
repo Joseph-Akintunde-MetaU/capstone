@@ -55,6 +55,7 @@ app.post("/substitutes", async (req, res) => {
 });
 
 async function runExpiryCheck() {
+  console.log("runExpiryCheck called");
   const today = new Date();
   const millisecondsInADay = 24 * 60 * 60 * 1000;
   const getUsers = await db.collection("users").get();
@@ -130,9 +131,10 @@ async function runExpiryCheck() {
 }
 
 exports.checkExpiryScheduled = onSchedule({
-  schedule: "every 2 minutes",
+  schedule: "every 5 minutes",
   timeZone: "America/Los_Angeles",
 }, async () => {
+  console.log("Scheduled expiry check started at", new Date().toISOString());
   await runExpiryCheck();
 });
 
