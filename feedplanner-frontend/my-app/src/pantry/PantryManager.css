@@ -1,0 +1,210 @@
+.pantry-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.dark-mode .pantry-container {
+    background: linear-gradient(135deg, black 0%, #333 100%);
+}
+
+.pantry-header {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.dark-mode .pantry-header {
+    background: linear-gradient(135deg, black 0%, #333 100%);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.title-section {
+    flex: 1;
+}
+
+.pantry-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dark-mode .pantry-title {
+    color: white;
+    background: none;
+    -webkit-text-fill-color: white;
+}
+
+.dark-mode .pantry-subtitle {
+    color: white;
+}
+
+.pantry-subtitle {
+    font-size: 16px;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.add-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    letter-spacing: -0.01em;
+    font-family: inherit;
+}
+
+.add-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.add-button:active {
+    transform: translateY(0);
+}
+
+.add-button:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.add-icon {
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.pantry-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+.pantry-grid {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    min-height: 400px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+        padding: 24px 20px;
+    }
+
+    .title-section {
+        text-align: center;
+    }
+
+    .pantry-title {
+        font-size: 28px;
+    }
+
+    .pantry-subtitle {
+        font-size: 14px;
+    }
+
+    .add-button {
+        width: 100%;
+        justify-content: center;
+        padding: 16px 24px;
+    }
+
+    .pantry-content {
+        padding: 24px 20px;
+    }
+
+    .pantry-grid {
+        border-radius: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pantry-title {
+        font-size: 24px;
+    }
+
+    .header-content {
+        padding: 20px 16px;
+    }
+
+    .pantry-content {
+        padding: 20px 16px;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.pantry-grid:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+/* Focus States for Accessibility */
+.pantry-container *:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Smooth Transitions */
+* {
+    transition: all 0.2s ease;
+}
+
+.pantry-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pantry-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.pantry-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.pantry-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
