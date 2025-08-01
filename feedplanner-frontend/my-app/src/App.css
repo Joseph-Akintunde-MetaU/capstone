@@ -1,7 +1,7 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   text-align: center;
 }
 html {
@@ -37,9 +37,8 @@ body.dark-mode .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 1rem 2rem; /* Added horizontal padding instead of max-width */
+  width: 100%; /* Full width. mine was stretching due to having a max width defined number*/
 }
 .nav-fp-logo {
   width: auto;

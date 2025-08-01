@@ -3,8 +3,7 @@ import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
 import {AllPantry} from "./AllPantry"
 import { CreatePantryItem } from "./CreatePantryItem"
-export function PantryManager(){
-    const [pantry, setPantry] = useState([])
+export function PantryManager({pantry, setPantry}){
     const [openModal, setOpenModal] = useState(false)
     async function getPantry(){
         onAuthStateChanged(auth, async(user) => {

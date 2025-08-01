@@ -4,8 +4,7 @@ import { MdOutlineDelete } from "react-icons/md"
 import { getMealPlans } from "../utility/getmealplanner"
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "../config/firebase.config"
-export function MealPlannerPage(){
-    const [mealPlans, setMealPlans] = useState([])
+export function MealPlannerPage({mealPlans, setMealPlans}){
     const [groupedData, setGroupedData] = useState({})
     async function deleteMealFromPlanner(id){
         onAuthStateChanged(auth, async(user) => {
