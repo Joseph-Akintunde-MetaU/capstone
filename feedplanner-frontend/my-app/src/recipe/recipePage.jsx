@@ -9,14 +9,35 @@ import { ScoreRecommendationForRecipes } from "../utility/scoreRecommendationFor
 
 export function RecipePage({
     recipes,
+    darkMode,
     setRecipes,
     scoredRecipes,
     setScoredRecipes,
     recipeIngredients,
     setRecipeIngredients,
 }) {
+    const [filter, setFilter] = useState("none");
+    const [dietaryFilters, setDietaryFilters] = useState({
+    vegetarian: false,
+    vegan: false,
+    glutenFree: false,
+    dairyFree: false
+    });
     const [loading, setLoading] = useState(true);
+    const [loadingProgress, setLoadingProgress] = useState(0)
     const apiKey = process.env.REACT_APP_API_KEY;
+
+    useEffect(() => {
+        if (loading) {
+        const interval = setInterval(() => {
+            setLoadingProgress((prev) => {
+            if (prev >= 90) return prev
+            return prev + Math.random() * 10
+            })
+        }, 200)
+        return () => clearInterval(interval)
+        }
+    }, [loading])
 
     async function getRecipes(token) {
         try {
@@ -34,7 +55,7 @@ export function RecipePage({
             const stringIngredients = ingredients.Ingredients;
 
             const fetchFromApi = await fetch(
-                `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=10`
+                `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${apiKey}&ingredients=${stringIngredients}&number=4`
             );
             const data = await fetchFromApi.json();
             setRecipes(data);
@@ -57,6 +78,13 @@ export function RecipePage({
                 image: recipe.image,
                 name: recipe.title,
                 ingredients: recipe.extendedIngredients.map((ing) => ing.nameClean),
+                cookTime: recipe.readyInMinutes ? `${recipe.readyInMinutes} min` : "30 min",
+                cuisines: recipe.cuisines,
+                dishTypes: recipe.dishTypes,
+                diets: recipe.diets,
+                healthScore: recipe.healthScore || 0,
+                instructions: recipe.instructions,
+                summary: recipe.summary
             }));
 
             return { recipesInformationForScoring, ingredientsMap };
@@ -143,26 +171,119 @@ export function RecipePage({
         });
         return () => unsubscribe();
     }, []);
-
+    function getFilteredRecipes() {
+        if (!scoredRecipes) return [];
+        let filtered = [...scoredRecipes];
+         if (dietaryFilters.vegetarian) {
+            filtered = filtered.filter(r => r.diets && r.diets.includes("vegetarian"));
+        }
+        if (dietaryFilters.vegan) {
+            filtered = filtered.filter(r => r.diets && r.diets.includes("vegan"));
+        }
+        if (dietaryFilters.glutenFree) {
+            filtered = filtered.filter(r => r.diets && r.diets.includes("gluten free"));
+        }
+        if(dietaryFilters.dairyFree){
+            filtered = filtered.filter(r => r.diets && r.diets.includes("dairy free"))
+        }
+        if (filter === "healthScore") {
+            filtered.sort((a, b) => (b.healthScore || 0) - (a.healthScore || 0));
+        } else if (filter === "cookTime") {
+            filtered.sort((a, b) => {
+            const timeA = parseInt(a.cookTime) || 0;
+            const timeB = parseInt(b.cookTime) || 0;
+            return timeA - timeB;
+            });
+        } else if (filter === "rating") {
+            filtered.sort((a, b) => (b.medianRating || 0) - (a.medianRating || 0));
+        }
+        return filtered;
+    }
     return (
         <div className="recipePage">
-            <h1>RECIPES</h1>
+            <div className="page-header">
+                <h1>DISCOVER RECIPES</h1>
+                <p className="page-subtitle">Personalized recommendations based on your pantry and preferences</p>
+            </div>
             <div className="recipes">
-                {loading ? (
-                    <div className="loader">
-                        <CircularProgress color="success" />
-                        <br />
-                        Loading..
+            {loading ? (
+                <div className="loader">
+                    <div className="loading-container">
+                        <CircularProgress color="success" size={60} thickness={4} />
+                        <div className="loading-progress">
+                            <div className="progress-bar" style={{ width: `${loadingProgress}%` }}></div>
+                        </div>
+                        <p className="loading-text">
+                            {loadingProgress < 30
+                                ? "Analyzing your pantry..."
+                                : loadingProgress < 60
+                                ? "Finding perfect recipes..."
+                                : loadingProgress < 90
+                                ? "Calculating recommendations..."
+                                : "Almost ready!"}
+                        </p>
                     </div>
+                </div>
                 ) : (
-                    <div className="recipeList">
-                        <RecipeList
-                            recipes={scoredRecipes}
-                            recipeIngredients={recipeIngredients}
-                        />
+                <div className="recipeList">
+                    <div className="filter-container">
+                        <div className="filter-row">
+                            <label className="sort-label">Sort by:</label>
+                            <select 
+                                className="sort-select"
+                                value={filter} 
+                                onChange={e => setFilter(e.target.value)}
+                            >
+                                <option value="none">Default</option>
+                                <option value="healthScore">Health Score</option>
+                                <option value="cookTime">Cook Time</option>
+                                <option value="rating">Highest Rating</option>
+                            </select>
+                        </div>
+
+                        <div className="filter-row">
+                            <span className="filter-title">Dietary Preferences:</span>
+                        </div>
+
+                        <div className="filter-row checkbox-row">
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    checked={dietaryFilters.vegetarian}
+                                    onChange={e => setDietaryFilters(f => ({ ...f, vegetarian: e.target.checked }))}
+                                />
+                                Vegetarian
+                            </label>
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    checked={dietaryFilters.vegan}
+                                    onChange={e => setDietaryFilters(f => ({ ...f, vegan: e.target.checked }))}
+                                />
+                                Vegan
+                            </label>
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    checked={dietaryFilters.glutenFree}
+                                    onChange={e => setDietaryFilters(f => ({ ...f, glutenFree: e.target.checked }))}
+                                />
+                                Gluten-Free
+                            </label>
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    checked={dietaryFilters.dairyFree}
+                                    onChange={e => setDietaryFilters(f => ({ ...f, dairyFree: e.target.checked }))}
+                                />
+                                Dairy-Free
+                            </label>
+                        </div>
                     </div>
+                    <RecipeList recipes={getFilteredRecipes()} recipeIngredients={recipeIngredients} darkMode={darkMode} />
+                </div>
                 )}
             </div>
         </div>
-    );
+    )
 }
