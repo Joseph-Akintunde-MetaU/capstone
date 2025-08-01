@@ -1,0 +1,246 @@
+.UserAuthPage{
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  top: 0;
+  left: 0;
+  transform: none;
+}
+/* Hide login form by default */
+.login {
+  display: none;
+}
+
+/* When show-login class is added, hide signup and show login */
+.UserAuthPage.show-login .auth-form:first-of-type {
+  display: none;
+}
+
+.UserAuthPage.show-login .login-section {
+  display: none;
+}
+
+.UserAuthPage.show-login .login {
+  display: block;
+}
+
+/* Make login-section clickable */
+.login-section {
+  cursor: pointer;
+}
+
+.login-section:hover {
+  opacity: 0.8;
+}
+.UserAuthPageBody{
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: var(--transition);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.dark-mode .UserAuthPageBody{
+  background-color: black;
+}
+.UserAuthPageBody:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.35);
+}
+.AuthHeader{
+  text-align: center;
+  padding: 3rem 2rem 2rem;
+}
+
+.logo{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5rem;
+  mix-blend-mode: multiply;
+}
+.dark-mode .logo{
+    filter: invert(0);
+    mix-blend-mode: hard-light;
+}
+.logo-icon {
+  width: 200px;
+  height: 200px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+  margin-right: 12px;
+  margin-top: 1.5rem;
+}
+.welcome{
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+.dark-mode .welcome, 
+.dark-mode .auth-mode, 
+.dark-mode .form-label{
+  color: white;
+}
+.auth-mode {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+.auth-form {
+  padding: 0 6rem 4rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.input-container{
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 1rem 0 2.5rem;
+  border: 2px solid var(--input-border);
+  border-radius: var(--border-radius);
+  background: #f8fafc;
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+.dark-mode .form-input{
+  background: black;
+}
+
+.form-input:focus {
+  border-color: var(--input-focus);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: var(--text-muted);
+}
+.btn {
+  width: 20em;
+  height: 50px;
+  margin: 20px auto;
+  border: 1px solid var(--text-muted);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(71, 85, 105, 0.3);
+}
+.dark-mode .btn:hover{
+  color: white;
+  background-color: black;
+}
+.btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(71, 85, 105, 0.4);
+  color: white;
+}
+.login-section {
+  text-align: center;
+  margin: 1rem 0;
+  padding: 0 2rem;
+}
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  padding: 0 2rem;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.divider-text {
+  padding: 0 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.dark-mode .dividerText{
+  color: white;
+}
+.no-waste-message {
+  position: fixed;
+  top: 10%;
+  right: -250px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  animation: slideMessage 15s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes slideMessage {
+  0%, 85%, 100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(-270px);
+    opacity: 1;
+  }
+  25% {
+    transform: translateX(-270px);
+    opacity: 1;
+  }
+  35% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
