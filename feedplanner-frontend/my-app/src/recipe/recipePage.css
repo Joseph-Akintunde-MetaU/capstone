@@ -37,7 +37,9 @@
   letter-spacing: 2px;
   position: relative;
   z-index: 1;
-  
+}
+.dark-mode .recipePage h1, .dark-mode .page-subtitle{
+  color: white;
 }
 
 .recipePage h1::after {
