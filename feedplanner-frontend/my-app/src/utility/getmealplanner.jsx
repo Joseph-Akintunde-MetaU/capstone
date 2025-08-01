@@ -1,17 +1,11 @@
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "../config/firebase.config"
 
-export async function getMealPlans(setMealPlans, setGroupedData) {
+export async function getMealPlans(setMealPlans, setGroupedData, weekOf = null) {
     onAuthStateChanged(auth, async (user) => {
         try {
             if (user) {
                 const token = await user.getIdToken()
-                const today = new Date()
-                const day = today.getDay()
-                const diff = today.getDate() - day
-                const startOfWeek = new Date(today.getFullYear(), today.getMonth(), diff)
-                startOfWeek.setHours(0, 0, 0, 0)
-                const weekOf = startOfWeek.toISOString().split("T")[0]
                 const response = await fetch(
                     `http://localhost:5001/feedplanner/us-central1/api/mealPlanner?weekOf=${weekOf}`,
                     {

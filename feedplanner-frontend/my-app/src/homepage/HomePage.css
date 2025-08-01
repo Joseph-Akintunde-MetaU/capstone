@@ -1,46 +1,440 @@
-.mainContent{
+.homeWrap {
+    min-height: 100vh;
+    background: rgb(244, 243, 243);
+    position: relative;
+    overflow-x: hidden;
+}
+
+.dark-mode .homeWrap {
+    background: #000000;
+}
+
+.dark-mode .greeting {
+    background: rgba(24, 24, 27, 0.95);
+    color: #d1fae5;
+    border: 1px solid rgba(55, 65, 81, 0.4);
+}
+
+.dark-mode .greeting h2 {
+    color: #bbf7d0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.dark-mode .greeting p,
+.dark-mode .greeting-time {
+    color: #34d399;
+}
+
+.dark-mode .greeting span {
+    background: linear-gradient(135deg, #047857, #10b981);
+    color: #f0fdf4;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.5);
+}
+
+.dark-mode .mainContent {
+    background: transparent;
+    color: #d1fae5;
+}
+
+.dark-mode .loader {
+    background: rgba(24, 24, 27, 0.95);
+    color: #bbf7d0;
+}
+
+.dark-mode .loader-text p {
+    color: #34d399;
+}
+
+.dark-mode .pantryAdder button {
+    background: linear-gradient(135deg, #047857, #059669);
+    color: #f0fdf4;
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4);
+}
+
+.dark-mode .pantryAdder button:hover {
+    box-shadow: 0 12px 40px rgba(16, 185, 129, 0.6);
+}
+
+.dark-mode .pantry-icon,
+.dark-mode .pantry-arrow {
+    color: #bbf7d0;
+}
+
+/* Background animations */
+.bg-animations {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 900px;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.floating-element {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.3;
+    animation: float 20s infinite linear;
+}
+
+.element-1 { top: 10%; animation-delay: 0s; }
+.element-2 { top: 25%; animation-delay: -4s; }
+.element-3 { top: 45%; animation-delay: -8s; }
+.element-4 { top: 65%; animation-delay: -12s; }
+.element-5 { top: 80%; animation-delay: -16s; }
+
+.sparkle {
+    position: absolute;
+    font-size: 1rem;
+    opacity: 0.4;
+    animation: sparkle 8s infinite ease-in-out;
+}
+
+.sparkle-1 { top: 20%; right: 20%; animation-delay: 0s; }
+.sparkle-2 { top: 60%; right: 10%; animation-delay: -3s; }
+.sparkle-3 { top: 40%; right: 30%; animation-delay: -6s; }
+
+@keyframes float {
+    0% {
+        transform: translateX(-100px) translateY(0px);
+        opacity: 0;
+    }
+    10%, 90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateX(calc(100vw + 100px)) translateY(-50px);
+        opacity: 0;
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% { 
+        transform: scale(0.5) rotate(0deg); 
+        opacity: 0.2; 
+    }
+    50% { 
+        transform: scale(1.2) rotate(180deg); 
+        opacity: 0.8; 
+    }
+}
+
+.mainContent {
+    width: 100%;
+    max-width: 1200px;
     padding: 40px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    z-index: 1;
+    margin: 0 auto;
 }
-.greeting h2{
-    font-size: 2rem;
-    margin-bottom: 8px;
-    color: var(--primary-color);
-}
-.greeting p{
-    color: var(--primary-color);
-    font-size: 2rem;
-    margin-bottom: 30px;
-}
-.greeting span{
-    display: inline-block;
-    padding: 10px 15px;    
-}
-.featuredRecipes{
-    display: grid;
-    grid-template-columns: 1fr;
-}
-.recipeCards{
-    display: grid;
-}
-.recipeCards img{
-    width: 100%;
-    height: auto;
+
+.greeting {
+    text-align: center;
+    margin-bottom: 3rem;
+    margin-top: 1rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
     overflow: hidden;
 }
-.loader{
-    text-align: center;
-    padding: 40px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--primary-color);
-    animation: blink 2s infinite;
+
+.greeting::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.1), transparent);
+    animation: shimmer 3s infinite;
 }
-@keyframes blink {
-    0%, 100% {opacity: 0.2}
-    50% {opacity: 1;}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.greeting-time {
+    font-size: 1.2rem;
+    color: #059669;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.greeting h2 {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    color: #065f46;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.greeting p {
+    color: #059669;
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.greeting span {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    margin-bottom: 1rem;
+}
+.refresh-btn {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #10b981;
+    border-radius: 25px;
+    padding: 8px 16px;
+    margin-top: 1rem;
+    cursor: pointer;
+    color: #059669;
+    transition: all 0.3s ease;
+}
+.dark-mode .refresh-btn{
+    background: #10b981;
+}
+
+.refresh-btn:hover:not(:disabled) {
+    background: #10b981;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.featuredRecipes {
+    width: 100%;
+    margin-bottom: 3rem;
+}
+
+.recipeCards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 1rem;
+}
+.loader {
+    text-align: center;
+    padding: 60px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+.pantryAdder {
+    width: 100%;
+    max-width: 600px;
+}
+
+.pantryAdder button {
+    width: 100%;
+    padding: 2rem;
+    background: linear-gradient(135deg, #059669, #047857);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    box-shadow: 0 8px 32px rgba(5, 150, 105, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.pantryAdder button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.pantryAdder button:hover::before {
+    left: 100%;
+}
+
+.pantryAdder button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(5, 150, 105, 0.4);
+}
+
+.pantry-icon {
+    font-size: 2.5rem;
+}
+
+.pantry-text {
+    flex: 1;
+    text-align: center;
+}
+
+.pantry-text strong {
+    display: block;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.pantry-text span {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.pantry-arrow {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.pantryAdder button:hover .pantry-arrow {
+    transform: translateX(5px);
+}
+
+.food-trivia {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+}
+
+.food-trivia h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.food-trivia p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.dark-mode .food-trivia {
+    background: #2d3748;
+    border-left-color: #60a5fa;
+}
+
+.dark-mode .food-trivia h3 {
+    color: #93c5fd;
+}
+
+.dark-mode .food-trivia p {
+    color: #cbd5e0;
+}
+.Footer{
+    background: rgb(244, 243, 243);
+    box-shadow: 5px 4px 15px rgba(16, 185, 129, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    line-height: 5em;
+    color: var(--text-primary);
+}
+.dark-mode .Footer{
+    background-color: black;
+    color: white;
+}
+.socials{
+    mix-blend-mode: multiply;
+    display: flex;
+    justify-content: space-evenly;
+}
+.dark-mode .socials{
+    justify-content: space-evenly;
+    mix-blend-mode: normal;
+}
+.socials a:hover{
+    transform: scale(1.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .mainContent {
+        padding: 20px 15px;
+    }
+    .greeting{
+        margin-top: 6rem;
+    }
+    .greeting h2 {
+        font-size: 2rem;
+    }
+    
+    .greeting p {
+        font-size: 1.8rem;
+    }
+    
+    .recipeCards {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .pantryAdder button {
+        padding: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .pantry-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .floating-element {
+        font-size: 1.5rem;
+    }
+
+    .food-trivia {
+        margin: 1.5rem 0;
+        padding: 0.75rem;
+    }
+
+    .food-trivia h3 {
+        font-size: 0.9rem;
+    }
+
+    .food-trivia p {
+        font-size: 0.85rem;
+}
+}
+
+@media (max-width: 480px) {
+    .greeting {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .greeting h2 {
+        font-size: 1.8rem;
+    }
+    
+    .greeting p {
+        font-size: 1.5rem;
+    }
 }

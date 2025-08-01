@@ -85,23 +85,27 @@ function App() {
                     <a onClick={handleProfileClick}>PROFILE</a>
                     <a style = {{cursor: "pointer"}}onClick={isSignedOut}>LOGOUT</a>
                     <button onClick={toggleDarkMode}>
-                  {darkMode ? <img src = "https://img.icons8.com/?size=100&id=H3yHeysB1dxv&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=45475&format=png&color=000000"/>}
-                </button>
-                <button onClick={handleFavoriteClick}>
-                  {darkMode ? <img src = "https://img.icons8.com/?size=100&id=36g5wgnLThGl&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=112373&format=png&color=000000"/> }
-                </button>
-                <button onClick={() => setOpenNotifications(true)}><img src="https://img.icons8.com/?size=100&id=11642&format=png&color=000000" alt="" />{unreadCount > 0 ? <span>{unreadCount}</span> : ''}</button>
-                <button onClick={() => setOpenGroceryList(true)}><img src="https://img.icons8.com/?size=100&id=Ot2P5D5MPltM&format=png&color=000000" alt=""/>{expiredCount > 0 ? <span>{expiredCount}</span> : ''}</button>
+                      {darkMode ? <img src = "https://img.icons8.com/?size=100&id=H3yHeysB1dxv&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=45475&format=png&color=000000"/>}
+                    </button>
+                    <button onClick={handleFavoriteClick}>
+                      {darkMode ? <img src = "https://img.icons8.com/?size=100&id=36g5wgnLThGl&format=png&color=000000"/> : <img src = "https://img.icons8.com/?size=100&id=112373&format=png&color=000000"/> }
+                    </button>
+                    <button onClick={() => setOpenNotifications(true)}>
+                      {darkMode ? <img src='https://img.icons8.com/?size=100&id=13717&format=png&color=000000'/> : <img src="https://img.icons8.com/?size=100&id=11642&format=png&color=000000" alt="" />}{unreadCount > 0 ? <span className='notis-count'>{unreadCount}</span> : ''}
+                      </button>
+                    <button onClick={() => setOpenGroceryList(true)}>
+                      {darkMode ? <img src='img/cart-darkmode.png'/> : <img src="https://img.icons8.com/?size=100&id=Ot2P5D5MPltM&format=png&color=000000" alt=""/>}{expiredCount > 0 ? <span className='notis-count'>{expiredCount}</span> : ''}
+                    </button>
                   </div>
                 </nav>
                 
         </header>}
       <Routes>
         <Route path='/' element={<UserAuthPage />} />
-        <Route path='/home' element={ isAuthenticated === false ? <Navigate to="/"/> : <HomePage isSignedOut={isSignedOut}/>} />
+        <Route path='/home' element={ isAuthenticated === false ? <Navigate to="/"/> : <HomePage isSignedOut={isSignedOut} darkMode={darkMode}/>} />
         <Route path='/errorpage' element={ isAuthenticated === false ? <Navigate to="/"/> : <ErrorPage/>} />
         <Route path='/pantry' element = {isAuthenticated === false ? <Navigate to="/"/> : <PantryManager pantry={pantry} setPantry={setPantry}/>}/>
-        <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes = {recipes} setRecipes={setRecipes} scoredRecipes={scoredRecipes} setScoredRecipes={setScoredRecipes} recipeIngredients={recipeIngredients} setRecipeIngredients={setRecipeIngredients} favoriteRecipes={favoritedRecipeCards}/>}/>
+        <Route path = '/recipes' element = {isAuthenticated === false ? <Navigate to="/"/> : <RecipePage recipes = {recipes} setRecipes={setRecipes} scoredRecipes={scoredRecipes} setScoredRecipes={setScoredRecipes} recipeIngredients={recipeIngredients} setRecipeIngredients={setRecipeIngredients} favoriteRecipes={favoritedRecipeCards} darkMode={darkMode}/>}/>
         <Route path='/mealplanner' element = {isAuthenticated === false ? <Navigate to="/"/> : <MealPlannerPage mealPlans={mealPlans} setMealPlans={setMealPlans}/>}/>
         <Route path='/profile' element = {isAuthenticated === false ? <Navigate to = "/"/> : <ProfilePage isSignedOut={isSignedOut} darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>}/>
         <Route path='/favorites' element = {isAuthenticated === false ? <Navigate to = "/"/> : <FavoritePage scoredRecipes={scoredRecipes} recipeIngredients={recipeIngredients} setRecipeIngredients={setRecipeIngredients} favoritedRecipeCards={favoritedRecipeCards} setFavoritedRecipeCards={setFavoritedRecipeCards}/>}/>
