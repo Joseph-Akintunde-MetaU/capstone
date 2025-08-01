@@ -2,9 +2,13 @@
   width: 100%;
   max-width: 600px;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: auto;
-  top: 50%;
-  transform: translateY(-10%);
+  top: 0;
+  left: 0;
+  transform: none;
 }
 /* Hide login form by default */
 .login {
@@ -40,7 +44,12 @@
   box-shadow: var(--card-shadow);
   overflow: hidden;
   transition: var(--transition);
-  width: 600px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.dark-mode .UserAuthPageBody{
+  background-color: black;
 }
 .UserAuthPageBody:hover {
   transform: translateY(-2px);
@@ -57,6 +66,10 @@
   justify-content: center;
   margin-bottom: 5rem;
   mix-blend-mode: multiply;
+}
+.dark-mode .logo{
+    filter: invert(0);
+    mix-blend-mode: hard-light;
 }
 .logo-icon {
   width: 200px;
@@ -76,6 +89,11 @@
   color: var(--text-secondary);
   letter-spacing: 0.04em;
   margin-bottom: 0.5rem;
+}
+.dark-mode .welcome, 
+.dark-mode .auth-mode, 
+.dark-mode .form-label{
+  color: white;
 }
 .auth-mode {
   font-size: 1rem;
@@ -114,6 +132,9 @@
   color: var(--text-primary);
   transition: var(--transition);
 }
+.dark-mode .form-input{
+  background: black;
+}
 
 .form-input:focus {
   border-color: var(--input-focus);
@@ -150,6 +171,10 @@
   text-decoration: none;
   box-shadow: 0 4px 14px rgba(71, 85, 105, 0.3);
 }
+.dark-mode .btn:hover{
+  color: white;
+  background-color: black;
+}
 .btn:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
@@ -181,6 +206,9 @@
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-muted);
+}
+.dark-mode .dividerText{
+  color: white;
 }
 .no-waste-message {
   position: fixed;
