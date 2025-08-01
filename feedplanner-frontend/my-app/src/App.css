@@ -131,6 +131,9 @@ body.dark-mode .links a {
   height: 24px;
   transition: all 0.3s ease;
 }
+.dark-mode .notis-count{
+  color: #DB8509;
+}
 .light-mode .links button:hover img {
   filter: brightness(0) invert(0.5);
 }
