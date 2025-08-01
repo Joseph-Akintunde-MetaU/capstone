@@ -27,9 +27,12 @@ export function HomePage({isSignedOut, darkMode}){
 
    function getGreeting() {
         const hour = currentTime.getHours()
-        if (hour < 12) return "Good Morning"
-        if (hour < 17) return "Good Afternoon"
-        return "Good Evening"
+        const morning = "Good Morning"
+        const afternoon = "Good Afternoon"
+        const evening = "Good Evening"
+        if (hour < 12) return morning
+        if (hour < 17) return afternoon
+        return evening
     }
 
     async function FoodTrivia(){
