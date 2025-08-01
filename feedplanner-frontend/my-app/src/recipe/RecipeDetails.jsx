@@ -1,6 +1,6 @@
 import "./RecipeDetails.css"
 import { useEffect } from "react"
-export function RecipeDetails({closeModal, cuisines, darkMode, title, image, instructions, ingredients, summary, diets, dishTypes}){
+export function RecipeDetails({closeModal, cuisines, darkMode, servings, title, image, pricePerServing, instructions, ingredients, summary, diets, dishTypes}){
     useEffect(() => {
         document.body.style.overflow = "hidden"
 
@@ -34,6 +34,10 @@ export function RecipeDetails({closeModal, cuisines, darkMode, title, image, ins
                             <p className="modal-summary">{stripHtml(ingredients)}</p>      
                         </div>
                         <div>
+                            <h4 style={{marginTop: "20px"}}>SERVINGS AND PRICE PER SERVING: </h4>
+                            <p className="modal-summary">{stripHtml(servings)} - ${pricePerServing/100}</p>      
+                        </div>
+                        <div>
                             <h4 style={{marginTop: "20px"}}>CUISINES</h4>
                             <div className="modal-summary">
                                 {Array.isArray(cuisines) && cuisines.length > 0
@@ -42,7 +46,7 @@ export function RecipeDetails({closeModal, cuisines, darkMode, title, image, ins
                                             {cuisine}
                                         </span>
                                     ))
-                                    : <span>{cuisines}</span>
+                                    : <span>NONE</span>
                                 }
                             </div>
                         </div>

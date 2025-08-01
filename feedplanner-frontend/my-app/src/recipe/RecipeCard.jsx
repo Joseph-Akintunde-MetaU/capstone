@@ -20,7 +20,9 @@ export function RecipeCard({
     recipes,
     summary,
     cuisines,
+    pricePerServing,
     diets,
+    servings,
     dishTypes,
     darkMode,
     cookTime = "30 min",
@@ -337,6 +339,8 @@ export function RecipeCard({
                     cuisines={cuisines}
                     dishTypes={dishTypes}
                     diets={diets}
+                    servings={servings}
+                    pricePerServing = {pricePerServing}
                 />
             )}
             <ToastContainer

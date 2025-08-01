@@ -35,6 +35,8 @@ export function RecipeList({ recipes, recipeIngredients, darkMode }) {
                     summary={recipe.summary}
                     cuisines={recipe.cuisines}
                     dishTypes={recipe.dishTypes}
+                    servings={recipe.servings}
+                    pricePerServing = {recipe.pricePerServing}
                     diets={recipe.diets}
                     animationDelay={index * 0.1}
                     recipes={recipes}

@@ -1,5 +1,5 @@
 .recipePage {
-  padding: 3.2rem;
+  padding: 3rem;
   background: rgb(244, 243, 243);
   min-height: 100vh;
   position: relative;
@@ -71,12 +71,16 @@
   width: 100%;
 }
 
+
 .recipe-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2.5rem;
   justify-items: center;
+  align-items: stretch;
   padding: 2rem 1rem;
+  grid-auto-flow: row dense;
+  place-items: center;
 }
 
 .error-container,
