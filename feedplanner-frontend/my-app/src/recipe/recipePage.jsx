@@ -196,8 +196,6 @@ export function RecipePage({
             const timeB = parseInt(b.cookTime) || 0;
             return timeA - timeB;
             });
-        } else if (filter === "rating") {
-            filtered.sort((a, b) => (b.medianRating || 0) - (a.medianRating || 0));
         }
         return filtered;
     }
@@ -239,7 +237,6 @@ export function RecipePage({
                                 <option value="none">Default</option>
                                 <option value="healthScore">Health Score</option>
                                 <option value="cookTime">Cook Time</option>
-                                <option value="rating">Highest Rating</option>
                             </select>
                         </div>
 

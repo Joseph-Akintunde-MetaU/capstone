@@ -1,0 +1,64 @@
+.favorites-list {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f8fafc 60%, #e0e7ff 100%);
+    box-shadow: 0 8px 32px rgba(60, 60, 120, 0.10);
+    min-height: 80vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.dark-mode .favorites-list{
+    background: black;
+}
+
+.favorites-list h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 2.5rem;
+    text-align: center;
+    letter-spacing: 2px;
+    text-shadow: 0 4px 20px rgba(60, 60, 120, 0.08);
+}
+.dark-mode .favorites-list h1{
+    color: white;
+}
+.loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    font-size: 1.2rem;
+    color: #20c997;
+}
+
+@media (max-width: 900px) {
+    .favorites-list {
+        padding: 2rem 0.5rem;
+        border-radius: 12px;
+    }
+    .FavoritePageList {
+        gap: 1.2rem;
+    }
+    .favorites-list h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .favorites-list {
+        padding: 1rem 0.2rem;
+        border-radius: 8px;
+    }
+    .FavoritePageList {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .favorites-list h1 {
+        font-size: 1.3rem;
+    }
+}

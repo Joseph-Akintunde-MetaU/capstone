@@ -1,8 +1,8 @@
 .recipeCard {
   width: 400px;
-  height: 500px;
+  height: 550px;
   perspective: 1000px;
-  margin: 20px;
+  margin: 35px;
   position: relative;
 }
 .ratings{
