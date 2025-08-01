@@ -73,18 +73,14 @@
 
 
 .recipe-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2.5rem;
+  justify-items: center;
+  align-items: stretch;
   padding: 2rem 1rem;
-}
-
-.recipe-grid > * {
-  flex: 1 1 320px;
-  max-width: 350px;
-  min-width: 250px;
-  display: flex;
+  grid-auto-flow: row dense;
+  place-items: center;
 }
 
 .error-container,
