@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { auth } from "../config/firebase.config"
 import { onAuthStateChanged } from "firebase/auth"
 import {AllPantry} from "./AllPantry"
+import "./PantryManager.css"
 import { CreatePantryItem } from "./CreatePantryItem"
 export function PantryManager({pantry, setPantry}){
     const [openModal, setOpenModal] = useState(false)
@@ -24,14 +25,28 @@ export function PantryManager({pantry, setPantry}){
     useEffect(() => {
         getPantry()
     },[])
-    return(
-        <div style={{padding: "5em"}}>
-            <h2>PANTRY</h2>
-            <button style={{margin: 4}} onClick={() => setOpenModal(true)}>ADD</button>
-            <div>
-                <AllPantry pantry={pantry} getPantry={getPantry}/>
-                {openModal && <CreatePantryItem closeModal={setOpenModal} getPantry={getPantry}/>}
-            </div>
+    return (
+    <div className="pantry-container">
+      <div className="pantry-header">
+        <div className="header-content">
+          <div className="title-section">
+            <h2 className="pantry-title">My Pantry</h2>
+            <p className="pantry-subtitle">Manage your pantry inventory efficiently</p>
+          </div>
+          <button className="add-button" onClick={() => setOpenModal(true)}>
+            <span className="add-icon">+</span>
+            Add Item
+          </button>
         </div>
-        )
+      </div>
+
+      <div className="pantry-content">
+        <div className="pantry-grid">
+          <AllPantry pantry={pantry} getPantry={getPantry} />
+        </div>
+
+        {openModal && <CreatePantryItem closeModal={setOpenModal} getPantry={getPantry} />}
+      </div>
+    </div>
+  )
 }

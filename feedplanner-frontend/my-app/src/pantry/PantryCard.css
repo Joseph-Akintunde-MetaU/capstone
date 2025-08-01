@@ -35,7 +35,8 @@
 .shelf-items {
   display: flex;
   gap: 1.5rem;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   min-height: 120px;
   padding-bottom: 1rem;
 }
