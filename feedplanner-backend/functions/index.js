@@ -130,7 +130,7 @@ async function runExpiryCheck() {
 }
 
 exports.checkExpiryScheduled = onSchedule({
-  schedule: "every 2 minutes",
+  schedule: "every 6 hours",
   timeZone: "America/Los_Angeles",
 }, async () => {
   await runExpiryCheck();
