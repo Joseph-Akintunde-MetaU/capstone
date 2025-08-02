@@ -54,9 +54,7 @@ export function UserAuthPage(){
             if (user) {
                 nav("/home")
                 const uid = user.uid;
-        } else{
-            console.log("User not logged in")
-        }
+            }
         }catch(error){
             throw new Error(error)
         }

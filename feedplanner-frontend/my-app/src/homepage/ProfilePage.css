@@ -96,7 +96,10 @@
     font-weight: 500;
     margin-bottom: 0.5rem;
 }
-
+.dark-mode .greeting-text, 
+.dark-mode .profile-email{
+    color: white;
+}
 .profile-header h2 {
     margin-bottom: 0.5rem;
     font-size: 2.2rem;
@@ -106,7 +109,11 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
-
+.dark-mode .profile-header h2{
+    color: white;
+    background: none;
+    -webkit-text-fill-color: white;
+}
 .profile-email {
     color: var(--text-secondary);
     font-size: 1.1rem;
@@ -171,6 +178,9 @@
     color: var(--text-muted);
     font-weight: 500;
 }
+.dark-mode .stat-label{
+    color: white;
+}
 
 /* Profile Sections */
 .profile-section {
@@ -196,7 +206,9 @@
     align-items: center;
     gap: 8px;
 }
-
+.dark-mode .profile-section h4{
+    color: white;
+}
 .section-icon {
     width: 20px;
     height: 20px;
@@ -233,7 +245,9 @@
     color: var(--text-primary);
     font-weight: 500;
 }
-
+.dark-mode .detail-value, .dark-mode .detail-label{
+    color: white;
+}
 /* Preferences */
 .preference-grid {
     display: grid;

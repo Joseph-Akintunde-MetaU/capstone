@@ -16,6 +16,7 @@ export function MealPlannerPage({ mealPlans, setMealPlans }) {
         const d = new Date(date)
         const day = d.getDay()
         const diff = d.getDate() - day
+        d.setHours(0, 0, 0, 0);
         return new Date(d.setDate(diff))
     }
 

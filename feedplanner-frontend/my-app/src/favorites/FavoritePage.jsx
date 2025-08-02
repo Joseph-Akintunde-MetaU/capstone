@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetBookmarks } from "../utility/getBookmarks";
 import  FavoritePageList  from "./FavoritesPageList";
+import "./FavoritesPage.css"
 export function FavoritePage({scoredRecipes, recipeIngredients, setRecipeIngredients, favoritedRecipeCards, setFavoritedRecipeCards}){
     const [favoritedData, setFavoritedData] = useState([])
     const apiKey = process.env.REACT_APP_API_KEY
