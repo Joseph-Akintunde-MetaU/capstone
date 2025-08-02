@@ -170,7 +170,7 @@ export default function AddToMealPlan({
                 closeModal(false);
                 nav("/mealPlanner");
             } catch (error) {
-                console.log(error);
+                throw new Error(error);
             }
         }
     }

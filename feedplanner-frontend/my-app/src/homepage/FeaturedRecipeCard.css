@@ -14,7 +14,7 @@
 }
 .dark-mode .recipeCard{
     background: rgba(0, 0, 0, 0.95);
-     border: 2px solid var(--text-muted);
+    border: 2px solid var(--text-muted);
 }
 .recipeCard:hover {
     transform: translateY(-8px);

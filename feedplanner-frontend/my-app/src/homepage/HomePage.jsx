@@ -19,7 +19,7 @@ export function HomePage({isSignedOut, darkMode}){
         const data = await response.json()
         setFeaturedRecipes(data.recipes)
         }catch(error){
-            console.error(error)
+            throw new Error(error)
         }finally{
             setLoading(false)
         }
@@ -41,7 +41,7 @@ export function HomePage({isSignedOut, darkMode}){
             const data = await response.json()
             setTrivia(data)
         }catch(error){
-            console.error(error)
+            throw new Error(error)
         }
     }
     useEffect(() => {
